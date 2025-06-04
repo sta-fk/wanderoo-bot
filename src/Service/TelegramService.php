@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\DTO\Request\TelegramUpdate;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -18,24 +19,61 @@ class TelegramService
         $this->client = $client;
     }
 
-    public function handleMessage(int $chatId, string $text): void
+    public function handleUpdate(TelegramUpdate $update): void
     {
-        $reply = match (true) {
-            str_starts_with($text, '/start') => 'Привіт! Я твій тревел-планувальник 🚀',
-            str_starts_with($text, '/help') => 'Напиши /new_trip щоб створити нову подорож.',
-            default => 'Команда не розпізнана. Напиши /help.',
-        };
+        if ($update->message?->text === '/start') {
+            $chatId = $update->message->chat->id;
+            $this->sendWelcomeMessage($chatId);
+        }
 
-        $this->sendMessage($chatId, $reply);
+        if ($update->callbackQuery) {
+            $chatId = $update->callbackQuery->message->chat->id;
+            $data = $update->callbackQuery->data;
+
+            if ($data === 'start_yes') {
+                $this->sendMarkdownMessage($chatId, 'Супер! Почнімо ✨');
+            }
+        }
     }
 
-    public function sendMessage(int $chatId, string $text): void
+    public function sendWelcomeMessage(int $chatId): void
     {
-        $this->client->request('POST', $this->apiUrl . 'sendMessage', [
-            'json' => [
-                'chat_id' => $chatId,
-                'text' => $text,
-            ],
+        $text = <<<TEXT
+Привіт! Я ✈️ Wanderoo — бот, що допоможе спланувати твою мандрівку.
+
+Я поставлю кілька простих запитань і згенерую персональний тревел-план: що подивитись, куди сходити, що скуштувати 🍜
+
+Почнемо?
+TEXT;
+
+        $keyboard = [
+            'inline_keyboard' => [
+                [
+                    ['text' => '🧳 Так, хочу план!', 'callback_data' => 'start_yes'],
+                    ['text' => '❌ Ні, просто дивлюсь', 'callback_data' => 'start_no'],
+                ]
+            ]
+        ];
+
+        $this->sendMarkdownMessage($chatId, $text, $keyboard);
+    }
+
+    public function sendMarkdownMessage(int $chatId, string $text, ?array $replyMarkup = null): void
+    {
+        $url = "{$this->apiUrl}/sendMessage";
+
+        $payload = [
+            'chat_id' => $chatId,
+            'text' => $text,
+            'parse_mode' => 'Markdown',
+        ];
+
+        if ($replyMarkup) {
+            $payload['reply_markup'] = json_encode($replyMarkup);
+        }
+
+        $this->client->request('POST', $url, [
+            'json' => $payload
         ]);
     }
 }

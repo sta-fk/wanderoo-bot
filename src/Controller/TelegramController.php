@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\Request\TelegramUpdate;
 use App\Http\ApiResponseTrait;
 use App\Http\BaseApiController;
 use App\Service\TelegramService;
@@ -16,19 +17,15 @@ final class TelegramController extends BaseApiController
     #[Route('/webhook', name: 'telegram_webhook', methods: ['POST'])]
     public function webhook(Request $request, TelegramService $telegramService): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-
-        if (!$data || !isset($data['message'])) {
-            return new JsonResponse(['ok' => false, 'reason' => 'Invalid payload'], 400);
+        /** @var TelegramUpdate $update */
+        try {
+            $update = $this->serializer->deserialize($request->getContent(), TelegramUpdate::class, 'json');
+        } catch (\Throwable) {
+            return $this->error('Invalid payload');
         }
 
-        $chatId = $data['message']['chat']['id'] ?? null;
-        $text = $data['message']['text'] ?? '';
+        $telegramService->handleUpdate($update);
 
-        if ($chatId) {
-            $telegramService->handleMessage($chatId, $text);
-        }
-
-        return new JsonResponse(['ok' => true]);
+        return $this->success();
     }
 }
