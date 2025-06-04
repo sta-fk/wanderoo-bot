@@ -17,11 +17,10 @@ final class TelegramController extends BaseApiController
     #[Route('/webhook', name: 'telegram_webhook', methods: ['POST'])]
     public function webhook(Request $request, TelegramService $telegramService): JsonResponse
     {
-        /** @var TelegramUpdate $update */
         try {
             $update = $this->serializer->deserialize($request->getContent(), TelegramUpdate::class, 'json');
-        } catch (\Throwable) {
-            return $this->error('Invalid payload');
+        } catch (\Throwable $exception) {
+            return $this->error($exception->getMessage());
         }
 
         $telegramService->handleUpdate($update);

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
+use App\Enum\States;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -15,13 +16,13 @@ class TelegramService
         ParameterBagInterface $params,
         HttpClientInterface $client
     ) {
-        $this->apiUrl = "https://api.telegram.org/bot{$params->get('telegram_bot_token')}/";
+        $this->apiUrl = sprintf("%s%s", $params->get('telegram_bot_api_url'), $params->get('telegram_bot_token'));
         $this->client = $client;
     }
 
     public function handleUpdate(TelegramUpdate $update): void
     {
-        if ($update->message?->text === '/start') {
+        if ($update->message?->text === States::Start->value) {
             $chatId = $update->message->chat->id;
             $this->sendWelcomeMessage($chatId);
         }
@@ -60,8 +61,6 @@ TEXT;
 
     public function sendMarkdownMessage(int $chatId, string $text, ?array $replyMarkup = null): void
     {
-        $url = "{$this->apiUrl}/sendMessage";
-
         $payload = [
             'chat_id' => $chatId,
             'text' => $text,
@@ -72,7 +71,7 @@ TEXT;
             $payload['reply_markup'] = json_encode($replyMarkup);
         }
 
-        $this->client->request('POST', $url, [
+        $this->client->request('POST', "{$this->apiUrl}/sendMessage", [
             'json' => $payload
         ]);
     }
