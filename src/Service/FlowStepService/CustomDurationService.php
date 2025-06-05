@@ -8,31 +8,39 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class CustomDurationService implements FlowStepServiceInterface
+class CustomDurationService implements FlowStepServiceInterface
 {
+    private bool $validationPassed = false;
 
     public function __construct(
-        private UserStateStorage $userStateStorage,
+        private readonly UserStateStorage $userStateStorage,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && States::WaitingForCustomDuration === $this->userStateStorage->getState($update->callbackQuery->message->chat->id);
+        return null !== $update->message
+            && States::WaitingForCustomDuration === $this->userStateStorage->getState($update->message->chat->id);
     }
 
     public function getNextState(): States
     {
+        if (!$this->validationPassed) {
+            return States::WaitingForCustomDuration;
+        }
+
+        $this->validationPassed = false;
+
         return States::ReadyForDates;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
         if (null !== $update->message->text && (int)$update->message->text > 0 && (int)$update->message->text <= 30) {
+            $this->validationPassed = true;
             $context->duration = (int) $update->message->text;
             $this->userStateStorage->saveContext($chatId, $context);
 

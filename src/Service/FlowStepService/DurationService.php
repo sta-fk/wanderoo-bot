@@ -8,11 +8,12 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class DurationService implements FlowStepServiceInterface
+class DurationService implements FlowStepServiceInterface
 {
+    private bool $neededCustomDuration = false;
 
     public function __construct(
-        private UserStateStorage $userStateStorage,
+        private readonly UserStateStorage $userStateStorage,
     ) {
     }
 
@@ -23,7 +24,13 @@ readonly class DurationService implements FlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::ReadyForDates;
+        if (!$this->neededCustomDuration) {
+            return States::ReadyForDates;
+        }
+
+        $this->neededCustomDuration = false;
+
+        return States::WaitingForCustomDuration;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
@@ -33,7 +40,7 @@ readonly class DurationService implements FlowStepServiceInterface
         $context = $this->userStateStorage->getContext($chatId);
 
         if ($durationValue === 'custom') {
-            $this->userStateStorage->updateState($chatId, States::WaitingForCustomDuration);
+            $this->neededCustomDuration = true;
 
             return new SendMessageContext($chatId, "Введіть кількість днів (наприклад, 4):");
         }
