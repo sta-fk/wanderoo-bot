@@ -2,6 +2,7 @@
 
 namespace App\Service\FlowStepService;
 
+use App\DTO\Keyboard;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
@@ -19,13 +20,12 @@ readonly class CityService implements FlowStepServiceInterface
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::City->value)
-            && !strpos($update->callbackQuery->data, 'page')
-        ;
+            && !strpos($update->callbackQuery->data, 'page');
     }
 
     public function getNextState(): States
     {
-        return States::ReadyForDates;
+        return States::WaitingForDuration;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
@@ -37,6 +37,20 @@ readonly class CityService implements FlowStepServiceInterface
         $context->city = $cityName;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        return new SendMessageContext($update->callbackQuery->message->chat->id, "Ви обрали місто: {$cityName}. Тепер оберіть дати.");
+        $keyboard = [
+            'inline_keyboard' => [
+                [['text' => '1 день', 'callback_data' => CallbackQueryData::Duration->value.'1']],
+                [['text' => '3 дні', 'callback_data' => CallbackQueryData::Duration->value.'3']],
+                [['text' => '5 днів', 'callback_data' => CallbackQueryData::Duration->value.'5']],
+                [['text' => '7 днів', 'callback_data' => CallbackQueryData::Duration->value.'7']],
+                [['text' => '🔢 Інший варіант', 'callback_data' => CallbackQueryData::Duration->value.'custom']],
+            ]
+        ];
+
+        return new SendMessageContext(
+            $update->callbackQuery->message->chat->id,
+            "Ви обрали місто: {$cityName}. На скільки днів плануєте подорож?",
+            $keyboard
+        );
     }
 }

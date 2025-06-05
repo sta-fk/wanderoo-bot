@@ -6,12 +6,15 @@ class PlanContext
 {
     public ?string $country = null;
     public ?string $city = null;
+    public ?int $duration = null;
+
 
     public static function fromArray(array $data): self
     {
         $ctx = new self();
         $ctx->country = $data['country'] ?? null;
         $ctx->city = $data['city'] ?? null;
+        $ctx->duration = $data['duration'] ?? null;
 
         return $ctx;
     }
@@ -21,6 +24,7 @@ class PlanContext
         return [
             'country' => $this->country,
             'city' => $this->city,
+            'duration' => $this->duration,
         ];
     }
 }
