@@ -4,21 +4,23 @@ namespace App\Service\FlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
+use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class CityService implements FlowStepServiceInterface
+readonly class CityService implements FlowStepServiceInterface
 {
-    private const CALLBACK_QUERY_DATA_STARTS_WITH = 'city_';
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
+        private UserStateStorage $userStateStorage,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, self::CALLBACK_QUERY_DATA_STARTS_WITH);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::City->value)
+            && !strpos($update->callbackQuery->data, 'page')
+        ;
     }
 
     public function getNextState(): States
@@ -35,6 +37,6 @@ class CityService implements FlowStepServiceInterface
         $context->city = $cityName;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        return new SendMessageContext($update->message->chat->id, "Ви обрали місто: {$cityName}. Тепер оберіть дати.");
+        return new SendMessageContext($update->callbackQuery->message->chat->id, "Ви обрали місто: {$cityName}. Тепер оберіть дати.");
     }
 }

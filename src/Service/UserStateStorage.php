@@ -9,6 +9,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 readonly class UserStateStorage
 {
+    private const STATE_TEMPLATE_KEY = 'chat_%s_state';
+    private const CONTEXT_TEMPLATE_KEY = 'chat_%s_context';
+
     public function __construct(
         private CacheInterface $cache,
         private int $stateTtl,
@@ -16,11 +19,11 @@ readonly class UserStateStorage
     ) {
     }
 
-    public function updateState(int $chatId, States $state, int $ttl = 3600): void
+    public function updateState(int $chatId, States $state): void
     {
-        $this->cache->delete("user:$chatId:state"); // Очистити, щоб перезаписати
+        $this->cache->delete(self::getStateKey($chatId)); // Очистити, щоб перезаписати
 
-        $this->cache->get("user:$chatId:state", function (ItemInterface $item) use ($state) {
+        $this->cache->get(self::getStateKey($chatId), function (ItemInterface $item) use ($state) {
             $item->expiresAfter($this->stateTtl);
 
             return $state->value;
@@ -30,7 +33,7 @@ readonly class UserStateStorage
     public function getState(int $chatId): ?States
     {
         return States::tryFrom(
-            $this->cache->get("user:$chatId:state", function () {
+            $this->cache->get(self::getStateKey($chatId), function () {
                 return null;
             })
         );
@@ -38,9 +41,9 @@ readonly class UserStateStorage
 
     public function saveContext(int $chatId, PlanContext $context): void
     {
-        $this->cache->delete("user:$chatId:context");
+        $this->cache->delete(self::getContextKey($chatId));
 
-        $this->cache->get("user:$chatId:context", function (ItemInterface $item) use ($context) {
+        $this->cache->get(self::getContextKey($chatId), function (ItemInterface $item) use ($context) {
             $item->expiresAfter($this->contextTtl);
 
             return $context;
@@ -49,8 +52,18 @@ readonly class UserStateStorage
 
     public function getContext(int $chatId): PlanContext
     {
-        return $this->cache->get("user:$chatId:context", function () {
+        return $this->cache->get(self::getContextKey($chatId), function () {
             return new PlanContext(); // Якщо ще немає — новий обʼєкт
         });
+    }
+
+    private static function getStateKey(int $chatId): string
+    {
+        return sprintf(self::STATE_TEMPLATE_KEY, $chatId);
+    }
+
+    private static function getContextKey(int $chatId): string
+    {
+        return sprintf(self::CONTEXT_TEMPLATE_KEY, $chatId);
     }
 }

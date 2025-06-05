@@ -3,39 +3,37 @@
 namespace App\Service\FlowStepService;
 
 use App\DTO\Keyboard;
-use App\DTO\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\Enum\States;
 use App\Enum\CallbackQueryData;
+use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
-readonly class StartYesService implements FlowStepServiceInterface
+class CountryWithPaginationService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
     public function __construct(
-        private GeoDbService $geoDbService,
-        private UserStateStorage $userStateStorage,
+        private readonly GeoDbService $geoDbService,
+        private readonly UserStateStorage $userStateStorage,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && CallbackQueryData::StartYes->value === $update->callbackQuery->data;
+        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::CountryPage->value);
     }
 
     public function getNextState(): States
     {
-        return States::WaitingForCountry;
+        return States::WaitingForCity;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
     {
-        $this->userStateStorage->saveContext($update->callbackQuery->message->chat->id, new PlanContext());
-
-        $countries = $this->geoDbService->getCountries();
+        $offset = (int) substr($update->callbackQuery->data, 13);
+        $countries = $this->geoDbService->getCountries($offset);
         $keyboard = $this->buildPaginationKeyboard(
             new Keyboard(
                 $countries,
@@ -43,10 +41,10 @@ readonly class StartYesService implements FlowStepServiceInterface
                 'name',
                 'code',
                 CallbackQueryData::CountryPage->value,
-                5
+                $offset + 5
             ),
         );
 
-        return new SendMessageContext($update->callbackQuery->message->chat->id, 'Супер, поїхали ✨! Обери країну:', $keyboard);
+        return new SendMessageContext($update->callbackQuery->message->chat->id, "Ще 5 країн:", $keyboard);
     }
 }

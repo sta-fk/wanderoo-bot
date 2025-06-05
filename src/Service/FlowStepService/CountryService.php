@@ -2,15 +2,17 @@
 
 namespace App\Service\FlowStepService;
 
+use App\DTO\Keyboard;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
+use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
 class CountryService implements FlowStepServiceInterface
 {
-    private const CALLBACK_QUERY_DATA_STARTS_WITH = 'country_';
+    use BuildKeyboardTrait;
 
     public function __construct(
         private readonly GeoDbService $geoDbService,
@@ -20,12 +22,14 @@ class CountryService implements FlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, self::CALLBACK_QUERY_DATA_STARTS_WITH);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
+            && !strpos($update->callbackQuery->data, 'page');
     }
 
     public function getNextState(): States
     {
-        return States::WaitingForCountry;
+        return States::WaitingForCity;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
@@ -35,25 +39,38 @@ class CountryService implements FlowStepServiceInterface
 
         $countryCode = substr($update->callbackQuery->data, 8);
         $context->country = $countryCode;
-
         $this->userStateStorage->saveContext($chatId, $context);
 
         $cities = $this->geoDbService->getCitiesByCountry($countryCode);
-        $keyboard = $this->buildKeyboard($cities);
+        $keyboard = $this->buildPaginationKeyboard(
+            new Keyboard(
+                $cities,
+                CallbackQueryData::City->value,
+                'name',
+                'name',
+                CallbackQueryData::CityPage->value,
+                5
+            ),
+        );
 
-        return new SendMessageContext($update->message->chat->id, 'Оберіть місто:', $keyboard);
+        return new SendMessageContext($update->callbackQuery->message->chat->id, "🚀Оберіть місто:", $keyboard);
     }
 
-    private function buildKeyboard(array $items): array
-    {
-        $buttons = [];
-        foreach ($items as $item) {
-            $buttons[][] = [
-                'text' => $item['name'],
-                'callback_data' => 'city_'.$item['name'],
-            ];
-        }
-
-        return ['inline_keyboard' => $buttons];
-    }
+    // You have exceeded the rate limit per second for your plan, BASIC, by the API provider
+    //    private function getMessageText(string $countryCode): string
+    //    {
+    //        $details = $this->geoDbService->getCountryDetails($countryCode);
+    //
+    //        $name = $details['name'];
+    //        $capital = $details['capital'];
+    //        $currency = $details['currency'];
+    //
+    //        $text = <<<TEXT
+    //✅Ви обрали країну: $name. Столиця: $capital. Місцева валюта: $currency.
+    //
+    //🚀Оберіть місто:
+    //TEXT;
+    //
+    //        return $text;
+    //    }
 }

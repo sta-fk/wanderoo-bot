@@ -35,26 +35,26 @@ class GeoDbService
         return $data['data'] ?? [];
     }
 
-    public function getContinents(): array
-    {
-        return $this->request('/continents');
-    }
-
-    public function getCountriesByContinent(string $continentCode): array
+    public function getCountries(int $offset = 0, int $limit = 5): array
     {
         return $this->request('/countries', [
-            'continentCode' => $continentCode,
-            'limit' => 10,
+            'offset' => $offset,
+            'limit' => $limit,
             'sort' => 'name',
         ]);
     }
 
-    public function getCitiesByCountry(string $countryCode): array
+    public function getCountryDetails(string $code): array
+    {
+        return $this->request("/countries/{$code}");
+    }
+
+    public function getCitiesByCountry(string $countryCode, int $offset = 0, int $limit = 5): array
     {
         return $this->request('/cities', [
             'countryIds' => $countryCode,
-            'sort' => 'population',
-            'limit' => 10,
+            'offset' => $offset,
+            'limit' => $limit,
         ]);
     }
 }

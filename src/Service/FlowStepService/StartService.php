@@ -5,7 +5,7 @@ namespace App\Service\FlowStepService;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
-use App\Enum\TelegramButtons;
+use App\Enum\CallbackQueryData;
 use App\Enum\TelegramCommands;
 
 class StartService implements FlowStepServiceInterface
@@ -22,9 +22,7 @@ class StartService implements FlowStepServiceInterface
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
     {
-        $chatId = $update->message->chat->id;
-
-        return $this->buildWelcomeMessage($chatId);
+        return $this->buildWelcomeMessage($update->message->chat->id);
     }
 
     private function buildWelcomeMessage(int $chatId): SendMessageContext
@@ -40,8 +38,8 @@ TEXT;
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => '🧳 Так, хочу план!', 'callback_data' => TelegramButtons::StartYes->value],
-                    ['text' => '❌ Ні, просто дивлюсь', 'callback_data' => TelegramButtons::StartNo->value],
+                    ['text' => '🧳 Так, хочу план!', 'callback_data' => CallbackQueryData::StartYes->value],
+                    ['text' => '❌ Ні, просто дивлюсь', 'callback_data' => CallbackQueryData::StartNo->value],
                 ],
             ],
         ];

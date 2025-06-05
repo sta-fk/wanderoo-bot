@@ -19,11 +19,11 @@ final class TelegramController extends BaseApiController
     {
         try {
             $update = $this->serializer->deserialize($request->getContent(), TelegramUpdate::class, 'json');
-
-            $telegramService->handleUpdate($update);
         } catch (\Throwable $exception) {
             return $this->error($exception->getMessage());
         }
+
+        $telegramService->handleUpdate($update);
 
         return $this->success();
     }
