@@ -10,7 +10,7 @@ abstract class BaseApiController extends AbstractController
     use ApiResponseTrait;
 
     public function __construct(
-        protected readonly SerializerInterface $serializer
+        protected readonly SerializerInterface $serializer,
     ) {
     }
 
