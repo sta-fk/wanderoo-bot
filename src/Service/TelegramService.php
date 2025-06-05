@@ -3,76 +3,65 @@
 namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
-use App\Enum\States;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\DTO\SendMessageContext;
+use App\Service\FlowStepService\FlowStepServiceInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TelegramService
 {
     private string $apiUrl;
-    private HttpClientInterface $client;
 
     public function __construct(
+        private readonly HttpClientInterface $httpClient,
+        private readonly SerializerInterface $serializer,
+        private readonly UserStateStorage $userStateStorage,
+        #[AutowireIterator('flow_step_service')]
+        private readonly iterable $flowStepsServices,
         ParameterBagInterface $params,
-        HttpClientInterface $client
     ) {
-        $this->apiUrl = sprintf("%s%s", $params->get('telegram_bot_api_url'), $params->get('telegram_bot_token'));
-        $this->client = $client;
+        $this->apiUrl = sprintf('%s%s', $params->get('telegram_bot_api_url'), $params->get('telegram_bot_token'));
     }
 
     public function handleUpdate(TelegramUpdate $update): void
     {
-        if ($update->message?->text === States::Start->value) {
-            $chatId = $update->message->chat->id;
-            $this->sendWelcomeMessage($chatId);
-        }
+        /** @var FlowStepServiceInterface $flowStepService */
+        foreach ($this->flowStepsServices as $flowStepService) {
+            if ($flowStepService->supports($update)) {
+                $message = $flowStepService->buildMessage($update);
 
-        if ($update->callbackQuery) {
-            $chatId = $update->callbackQuery->message->chat->id;
-            $data = $update->callbackQuery->data;
+                $this->sendMarkdownMessage($message);
 
-            if ($data === 'start_yes') {
-                $this->sendMarkdownMessage($chatId, 'Супер! Почнімо ✨');
+                $this->userStateStorage->updateState($message->chatId, $flowStepService->getNextState());
+
+                return;
             }
         }
-    }
 
-    public function sendWelcomeMessage(int $chatId): void
-    {
-        $text = <<<TEXT
-Привіт! Я ✈️ Wanderoo — бот, що допоможе спланувати твою мандрівку.
-
-Я поставлю кілька простих запитань і згенерую персональний тревел-план: що подивитись, куди сходити, що скуштувати 🍜
-
-Почнемо?
-TEXT;
-
-        $keyboard = [
-            'inline_keyboard' => [
-                [
-                    ['text' => '🧳 Так, хочу план!', 'callback_data' => 'start_yes'],
-                    ['text' => '❌ Ні, просто дивлюсь', 'callback_data' => 'start_no'],
-                ]
-            ]
-        ];
-
-        $this->sendMarkdownMessage($chatId, $text, $keyboard);
-    }
-
-    public function sendMarkdownMessage(int $chatId, string $text, ?array $replyMarkup = null): void
-    {
-        $payload = [
-            'chat_id' => $chatId,
-            'text' => $text,
-            'parse_mode' => 'Markdown',
-        ];
-
-        if ($replyMarkup) {
-            $payload['reply_markup'] = json_encode($replyMarkup);
+        $chatId = $update->callbackQuery->message->chat->id ?? $update->message->chat->id ?? null;
+        if (null === $chatId) {
+            throw new \RuntimeException('Invalid payload');
         }
 
-        $this->client->request('POST', "{$this->apiUrl}/sendMessage", [
-            'json' => $payload
+        $this->sendMarkdownMessage(new SendMessageContext($chatId, 'Не впізнаний запит'));
+    }
+
+    public function sendMarkdownMessage(SendMessageContext $message): void
+    {
+        $payload = [
+            'chat_id' => $message->chatId,
+            'text' => $message->text,
+            'parse_mode' => 'HTML',
+        ];
+
+        if ($message->replyMarkup) {
+            $payload['reply_markup'] = $this->serializer->serialize($message->replyMarkup, 'json');
+        }
+
+        $this->httpClient->request('POST', "{$this->apiUrl}/sendMessage", [
+            'json' => $payload,
         ]);
     }
 }

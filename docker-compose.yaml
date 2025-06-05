@@ -1,17 +1,29 @@
 version: '3.8'
 
 services:
-    app:
+    php:
         build:
             context: .
             dockerfile: docker/php/Dockerfile
-        container_name: wanderoo_app
+        container_name: wanderoo_php
         volumes:
             - .:/app
         working_dir: /app
         ports:
             - "8000:8000"
+        environment:
+            REDIS_URL: redis://redis:6379
         command: php -S 0.0.0.0:8000 -t public
+        depends_on:
+            - redis
+
+    redis:
+        image: redis:7-alpine
+        container_name: wanderoo_redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
 
 #    database:
 #        image: postgres:${POSTGRES_VERSION:-16}-alpine
@@ -30,4 +42,5 @@ services:
       # - ./docker/db/data:/var/lib/postgresql/data:rw
 
 volumes:
-  database_data:
+    redis_data:
+    database_data:
