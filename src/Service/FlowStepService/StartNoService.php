@@ -6,19 +6,15 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
+use App\Service\FlowStepServiceInterface;
 
-readonly class StartNoService implements StateAwareFlowStepServiceInterface
+readonly class StartNoService implements FlowStepServiceInterface
 {
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
             && CallbackQueryData::StartNo->value === $update->callbackQuery->data
         ;
-    }
-
-    public function supportsStates(): array
-    {
-        return [States::WaitingForStart];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

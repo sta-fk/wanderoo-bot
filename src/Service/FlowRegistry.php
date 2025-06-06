@@ -3,17 +3,15 @@
 namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
-use App\Enum\States;
-use App\Service\FlowStepServiceInterface;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-class FlowRegistry
+readonly class FlowRegistry
 {
     public function __construct(
         #[AutowireIterator('flow_step_service')]
-        private readonly iterable $flowStepsServices,
-        private readonly UserStateStorage $userStateStorage,
+        private iterable         $flowStepsServices,
+        private UserStateStorage $userStateStorage,
     ) {
     }
 
@@ -24,12 +22,11 @@ class FlowRegistry
 
         /** @var FlowStepServiceInterface $flowStepService */
         foreach ($this->flowStepsServices as $flowStepService) {
-
-            if ($flowStepService instanceof StateAwareFlowStepServiceInterface && $currentState !== null && in_array($currentState, $flowStepService->supportsStates(), true)) {
-                return $flowStepService;
-            }
-
-            if ($flowStepService->supports($update)) {
+            if ($flowStepService instanceof StateAwareFlowStepServiceInterface && $flowStepService->supports($update)) {
+                if ($currentState !== null && in_array($currentState, $flowStepService->supportsStates(), true)) {
+                    return $flowStepService;
+                }
+            } elseif ($flowStepService->supports($update)) {
                 return $flowStepService;
             }
         }

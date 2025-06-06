@@ -9,18 +9,13 @@ use App\Enum\States;
 use App\Service\FlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
-class CalendarService implements StateAwareFlowStepServiceInterface
+class CalendarService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value);
-    }
-
-    public function supportsStates(): array
-    {
-        return [States::WaitingForStartDate];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

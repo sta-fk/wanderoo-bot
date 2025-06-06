@@ -46,7 +46,7 @@ class BudgetService implements StateAwareFlowStepServiceInterface
             return new SendMessageContext($chatId, "✍️ Введіть бажаний бюджет у євро (наприклад: <b>500</b>):", null, States::WaitingForCustomBudget);
         }
 
-        $context->budget = self::BUDGET_OPTIONS[$budgetKey] ?? 'Не вказано';
+        $context->budget = $budgetKey;
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(

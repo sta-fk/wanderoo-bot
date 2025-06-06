@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Dto\PlanContext;
+use App\DTO\PlanContext;
 use App\Enum\States;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -52,9 +52,7 @@ readonly class UserStateStorage
 
     public function getContext(int $chatId): PlanContext
     {
-        return $this->cache->get(self::getContextKey($chatId), function () {
-            return new PlanContext(); // Якщо ще немає — новий обʼєкт
-        });
+        return $this->cache->get(self::getContextKey($chatId), fn () => new PlanContext());
     }
 
     public function clearContext(int $chatId): void
