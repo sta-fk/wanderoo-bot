@@ -8,11 +8,9 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class DurationService implements StatefulFlowStepServiceInterface
+class DurationService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
-
-    private bool $neededCustomDuration = false;
 
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
@@ -24,17 +22,6 @@ class DurationService implements StatefulFlowStepServiceInterface
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value);
     }
 
-    public function getNextState(): States
-    {
-        if (!$this->neededCustomDuration) {
-            return States::WaitingForStartDate;
-        }
-
-        $this->neededCustomDuration = false;
-
-        return States::WaitingForCustomDuration;
-    }
-
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $durationValue = substr($update->callbackQuery->data, strlen(CallbackQueryData::Duration->value));
@@ -42,9 +29,7 @@ class DurationService implements StatefulFlowStepServiceInterface
         $context = $this->userStateStorage->getContext($chatId);
 
         if ('custom' === $durationValue) {
-            $this->neededCustomDuration = true;
-
-            return new SendMessageContext($chatId, "Введіть кількість днів (наприклад, 4):");
+            return new SendMessageContext($chatId, "Введіть кількість днів (наприклад, 4):", null, States::WaitingForCustomDuration);
         }
 
         $context->duration = (int) $durationValue;
@@ -54,6 +39,6 @@ class DurationService implements StatefulFlowStepServiceInterface
         $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
         $text = "Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки. \n\n📅 Оберіть дату подорожі:";
 
-        return new SendMessageContext($chatId, $text, $keyboard);
+        return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForStartDate);
     }
 }

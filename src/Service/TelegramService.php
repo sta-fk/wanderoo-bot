@@ -5,7 +5,6 @@ namespace App\Service;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Service\FlowStepService\FlowStepServiceInterface;
-use App\Service\FlowStepService\StatefulFlowStepServiceInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -36,9 +35,7 @@ class TelegramService
 
                 $this->sendMarkdownMessage($message);
 
-                if ($flowStepService instanceof StatefulFlowStepServiceInterface) {
-                    $this->userStateStorage->updateState($message->chatId, $flowStepService->getNextState());
-                }
+                $this->updateState($message);
 
                 return;
             }
@@ -67,5 +64,14 @@ class TelegramService
         $this->httpClient->request('POST', "{$this->apiUrl}/sendMessage", [
             'json' => $payload,
         ]);
+    }
+
+    private function updateState(SendMessageContext $message): void
+    {
+        if (null === $message->nextState) {
+            return;
+        }
+
+        $this->userStateStorage->updateState($message->chatId, $message->nextState);
     }
 }

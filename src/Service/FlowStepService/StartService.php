@@ -8,16 +8,11 @@ use App\Enum\States;
 use App\Enum\CallbackQueryData;
 use App\Enum\TelegramCommands;
 
-class StartService implements StatefulFlowStepServiceInterface
+class StartService implements FlowStepServiceInterface
 {
     public function supports(TelegramUpdate $update): bool
     {
         return $update->message?->text === TelegramCommands::Start->value;
-    }
-
-    public function getNextState(): States
-    {
-        return States::WaitingForStart;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -33,6 +28,6 @@ class StartService implements StatefulFlowStepServiceInterface
             ],
         ];
 
-        return new SendMessageContext($update->message->chat->id, $text, $keyboard);
+        return new SendMessageContext($update->message->chat->id, $text, $keyboard, States::WaitingForStart);
     }
 }

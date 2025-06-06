@@ -8,12 +8,10 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class CustomBudgetService implements StatefulFlowStepServiceInterface
+readonly class CustomBudgetService implements FlowStepServiceInterface
 {
-    private bool $validationPassed = false;
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
+        private UserStateStorage $userStateStorage,
     ) {
     }
 
@@ -21,17 +19,6 @@ class CustomBudgetService implements StatefulFlowStepServiceInterface
     {
         return $update->message?->text
             && $this->userStateStorage->getState($update->message->chat->id) === States::WaitingForCustomBudget;
-    }
-    
-    public function getNextState(): States
-    {
-        if (!$this->validationPassed) {
-            return States::WaitingForCustomBudget;
-        }
-
-        $this->validationPassed = false;
-
-        return States::ReadyToBuildPlan;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -41,18 +28,18 @@ class CustomBudgetService implements StatefulFlowStepServiceInterface
 
         $userInput = preg_replace('/[^\d]/', '', $update->message->text);
 
-        $context->budget = 'Не вказано';
-        if ($userInput) {
-            $this->validationPassed = true;
-
-            $context->budget = "{$userInput}€ +/-";
+        if (!is_numeric($userInput)) {
+            return new SendMessageContext($chatId, "Не вдалося перетворити на цифру. Повторіть спробу.", null, States::WaitingForCustomBudget);
         }
 
+        $context->budget = "{$userInput}€ +/-";
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(
             $chatId,
-            "✅ Дякую! Орієнтовний бюджет: {$context->budget}.\n\nГотуємо для вас персоналізований план мандрівки... ✈️"
+            "✅ Дякую! Орієнтовний бюджет: {$context->budget}.\n\nГотуємо для вас персоналізований план мандрівки... ✈️",
+            null,
+            States::ReadyToBuildPlan
         );
     }
 }

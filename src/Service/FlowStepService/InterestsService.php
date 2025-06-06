@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class InterestsService implements StatefulFlowStepServiceInterface
+readonly class InterestsService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -23,8 +23,7 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
 
     public function __construct(
         private UserStateStorage $userStateStorage,
-    )
-    {
+    ) {
     }
 
     public function supports(TelegramUpdate $update): bool
@@ -32,11 +31,6 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
         return null !== $update->callbackQuery &&
             (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value) ||
                 $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
-    }
-
-    public function getNextState(): States
-    {
-        return States::WaitingForBudget;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -49,7 +43,7 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
 
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
             $selectedLabels = array_map(
-                static fn($key) => strtolower(self::INTERESTS[$key]) ?? $key,
+                static fn ($key) => strtolower(self::INTERESTS[$key]) ?? $key,
                 $context->interests ?? []
             );
 
@@ -64,7 +58,8 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
             return new SendMessageContext(
                 $chatId,
                 "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:",
-                ["inline_keyboard" => $budgetKeyboard]
+                ["inline_keyboard" => $budgetKeyboard],
+                States::WaitingForBudget
             );
         }
 
@@ -74,7 +69,7 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
         } else {
             $context->interests = array_filter(
                 $context->interests,
-                static fn($interest) => $interest !== $selectedInterest
+                static fn ($interest) => $interest !== $selectedInterest
             );
         }
 

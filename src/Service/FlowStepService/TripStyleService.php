@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class TripStyleService implements StatefulFlowStepServiceInterface
+readonly class TripStyleService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -20,11 +20,6 @@ readonly class TripStyleService implements StatefulFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value);
-    }
-
-    public function getNextState(): States
-    {
-        return States::WaitingForInterests;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -42,7 +37,8 @@ readonly class TripStyleService implements StatefulFlowStepServiceInterface
         return new SendMessageContext(
             $chatId,
             "Ви обрали стиль подорожі: <b>{$tripStyle}</b>.\n\nНаступний крок...\n\n✨ Що вас цікавить у подорожі? Оберіть кілька варіантів:",
-            $keyboard
+            $keyboard,
+            States::WaitingForInterests
         );
     }
 }

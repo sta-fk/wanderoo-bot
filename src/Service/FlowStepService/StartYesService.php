@@ -11,7 +11,7 @@ use App\Enum\CallbackQueryData;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
-readonly class StartYesService implements StatefulFlowStepServiceInterface
+readonly class StartYesService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -28,14 +28,10 @@ readonly class StartYesService implements StatefulFlowStepServiceInterface
         ;
     }
 
-    public function getNextState(): States
-    {
-        return States::WaitingForCountry;
-    }
-
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        $this->userStateStorage->saveContext($update->callbackQuery->message->chat->id, new PlanContext());
+        $chatId = $update->callbackQuery->message->chat->id;
+        $this->userStateStorage->saveContext($chatId, new PlanContext());
 
         $countries = $this->geoDbService->getCountries();
         $keyboard = $this->buildPaginationKeyboard(
@@ -49,6 +45,6 @@ readonly class StartYesService implements StatefulFlowStepServiceInterface
             ),
         );
 
-        return new SendMessageContext($update->callbackQuery->message->chat->id, "Супер, поїхали ✨! Обери країну:", $keyboard);
+        return new SendMessageContext($chatId, "Супер, поїхали ✨! Обери країну:", $keyboard, States::WaitingForCountry);
     }
 }

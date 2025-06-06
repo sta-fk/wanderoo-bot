@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class PickDateService implements StatefulFlowStepServiceInterface
+class PickDateService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -20,11 +20,6 @@ class PickDateService implements StatefulFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::PickDate->value);
-    }
-
-    public function getNextState(): States
-    {
-        return States::WaitingForTripStyle;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -54,6 +49,6 @@ class PickDateService implements StatefulFlowStepServiceInterface
 
         $text = "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b> \n\nЯкий стиль подорожі ви бажаєте? 🧳";
 
-        return new SendMessageContext($chatId, $text, ['inline_keyboard' => $keyboard]);
+        return new SendMessageContext($chatId, $text, ['inline_keyboard' => $keyboard], States::WaitingForTripStyle);
     }
 }

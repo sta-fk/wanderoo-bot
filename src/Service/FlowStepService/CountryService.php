@@ -10,7 +10,7 @@ use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
-class CountryService implements StatefulFlowStepServiceInterface
+class CountryService implements FlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -26,11 +26,6 @@ class CountryService implements StatefulFlowStepServiceInterface
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
             && !strpos($update->callbackQuery->data, 'page')
         ;
-    }
-
-    public function getNextState(): States
-    {
-        return States::WaitingForCity;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -54,7 +49,7 @@ class CountryService implements StatefulFlowStepServiceInterface
             ),
         );
 
-        return new SendMessageContext($update->callbackQuery->message->chat->id, "🚀Оберіть місто:", $keyboard);
+        return new SendMessageContext($update->callbackQuery->message->chat->id, "🚀Оберіть місто:", $keyboard, States::WaitingForCity);
     }
 
     // You have exceeded the rate limit per second for your plan, BASIC, by the API provider
