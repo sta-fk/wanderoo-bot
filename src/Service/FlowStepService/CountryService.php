@@ -38,7 +38,7 @@ class CountryService implements StatefulFlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryCode = substr($update->callbackQuery->data, strlen(CallbackQueryData::CountryPage->value));
+        $countryCode = substr($update->callbackQuery->data, strlen(CallbackQueryData::Country->value));
         $context->country = $countryCode;
         $this->userStateStorage->saveContext($chatId, $context);
 
