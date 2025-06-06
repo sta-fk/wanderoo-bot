@@ -41,54 +41,97 @@ trait BuildKeyboardTrait
 
     private function buildCalendarKeyboard(int $year, int $month): array
     {
-        $date = new \DateTimeImmutable("$year-$month-01");
-        $daysInMonth = (int)$date->format('t');
-        $startDayOfWeek = (int)$date->format('N'); // 1 (Mon) – 7 (Sun)
+        $keyboard = [];
 
-        $buttons = [];
-        $week = [];
+        // 1️⃣ Рядок з місяцем + роком
+        $monthName = ucfirst(strftime('%B', strtotime("$year-$month-01"))); // Наприклад "Червень"
+        $keyboard[] = [[
+            'text' => "📅 $monthName $year",
+            'callback_data' => 'ignore',
+        ]];
 
-        // Пусті клітинки перед першим днем
-        for ($i = 1; $i < $startDayOfWeek; $i++) {
-            $week[] = ['text' => ' ', 'callback_data' => 'ignore'];
+        // 2️⃣ Рядок з днями тижня
+        $daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
+        $dayOfWeekButtons = [];
+
+        foreach ($daysOfWeek as $dayName) {
+            $dayOfWeekButtons[] = [
+                'text' => $dayName,
+                'callback_data' => 'ignore',
+            ];
         }
 
+        $keyboard[] = $dayOfWeekButtons;
+
+        // 3️⃣ Дні місяця
+        $firstDayOfMonth = mktime(0, 0, 0, $month, 1, $year);
+        $daysInMonth = date('t', $firstDayOfMonth);
+        $startDayOfWeek = (date('N', $firstDayOfMonth) - 1); // 0 (Пн) .. 6 (Нд)
+
+        $row = [];
+
+        // Порожні кнопки перед першим днем місяця
+        for ($i = 0; $i < $startDayOfWeek; $i++) {
+            $row[] = [
+                'text' => '◾️',
+                'callback_data' => 'ignore',
+            ];
+        }
+
+        // Дні місяця
         for ($day = 1; $day <= $daysInMonth; $day++) {
-            $dateStr = sprintf('%04d-%02d-%02d', $year, $month, $day);
-            $week[] = [
+            $date = sprintf('%04d-%02d-%02d', $year, $month, $day);
+
+            $row[] = [
                 'text' => (string)$day,
-                'callback_data' => "pick_date_$dateStr"
+                'callback_data' => 'pick_date_' . $date,
             ];
 
-            if (count($week) === 7) {
-                $buttons[] = $week;
-                $week = [];
+            // Якщо кінець тижня — завершуємо рядок
+            if (count($row) === 7) {
+                $keyboard[] = $row;
+                $row = [];
             }
         }
 
-        // Додаємо останній тиждень
-        if (count($week) > 0) {
-            while (count($week) < 7) {
-                $week[] = ['text' => ' ', 'callback_data' => 'ignore'];
+        // Додати останній неповний рядок, якщо залишився
+        if (!empty($row)) {
+            // Заповнюємо порожніми клітинками до 7
+            while (count($row) < 7) {
+                $row[] = [
+                    'text' => '◾️',
+                    'callback_data' => 'ignore',
+                ];
             }
-            $buttons[] = $week;
+            $keyboard[] = $row;
         }
 
-        // Кнопки навігації
-        $prevMonth = (new \DateTimeImmutable("$year-$month-01"))->modify('-1 month');
-        $nextMonth = (new \DateTimeImmutable("$year-$month-01"))->modify('+1 month');
+        // 4️⃣ Рядок з кнопками навігації
+        $prevMonth = $month - 1;
+        $prevYear = $year;
+        if ($prevMonth === 0) {
+            $prevMonth = 12;
+            $prevYear--;
+        }
 
-        $buttons[] = [
+        $nextMonth = $month + 1;
+        $nextYear = $year;
+        if ($nextMonth === 13) {
+            $nextMonth = 1;
+            $nextYear++;
+        }
+
+        $keyboard[] = [
             [
                 'text' => '◀️',
-                'callback_data' => "calendar_{$prevMonth->format('Y_m')}"
+                'callback_data' => "calendar_{$prevYear}_" . sprintf('%02d', $prevMonth),
             ],
             [
                 'text' => '▶️',
-                'callback_data' => "calendar_{$nextMonth->format('Y_m')}"
-            ]
+                'callback_data' => "calendar_{$nextYear}_" . sprintf('%02d', $nextMonth),
+            ],
         ];
 
-        return $buttons;
+        return ['inline_keyboard' => $keyboard];
     }
 }

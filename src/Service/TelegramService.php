@@ -7,6 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Service\FlowStepService\FlowStepServiceInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -57,7 +58,7 @@ class TelegramService
         ];
 
         if ($message->replyMarkup) {
-            $payload['reply_markup'] = $this->serializer->serialize($message->replyMarkup, 'json');
+            $payload['reply_markup'] = $this->serializer->serialize($message->replyMarkup, 'json', [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);
         }
 
         $this->httpClient->request('POST', "{$this->apiUrl}/sendMessage", [
