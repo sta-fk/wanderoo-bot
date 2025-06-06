@@ -7,7 +7,8 @@ enum States: string
     case WaitingForStart = 'waiting_for_start';
     case WaitingForCountry = 'waiting_for_country';
     case WaitingForCity = 'waiting_for_city';
-    case ReadyForDates = 'ready_for_dates';
     case WaitingForDuration = 'waiting_for_duration';
     case WaitingForCustomDuration = 'waiting_for_custom_duration';
+    case WaitingForStartDate = 'waiting_for_start_date';
+    case WaitingForStyle = 'waiting_for_style';
 }

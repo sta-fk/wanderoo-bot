@@ -7,6 +7,9 @@ class PlanContext
     public ?string $country = null;
     public ?string $city = null;
     public ?int $duration = null;
+    public ?string $startDate = null;
+    public ?string $endDate = null;
+
 
 
     public static function fromArray(array $data): self
@@ -15,6 +18,8 @@ class PlanContext
         $ctx->country = $data['country'] ?? null;
         $ctx->city = $data['city'] ?? null;
         $ctx->duration = $data['duration'] ?? null;
+        $ctx->startDate = $data['startDate'] ?? null;
+        $ctx->endDate = $data['endDate'] ?? null;
 
         return $ctx;
     }
@@ -25,6 +30,8 @@ class PlanContext
             'country' => $this->country,
             'city' => $this->city,
             'duration' => $this->duration,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
         ];
     }
 }

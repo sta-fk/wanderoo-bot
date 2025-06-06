@@ -11,4 +11,6 @@ enum CallbackQueryData: string
     case City = 'city_';
     case CityPage = 'city_page_';
     case Duration = 'duration_';
+    case Calendar = 'calendar_';
+    case PickDate = 'pick_date_';
 }

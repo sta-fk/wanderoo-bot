@@ -10,6 +10,8 @@ use App\Service\UserStateStorage;
 
 class DurationService implements FlowStepServiceInterface
 {
+    use BuildKeyboardTrait;
+
     private bool $neededCustomDuration = false;
 
     public function __construct(
@@ -25,7 +27,7 @@ class DurationService implements FlowStepServiceInterface
     public function getNextState(): States
     {
         if (!$this->neededCustomDuration) {
-            return States::ReadyForDates;
+            return States::WaitingForStartDate;
         }
 
         $this->neededCustomDuration = false;
@@ -48,6 +50,14 @@ class DurationService implements FlowStepServiceInterface
         $context->duration = (int) $durationValue;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        return new SendMessageContext($chatId, "Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки.");
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
+        $text = <<<TEXT
+Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки.
+
+"📅 Оберіть дату подорожі:
+TEXT;
+
+        return new SendMessageContext($chatId, $text, $keyboard);
     }
 }
