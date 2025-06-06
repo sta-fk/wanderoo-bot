@@ -35,7 +35,7 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::WaitingForNextStep;
+        return States::WaitingForBudget;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -52,9 +52,18 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
                 $context->interests ?? []
             );
 
+            $budgetKeyboard = [];
+            foreach (BudgetService::BUDGET_OPTIONS as $callback => $label) {
+                $budgetKeyboard[] = [[
+                    'text' => $label,
+                    'callback_data' => CallbackQueryData::Budget->value . $callback,
+                ]];
+            }
+
             return new SendMessageContext(
                 $chatId,
-                "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ". Наступний крок...",
+                "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:",
+                $budgetKeyboard
             );
         }
 

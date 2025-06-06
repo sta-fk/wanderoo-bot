@@ -11,8 +11,7 @@ class PlanContext
     public ?string $endDate = null;
     public ?string $tripStyle = null;
     public array $interests = [];
-
-
+    public ?string $budget = null;
 
     public static function fromArray(array $data): self
     {
@@ -24,6 +23,7 @@ class PlanContext
         $ctx->endDate = $data['endDate'] ?? null;
         $ctx->tripStyle = $data['tripStyle'] ?? null;
         $ctx->interests = $data['interests'] ?? null;
+        $ctx->budget = $data['budget'] ?? null;
 
         return $ctx;
     }
@@ -38,6 +38,7 @@ class PlanContext
             'endDate' => $this->endDate,
             'tripStyle' => $this->tripStyle,
             'interests' => $this->interests,
+            'budget' => $this->budget,
         ];
     }
 }
