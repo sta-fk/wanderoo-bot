@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class DurationService implements FlowStepServiceInterface
+class DurationService implements StateAwareFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -20,6 +20,11 @@ class DurationService implements FlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value);
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForDuration];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

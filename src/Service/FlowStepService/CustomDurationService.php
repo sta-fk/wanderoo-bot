@@ -7,7 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class CustomDurationService implements FlowStepServiceInterface
+class CustomDurationService implements StateAwareFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -20,6 +20,11 @@ class CustomDurationService implements FlowStepServiceInterface
     {
         return null !== $update->message
             && States::WaitingForCustomDuration === $this->userStateStorage->getState($update->message->chat->id);
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForCustomDuration];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

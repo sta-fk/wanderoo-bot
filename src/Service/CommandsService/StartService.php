@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\CommandsService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
 use App\Enum\TelegramCommands;
+use App\Service\FlowStepServiceInterface;
 
 class StartService implements FlowStepServiceInterface
 {
