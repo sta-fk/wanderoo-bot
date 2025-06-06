@@ -11,4 +11,6 @@ enum States: string
     case WaitingForCustomDuration = 'waiting_for_custom_duration';
     case WaitingForStartDate = 'waiting_for_start_date';
     case WaitingForTripStyle = 'waiting_for_trip_style';
+    case WaitingForInterests = 'waiting_for_interests';
+    case WaitingForNextStep = 'waiting_for_next_step';
 }
