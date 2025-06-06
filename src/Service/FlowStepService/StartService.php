@@ -8,7 +8,7 @@ use App\Enum\States;
 use App\Enum\CallbackQueryData;
 use App\Enum\TelegramCommands;
 
-class StartService implements FlowStepServiceInterface
+class StartService implements StatefulFlowStepServiceInterface
 {
     public function supports(TelegramUpdate $update): bool
     {
@@ -20,20 +20,9 @@ class StartService implements FlowStepServiceInterface
         return States::WaitingForStart;
     }
 
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        return $this->buildWelcomeMessage($update->message->chat->id);
-    }
-
-    private function buildWelcomeMessage(int $chatId): SendMessageContext
-    {
-        $text = <<<TEXT
-Привіт! Я ✈️ Wanderoo — бот, що допоможе спланувати твою мандрівку.
-
-Я поставлю кілька простих запитань і згенерую персональний тревел-план: що подивитись, куди сходити, що скуштувати 🍜
-
-Почнемо?
-TEXT;
+        $text = "Привіт! Я ✈️ Wanderoo — бот, що допоможе спланувати твою мандрівку. \n\nЯ поставлю кілька простих запитань і згенерую персональний тревел-план: що подивитись, куди сходити, що скуштувати 🍜 \n\n Почнемо?";
 
         $keyboard = [
             'inline_keyboard' => [
@@ -44,6 +33,6 @@ TEXT;
             ],
         ];
 
-        return new SendMessageContext($chatId, $text, $keyboard);
+        return new SendMessageContext($update->message->chat->id, $text, $keyboard);
     }
 }

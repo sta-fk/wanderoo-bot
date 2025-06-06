@@ -7,11 +7,13 @@ use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
 
-readonly class StartNoService implements FlowStepServiceInterface
+readonly class StartNoService implements StatefulFlowStepServiceInterface
 {
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && CallbackQueryData::StartNo->value === $update->callbackQuery->data;
+        return null !== $update->callbackQuery
+            && CallbackQueryData::StartNo->value === $update->callbackQuery->data
+        ;
     }
 
     public function getNextState(): States
@@ -19,8 +21,8 @@ readonly class StartNoService implements FlowStepServiceInterface
         return States::WaitingForStart;
     }
 
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        return new SendMessageContext($update->callbackQuery->message->chat->id, 'Натисни “🧳 Так”, щоб почати планування ✈️');
+        return new SendMessageContext($update->callbackQuery->message->chat->id, "Натисни “🧳 Так”, щоб почати планування ✈️");
     }
 }

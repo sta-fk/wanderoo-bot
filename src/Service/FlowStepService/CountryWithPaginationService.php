@@ -6,7 +6,6 @@ use App\DTO\Keyboard;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
-use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
@@ -22,17 +21,14 @@ class CountryWithPaginationService implements FlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::CountryPage->value);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CountryPage->value)
+        ;
     }
 
-    public function getNextState(): States
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        return States::WaitingForCountry;
-    }
-
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
-    {
-        $offset = (int) substr($update->callbackQuery->data, 13);
+        $offset = (int) substr($update->callbackQuery->data, strlen(CallbackQueryData::CountryPage->value));
         $countries = $this->geoDbService->getCountries($offset);
         $keyboard = $this->buildPaginationKeyboard(
             new Keyboard(

@@ -6,7 +6,6 @@ use App\DTO\Keyboard;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
-use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
@@ -22,15 +21,12 @@ readonly class CityWithPaginationService implements FlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::CityPage->value);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CityPage->value)
+        ;
     }
 
-    public function getNextState(): States
-    {
-        return States::WaitingForCity;
-    }
-
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
@@ -38,7 +34,7 @@ readonly class CityWithPaginationService implements FlowStepServiceInterface
             throw new \RuntimeException("Invalid payload");
         }
 
-        $offset = (int) substr($update->callbackQuery->data, 10);
+        $offset = (int) substr($update->callbackQuery->data, strlen(CallbackQueryData::CityPage->value));
         $cities = $this->geoDbService->getCitiesByCountry($context->country, $offset);
         $keyboard = $this->buildPaginationKeyboard(
             new Keyboard(

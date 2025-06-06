@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class DurationService implements FlowStepServiceInterface
+class DurationService implements StatefulFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -35,13 +35,13 @@ class DurationService implements FlowStepServiceInterface
         return States::WaitingForCustomDuration;
     }
 
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        $durationValue = substr($update->callbackQuery->data, 9);
+        $durationValue = substr($update->callbackQuery->data, strlen(CallbackQueryData::Duration->value));
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        if ($durationValue === 'custom') {
+        if ('custom' === $durationValue) {
             $this->neededCustomDuration = true;
 
             return new SendMessageContext($chatId, "Введіть кількість днів (наприклад, 4):");
@@ -52,11 +52,7 @@ class DurationService implements FlowStepServiceInterface
 
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
-        $text = <<<TEXT
-Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки.
-
-"📅 Оберіть дату подорожі:
-TEXT;
+        $text = "Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки. \n\n📅 Оберіть дату подорожі:";
 
         return new SendMessageContext($chatId, $text, $keyboard);
     }

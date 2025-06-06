@@ -9,6 +9,7 @@ class PlanContext
     public ?int $duration = null;
     public ?string $startDate = null;
     public ?string $endDate = null;
+    public ?string $tripStyle = null;
 
 
 
@@ -20,6 +21,7 @@ class PlanContext
         $ctx->duration = $data['duration'] ?? null;
         $ctx->startDate = $data['startDate'] ?? null;
         $ctx->endDate = $data['endDate'] ?? null;
+        $ctx->tripStyle = $data['tripStyle'] ?? null;
 
         return $ctx;
     }
@@ -32,6 +34,7 @@ class PlanContext
             'duration' => $this->duration,
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
+            'tripStyle' => $this->tripStyle,
         ];
     }
 }

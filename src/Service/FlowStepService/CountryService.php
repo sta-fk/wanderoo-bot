@@ -10,7 +10,7 @@ use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
-class CountryService implements FlowStepServiceInterface
+class CountryService implements StatefulFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -24,7 +24,8 @@ class CountryService implements FlowStepServiceInterface
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
-            && !strpos($update->callbackQuery->data, 'page');
+            && !strpos($update->callbackQuery->data, 'page')
+        ;
     }
 
     public function getNextState(): States
@@ -32,12 +33,12 @@ class CountryService implements FlowStepServiceInterface
         return States::WaitingForCity;
     }
 
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryCode = substr($update->callbackQuery->data, 8);
+        $countryCode = substr($update->callbackQuery->data, strlen(CallbackQueryData::CountryPage->value));
         $context->country = $countryCode;
         $this->userStateStorage->saveContext($chatId, $context);
 

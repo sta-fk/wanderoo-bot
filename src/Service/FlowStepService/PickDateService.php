@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-class PickDateService implements FlowStepServiceInterface
+class PickDateService implements StatefulFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -24,12 +24,12 @@ class PickDateService implements FlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::WaitingForStyle;
+        return States::WaitingForTripStyle;
     }
 
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        $dateStr = substr($update->callbackQuery->data, 10); // YYYY-MM-DD
+        $dateStr = substr($update->callbackQuery->data, strlen(CallbackQueryData::PickDate->value)); // YYYY-MM-DD
         $chatId = $update->callbackQuery->message->chat->id;
 
         $context = $this->userStateStorage->getContext($chatId);
@@ -44,6 +44,16 @@ class PickDateService implements FlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        return new SendMessageContext($chatId, "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b>");
+        $keyboard = [
+            [
+                ['text' => '🧘 Лайтовий', 'callback_data' => CallbackQueryData::TripStyle->value . 'лайтовий'],
+                ['text' => '🚀 Активний', 'callback_data' => CallbackQueryData::TripStyle->value . 'активний'],
+                ['text' => '🎭 Змішаний', 'callback_data' => CallbackQueryData::TripStyle->value . 'змішаний'],
+            ],
+        ];
+
+        $text = "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b> \n\nЯкий стиль подорожі ви бажаєте? 🧳";
+
+        return new SendMessageContext($chatId, $text, ['inline_keyboard' => $keyboard]);
     }
 }
