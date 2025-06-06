@@ -57,6 +57,12 @@ readonly class UserStateStorage
         });
     }
 
+    public function clearContext(int $chatId): void
+    {
+        $this->cache->delete(self::getContextKey($chatId));
+        $this->cache->delete(self::getStateKey($chatId));
+    }
+
     private static function getStateKey(int $chatId): string
     {
         return sprintf(self::STATE_TEMPLATE_KEY, $chatId);

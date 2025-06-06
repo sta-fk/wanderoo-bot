@@ -6,9 +6,10 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\FlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class TripStyleService implements FlowStepServiceInterface
+readonly class TripStyleService implements StateAwareFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -20,6 +21,11 @@ readonly class TripStyleService implements FlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value);
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForTripStyle];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

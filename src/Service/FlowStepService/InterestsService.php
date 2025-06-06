@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class InterestsService implements FlowStepServiceInterface
+readonly class InterestsService implements StateAwareFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -31,6 +31,11 @@ readonly class InterestsService implements FlowStepServiceInterface
         return null !== $update->callbackQuery &&
             (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value) ||
                 $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForInterests];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

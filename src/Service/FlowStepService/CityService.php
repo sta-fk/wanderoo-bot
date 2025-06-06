@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class CityService implements FlowStepServiceInterface
+readonly class CityService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -21,6 +21,11 @@ readonly class CityService implements FlowStepServiceInterface
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::City->value)
             && !strpos($update->callbackQuery->data, 'page')
         ;
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForCity];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

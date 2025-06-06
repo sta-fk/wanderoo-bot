@@ -11,7 +11,7 @@ use App\Enum\CallbackQueryData;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
-readonly class StartYesService implements FlowStepServiceInterface
+readonly class StartYesService implements StateAwareFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -26,6 +26,11 @@ readonly class StartYesService implements FlowStepServiceInterface
         return null !== $update->callbackQuery
             && CallbackQueryData::StartYes->value === $update->callbackQuery->data
         ;
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForStart];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

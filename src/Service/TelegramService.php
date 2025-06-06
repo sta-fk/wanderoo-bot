@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\Service\FlowStepService\FlowStepServiceInterface;
+use App\Service\FlowStepServiceInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -19,8 +19,7 @@ class TelegramService
         private readonly HttpClientInterface $httpClient,
         private readonly SerializerInterface $serializer,
         private readonly UserStateStorage $userStateStorage,
-        #[AutowireIterator('flow_step_service')]
-        private readonly iterable $flowStepsServices,
+        private readonly FlowRegistry $flowRegistry,
         ParameterBagInterface $params,
     ) {
         $this->apiUrl = sprintf('%s%s', $params->get('telegram_bot_api_url'), $params->get('telegram_bot_token'));
@@ -28,17 +27,15 @@ class TelegramService
 
     public function handleUpdate(TelegramUpdate $update): void
     {
-        /** @var FlowStepServiceInterface $flowStepService */
-        foreach ($this->flowStepsServices as $flowStepService) {
-            if ($flowStepService->supports($update)) {
-                $message = $flowStepService->buildNextStepMessage($update);
+        $flowStepService = $this->flowRegistry->findMatchingService($update);
 
-                $this->sendMarkdownMessage($message);
+        if (null !== $flowStepService) {
+            $message = $flowStepService->buildNextStepMessage($update);
 
-                $this->updateState($message);
+            $this->sendMarkdownMessage($message);
+            $this->updateState($message);
 
-                return;
-            }
+            return;
         }
 
         $chatId = $update->callbackQuery->message->chat->id ?? $update->message->chat->id ?? null;

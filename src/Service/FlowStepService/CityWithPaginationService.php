@@ -6,10 +6,11 @@ use App\DTO\Keyboard;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
+use App\Enum\States;
 use App\Service\GeoDbService;
 use App\Service\UserStateStorage;
 
-readonly class CityWithPaginationService implements FlowStepServiceInterface
+readonly class CityWithPaginationService implements StateAwareFlowStepServiceInterface
 {
     use BuildKeyboardTrait;
 
@@ -24,6 +25,11 @@ readonly class CityWithPaginationService implements FlowStepServiceInterface
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::CityPage->value)
         ;
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForCity];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

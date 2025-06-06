@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;

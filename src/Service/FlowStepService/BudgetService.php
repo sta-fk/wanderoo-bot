@@ -6,9 +6,10 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\FlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
-class BudgetService implements FlowStepServiceInterface
+class BudgetService implements StateAwareFlowStepServiceInterface
 {
     public const BUDGET_OPTIONS = [
         'none' => 'Без бюджету',
@@ -27,6 +28,11 @@ class BudgetService implements FlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Budget->value);
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForBudget];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -50,5 +56,4 @@ class BudgetService implements FlowStepServiceInterface
             States::ReadyToBuildPlan
         );
     }
-
 }

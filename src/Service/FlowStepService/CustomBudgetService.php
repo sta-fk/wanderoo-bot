@@ -4,11 +4,10 @@ namespace App\Service\FlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class CustomBudgetService implements FlowStepServiceInterface
+readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -19,6 +18,11 @@ readonly class CustomBudgetService implements FlowStepServiceInterface
     {
         return $update->message?->text
             && $this->userStateStorage->getState($update->message->chat->id) === States::WaitingForCustomBudget;
+    }
+
+    public function supportsStates(): array
+    {
+        return [States::WaitingForCustomBudget];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
