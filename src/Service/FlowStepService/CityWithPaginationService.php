@@ -27,7 +27,7 @@ readonly class CityWithPaginationService implements FlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::ReadyForDates;
+        return States::WaitingForCity;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext

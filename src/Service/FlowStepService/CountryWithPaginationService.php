@@ -27,7 +27,7 @@ class CountryWithPaginationService implements FlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::WaitingForCity;
+        return States::WaitingForCountry;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext

@@ -10,6 +10,8 @@ use App\Service\UserStateStorage;
 
 class CustomDurationService implements FlowStepServiceInterface
 {
+    use BuildKeyboardTrait;
+
     private bool $validationPassed = false;
 
     public function __construct(
@@ -31,7 +33,7 @@ class CustomDurationService implements FlowStepServiceInterface
 
         $this->validationPassed = false;
 
-        return States::ReadyForDates;
+        return States::WaitingForStartDate;
     }
 
     public function buildMessage(TelegramUpdate $update): SendMessageContext
@@ -44,7 +46,15 @@ class CustomDurationService implements FlowStepServiceInterface
             $context->duration = (int) $update->message->text;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            return new SendMessageContext($chatId, "Чудово! Подорож на {$update->message->text} днів. Тепер оберіть дати поїздки.");
+            $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+            $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
+            $text = <<<TEXT
+Чудово! Подорож на {$context->duration} днів. Тепер оберіть дати поїздки.
+
+"📅 Оберіть дату подорожі:
+TEXT;
+
+            return new SendMessageContext($chatId, $text, $keyboard);
         }
 
         return new SendMessageContext($chatId, "Будь ласка, введіть число від 1 до 30.");
