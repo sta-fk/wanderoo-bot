@@ -24,7 +24,7 @@ readonly class TripStyleService implements StatefulFlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::WaitingForTripStyle; // якщо наступний крок після стилю — зміниш тут на відповідний state
+        return States::WaitingForInterests;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -37,9 +37,12 @@ readonly class TripStyleService implements StatefulFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
+        $keyboard = $this->buildInterestsKeyboard($context->interests, InterestsService::INTERESTS);
+
         return new SendMessageContext(
             $chatId,
-            "Ви обрали стиль подорожі: <b>{$tripStyle}</b>.\n\nНаступний крок..."
+            "Ви обрали стиль подорожі: <b>{$tripStyle}</b>.\n\nНаступний крок...\n\n✨ Що вас цікавить у подорожі? Оберіть кілька варіантів:",
+            $keyboard
         );
     }
 }

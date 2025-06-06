@@ -15,5 +15,5 @@ enum CallbackQueryData: string
     case PickDate = 'pick_date_';
     case TripStyle = 'trip_style_';
     case Interest = 'interest_';
-    case InterestDone = 'interest_done';
+    case InterestsDone = 'interest_done';
 }

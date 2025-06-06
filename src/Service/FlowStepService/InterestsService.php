@@ -10,7 +10,9 @@ use App\Service\UserStateStorage;
 
 readonly class InterestsService implements StatefulFlowStepServiceInterface
 {
-    private const INTERESTS = [
+    use BuildKeyboardTrait;
+
+    public const INTERESTS = [
         'city' => '🏙️ Міста',
         'nature' => '🏞️ Природа',
         'food' => '🍽️ Їжа',
@@ -26,9 +28,9 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value)
-                || $update->callbackQuery->data === CallbackQueryData::InterestDone->value);
+        return null !== $update->callbackQuery &&
+            (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value) ||
+                $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
     }
 
     public function getNextState(): States
@@ -38,45 +40,40 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
+
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        $interestKey = substr($update->callbackQuery->data, strlen(CallbackQueryData::Interest->value));
+        $callbackData = $update->callbackQuery->data;
 
-        if (in_array($interestKey, $context->interests, true)) {
-            $context->interests = array_filter($context->interests, static fn ($i) => $i !== $interestKey);
+        if (CallbackQueryData::InterestsDone->value === $callbackData) {
+            $selectedLabels = array_map(
+                static fn($key) => strtolower(self::INTERESTS[$key]) ?? $key,
+                $context->interests ?? []
+            );
+
+            return new SendMessageContext(
+                $chatId,
+                "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ". Наступний крок...",
+            );
+        }
+
+        $selectedInterest = substr($callbackData, strlen(CallbackQueryData::Interest->value));
+        if (!in_array($selectedInterest, $context->interests ?? [], true)) {
+            $context->interests[] = $selectedInterest;
         } else {
-            $context->interests[] = $interestKey;
+            $context->interests = array_filter(
+                $context->interests,
+                static fn ($interest) => $interest !== $selectedInterest
+            );
         }
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->buildInterestsKeyboard($context->interests);
-
-        return new SendMessageContext($chatId, "✨ Що вас цікавить у подорожі? Оберіть кілька варіантів:", $keyboard);
-    }
-
-    private function buildInterestsKeyboard(array $selectedInterests): array
-    {
-        $buttons = [];
-
-        foreach (self::INTERESTS as $key => $label) {
-            $isSelected = in_array($key, $selectedInterests, true);
-            $buttonText = ($isSelected ? '✅ ' : '⬜️ ') . $label;
-
-            $buttons[][] = [
-                'text' => $buttonText,
-                'callback_data' => CallbackQueryData::Interest->value . $key,
-            ];
-        }
-
-        $buttons[][] = [
-            [
-                'text' => '✅ Готово',
-                'callback_data' => CallbackQueryData::InterestDone->value,
-            ],
-        ];
-
-        return ['inline_keyboard' => $buttons];
+        return new SendMessageContext(
+            $chatId,
+            "✨ Оновлено. Щось ще?",
+            $this->buildInterestsKeyboard($context->interests, self::INTERESTS),
+        );
     }
 }
