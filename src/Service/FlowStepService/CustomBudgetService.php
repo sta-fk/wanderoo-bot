@@ -8,10 +8,12 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\UserStateStorage;
 
-readonly class CustomBudgetService implements StatefulFlowStepServiceInterface
+class CustomBudgetService implements StatefulFlowStepServiceInterface
 {
+    private bool $validationPassed = false;
+
     public function __construct(
-        private UserStateStorage $userStateStorage,
+        private readonly UserStateStorage $userStateStorage,
     ) {
     }
 
@@ -23,6 +25,12 @@ readonly class CustomBudgetService implements StatefulFlowStepServiceInterface
     
     public function getNextState(): States
     {
+        if (!$this->validationPassed) {
+            return States::WaitingForCustomBudget;
+        }
+
+        $this->validationPassed = false;
+
         return States::ReadyToBuildPlan;
     }
 
@@ -35,6 +43,8 @@ readonly class CustomBudgetService implements StatefulFlowStepServiceInterface
 
         $context->budget = 'Не вказано';
         if ($userInput) {
+            $this->validationPassed = true;
+
             $context->budget = "{$userInput}€ +/-";
         }
 

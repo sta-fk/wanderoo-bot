@@ -23,7 +23,8 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
 
     public function __construct(
         private UserStateStorage $userStateStorage,
-    ) {
+    )
+    {
     }
 
     public function supports(TelegramUpdate $update): bool
@@ -63,7 +64,7 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
             return new SendMessageContext(
                 $chatId,
                 "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:",
-                $budgetKeyboard
+                ["inline_keyboard" => $budgetKeyboard]
             );
         }
 
@@ -73,7 +74,7 @@ readonly class InterestsService implements StatefulFlowStepServiceInterface
         } else {
             $context->interests = array_filter(
                 $context->interests,
-                static fn ($interest) => $interest !== $selectedInterest
+                static fn($interest) => $interest !== $selectedInterest
             );
         }
 

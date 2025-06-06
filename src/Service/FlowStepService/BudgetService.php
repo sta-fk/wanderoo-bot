@@ -16,7 +16,10 @@ class BudgetService implements StatefulFlowStepServiceInterface
         '300_700' => '300€ — 700€',
         '700_1500' => '700€ — 1500€',
         '1500_plus' => 'Понад 1500€',
+        'custom' => 'Інша сума',
     ];
+
+    private bool $neededCustomBudget = false;
 
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
@@ -30,7 +33,13 @@ class BudgetService implements StatefulFlowStepServiceInterface
 
     public function getNextState(): States
     {
-        return States::ReadyToBuildPlan;
+        if (!$this->neededCustomBudget) {
+            return States::ReadyToBuildPlan;
+        }
+
+        $this->neededCustomBudget = false;
+
+        return States::WaitingForCustomBudget;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -41,7 +50,7 @@ class BudgetService implements StatefulFlowStepServiceInterface
         $budgetKey = substr($update->callbackQuery->data, strlen(CallbackQueryData::Budget->value));
 
         if ('custom' === $budgetKey) {
-            $this->userStateStorage->updateState($chatId, States::WaitingForCustomBudget);
+            $this->neededCustomBudget = true;
 
             return new SendMessageContext($chatId, "✍️ Введіть бажаний бюджет у євро (наприклад: <b>500</b>):");
         }
