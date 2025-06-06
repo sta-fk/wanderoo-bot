@@ -17,14 +17,9 @@ class CalendarService implements FlowStepServiceInterface
         return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value);
     }
 
-    public function getNextState(): States
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        return States::WaitingForStartDate;
-    }
-
-    public function buildMessage(TelegramUpdate $update): SendMessageContext
-    {
-        [$year, $month] = explode('_', substr($update->callbackQuery->data, 9));
+        [$year, $month] = explode('_', substr($update->callbackQuery->data, strlen(CallbackQueryData::Calendar->value)));
 
         $keyboard = $this->buildCalendarKeyboard((int)$year, (int)$month);
 
