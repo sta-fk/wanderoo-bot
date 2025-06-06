@@ -16,4 +16,5 @@ enum CallbackQueryData: string
     case TripStyle = 'trip_style_';
     case Interest = 'interest_';
     case InterestsDone = 'interest_done';
+    case Budget = 'budget_';
 }
