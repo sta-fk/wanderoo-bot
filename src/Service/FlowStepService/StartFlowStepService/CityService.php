@@ -1,15 +1,19 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\KeyboardService\GetDurationKeyboardTrait;
 use App\Service\UserStateStorage;
 
 readonly class CityService implements StateAwareFlowStepServiceInterface
 {
+    use GetDurationKeyboardTrait;
+
     public function __construct(
         private UserStateStorage $userStateStorage,
     ) {
@@ -37,20 +41,10 @@ readonly class CityService implements StateAwareFlowStepServiceInterface
         $context->city = $cityName;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = [
-            'inline_keyboard' => [
-                [['text' => '1 день', 'callback_data' => CallbackQueryData::Duration->value.'1']],
-                [['text' => '3 дні', 'callback_data' => CallbackQueryData::Duration->value.'3']],
-                [['text' => '5 днів', 'callback_data' => CallbackQueryData::Duration->value.'5']],
-                [['text' => '7 днів', 'callback_data' => CallbackQueryData::Duration->value.'7']],
-                [['text' => '🔢 Інший варіант', 'callback_data' => CallbackQueryData::Duration->value.'custom']],
-            ]
-        ];
-
         return new SendMessageContext(
             $chatId,
             "Ви обрали місто: {$cityName}. На скільки днів плануєте подорож?",
-            $keyboard,
+            $this->getDurationKeyboard(),
             States::WaitingForDuration
         );
     }

@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
-use App\DTO\Keyboard;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Service\FlowStepServiceInterface;
-use App\Service\GeoDbService;
-use App\Service\UserStateStorage;
+use App\Service\KeyboardService\CountryKeyboardProvider;
 
-class CountryWithPaginationService implements FlowStepServiceInterface
+readonly class CountryWithPaginationService implements FlowStepServiceInterface
 {
-    use BuildKeyboardTrait;
-
     public function __construct(
-        private readonly GeoDbService $geoDbService,
-        private readonly UserStateStorage $userStateStorage,
+        private CountryKeyboardProvider $countryKeyboardProvider,
     ) {
     }
 
@@ -30,17 +25,7 @@ class CountryWithPaginationService implements FlowStepServiceInterface
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $offset = (int) substr($update->callbackQuery->data, strlen(CallbackQueryData::CountryPage->value));
-        $countries = $this->geoDbService->getCountries($offset);
-        $keyboard = $this->buildPaginationKeyboard(
-            new Keyboard(
-                $countries,
-                CallbackQueryData::Country->value,
-                'name',
-                'code',
-                CallbackQueryData::CountryPage->value,
-                $offset + 5
-            ),
-        );
+        $keyboard = $this->countryKeyboardProvider->providePaginationKeyboard($offset);
 
         return new SendMessageContext($update->callbackQuery->message->chat->id, "Ще 5 країн:", $keyboard);
     }

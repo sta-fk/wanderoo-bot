@@ -1,16 +1,22 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\KeyboardService\BuildBudgetKeyboardTrait;
+use App\Service\KeyboardService\BuildInterestsKeyboardTrait;
+use App\Service\KeyboardService\BuildKeyboardTrait;
+use App\Service\FlowStepService\StartFlowStepService\BudgetService;
+use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
 readonly class InterestsService implements StateAwareFlowStepServiceInterface
 {
-    use BuildKeyboardTrait;
+    use BuildBudgetKeyboardTrait;
+    use BuildInterestsKeyboardTrait;
 
     public const INTERESTS = [
         'city' => '🏙️ Міста',
@@ -52,18 +58,12 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
                 $context->interests ?? []
             );
 
-            $budgetKeyboard = [];
-            foreach (BudgetService::BUDGET_OPTIONS as $callback => $label) {
-                $budgetKeyboard[] = [[
-                    'text' => $label,
-                    'callback_data' => CallbackQueryData::Budget->value . $callback,
-                ]];
-            }
+            $keyboard = $this->buildBudgetKeyboard(BudgetService::BUDGET_OPTIONS);
 
             return new SendMessageContext(
                 $chatId,
                 "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:",
-                ["inline_keyboard" => $budgetKeyboard],
+                $keyboard,
                 States::WaitingForBudget
             );
         }

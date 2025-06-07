@@ -1,45 +1,12 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\KeyboardService;
 
 use App\DTO\Keyboard;
 use App\Enum\CallbackQueryData;
 
-trait BuildKeyboardTrait
+trait BuildCalendarKeyboardTrait
 {
-    private function buildPaginationKeyboard(Keyboard $keyboard): array
-    {
-        $buttons = [];
-
-        foreach ($keyboard->items as $item) {
-            $buttons[][] = [
-                'text' => $item[$keyboard->textField],
-                'callback_data' => $keyboard->prefix . $item[$keyboard->keyField],
-            ];
-        }
-
-        if ($keyboard->nextPageOffset !== null) {
-            $buttons[][] = [
-                'text' => '➡️ Наступна сторінка',
-                'callback_data' => $keyboard->paginationPrefix . $keyboard->nextPageOffset,
-            ];
-        }
-
-        return ['inline_keyboard' => $buttons];
-    }
-
-    private function buildKeyboard(Keyboard $keyboard): array
-    {
-        $buttons = [];
-        foreach ($keyboard->items as $item) {
-            $buttons[][] = [
-                'text' => $item[$keyboard->textField],
-                'callback_data' => $keyboard->prefix . $item[$keyboard->keyField],
-            ];
-        }
-        return ['inline_keyboard' => $buttons];
-    }
-
     private function buildCalendarKeyboard(int $year, int $month): array
     {
         $keyboard = [];
@@ -134,27 +101,5 @@ trait BuildKeyboardTrait
         ];
 
         return ['inline_keyboard' => $keyboard];
-    }
-
-    private function buildInterestsKeyboard(array $selectedInterests, array $interestsSet): array
-    {
-        $buttons = [];
-
-        foreach ($interestsSet as $key => $label) {
-            $isSelected = in_array($key, $selectedInterests, true);
-            $buttonText = ($isSelected ? '✅ ' : '⬜️ ') . $label;
-
-            $buttons[][] = [
-                'text' => $buttonText,
-                'callback_data' => CallbackQueryData::Interest->value . $key,
-            ];
-        }
-
-        $buttons[][] = [
-                'text' => '✅ Готово',
-                'callback_data' => CallbackQueryData::InterestsDone->value,
-            ];
-
-        return ['inline_keyboard' => $buttons];
     }
 }

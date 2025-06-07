@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
-use App\DTO\Keyboard;
 use App\DTO\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
-use App\Service\GeoDbService;
+use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\KeyboardService\CountryKeyboardProvider;
 use App\Service\UserStateStorage;
 
 readonly class StartYesService implements StateAwareFlowStepServiceInterface
 {
-    use BuildKeyboardTrait;
-
     public function __construct(
-        private GeoDbService $geoDbService,
         private UserStateStorage $userStateStorage,
+        private CountryKeyboardProvider $countryKeyboardProvider,
     ) {
     }
 
@@ -38,17 +36,7 @@ readonly class StartYesService implements StateAwareFlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
         $this->userStateStorage->saveContext($chatId, new PlanContext());
 
-        $countries = $this->geoDbService->getCountries();
-        $keyboard = $this->buildPaginationKeyboard(
-            new Keyboard(
-                $countries,
-                CallbackQueryData::Country->value,
-                'name',
-                'code',
-                CallbackQueryData::CountryPage->value,
-                5
-            ),
-        );
+        $keyboard = $this->countryKeyboardProvider->provideDefaultKeyboard();
 
         return new SendMessageContext($chatId, "Супер, поїхали ✨! Обери країну:", $keyboard, States::WaitingForCountry);
     }

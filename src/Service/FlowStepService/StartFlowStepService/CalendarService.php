@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
-use App\Enum\States;
+use App\Service\KeyboardService\BuildCalendarKeyboardTrait;
 use App\Service\FlowStepServiceInterface;
-use App\Service\UserStateStorage;
 
 class CalendarService implements FlowStepServiceInterface
 {
-    use BuildKeyboardTrait;
+    use BuildCalendarKeyboardTrait;
 
     public function supports(TelegramUpdate $update): bool
     {
