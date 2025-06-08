@@ -44,7 +44,7 @@ readonly class StopCityService implements StateAwareFlowStepServiceInterface
         return new SendMessageContext(
             $chatId,
             "Скільки днів ви плануєте провести у {$cityName}?",
-            $this->getDurationKeyboard(),
+            $this->getDurationKeyboard(CallbackQueryData::StopDuration),
             States::WaitingForStopDuration
         );
     }

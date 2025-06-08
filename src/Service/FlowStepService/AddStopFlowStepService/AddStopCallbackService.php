@@ -9,14 +9,16 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepServiceInterface;
 use App\Service\KeyboardService\CountryKeyboardProvider;
+use App\Service\KeyboardService\StopCountryKeyboardProvider;
 use App\Service\UserStateStorage;
 
 readonly class AddStopCallbackService implements FlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
-        private CountryKeyboardProvider $countryKeyboardProvider,
-    ) {}
+        private StopCountryKeyboardProvider $stopCountryKeyboardProvider,
+    ) {
+    }
 
     public function supports(TelegramUpdate $update): bool
     {
@@ -28,13 +30,18 @@ readonly class AddStopCallbackService implements FlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
 
         $context = $this->userStateStorage->getContext($chatId);
+
+        if (null !== $context->currentStopDraft) {
+            $context->tripStops[] = $context->currentStopDraft;
+        }
+
         $context->currentStopDraft = new StopContext();
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(
             $chatId,
             "Оберіть країну для нової зупинки:",
-            $this->countryKeyboardProvider->provideDefaultKeyboard(),
+            $this->stopCountryKeyboardProvider->provideDefaultKeyboard(),
             States::WaitingForStopCountry
         );
     }

@@ -4,6 +4,7 @@ namespace App\Service\FlowStepService\AddStopFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
+use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\KeyboardService\BuildCalendarKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
@@ -42,8 +43,8 @@ class StopCustomDurationService implements StateAwareFlowStepServiceInterface
         $context->currentStopDraft->duration = (int) $update->message->text;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $text = "Чудово! Подорож на {$context->duration} днів. Тепер оберіть дати поїздки. \n\n📅 Оберіть стиль подорожі для цієї зупинки:";
+        $text = "Чудово! Подорож на {$context->currentStopDraft->duration} днів. Тепер оберіть дати поїздки. \n\n📅 Оберіть стиль подорожі для цієї зупинки:";
 
-        return new SendMessageContext($chatId, $text, $this->getTripStyleKeyboard(), States::WaitingForStopTripStyle);
+        return new SendMessageContext($chatId, $text, $this->getTripStyleKeyboard(CallbackQueryData::StopTripStyle), States::WaitingForStopTripStyle);
     }
 }

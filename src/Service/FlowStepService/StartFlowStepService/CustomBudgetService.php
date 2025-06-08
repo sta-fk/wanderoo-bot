@@ -6,10 +6,13 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\KeyboardService\GetReadyToBuildPlanKeyboardTrait;
 use App\Service\UserStateStorage;
 
 readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
 {
+    use GetReadyToBuildPlanKeyboardTrait;
+
     public function __construct(
         private UserStateStorage $userStateStorage,
     ) {
@@ -43,7 +46,7 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
         return new SendMessageContext(
             $chatId,
             "✅ Дякую! Орієнтовний бюджет: {$context->budget}€ +/-.\n\nГотуємо для вас персоналізований план мандрівки... ✈️",
-            null,
+            $this->getBuildPlanKeyboard(),
             States::ReadyToBuildPlan
         );
     }

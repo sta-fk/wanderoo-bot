@@ -16,7 +16,8 @@ readonly class AddStopService implements FlowStepServiceInterface
     public function __construct(
         private UserStateStorage $userStateStorage,
         private CountryKeyboardProvider $countryKeyboardProvider,
-    ) {}
+    ) {
+    }
 
     public function supports(TelegramUpdate $update): bool
     {

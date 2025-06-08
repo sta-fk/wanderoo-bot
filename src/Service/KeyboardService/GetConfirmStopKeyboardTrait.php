@@ -4,7 +4,7 @@ namespace App\Service\KeyboardService;
 
 use App\Enum\CallbackQueryData;
 
-trait GetConfirmKeyboardTrait
+trait GetConfirmStopKeyboardTrait
 {
     private function getConfirmKeyboard(): array
     {

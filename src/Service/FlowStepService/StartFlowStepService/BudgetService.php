@@ -8,10 +8,13 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\FlowStepServiceInterface;
+use App\Service\KeyboardService\GetReadyToBuildPlanKeyboardTrait;
 use App\Service\UserStateStorage;
 
 class BudgetService implements StateAwareFlowStepServiceInterface
 {
+    use GetReadyToBuildPlanKeyboardTrait;
+
     public const BUDGET_OPTIONS = [
         'none' => 'Без бюджету',
         '0_300' => 'До 300€',
@@ -49,11 +52,12 @@ class BudgetService implements StateAwareFlowStepServiceInterface
 
         $context->budget = $budgetKey;
         $this->userStateStorage->saveContext($chatId, $context);
+        $budgetOption = self::BUDGET_OPTIONS[$budgetKey];
 
         return new SendMessageContext(
             $chatId,
-            "✅ Дякую! Орієнтовний бюджет: {$context->budget}.\n\nГотуємо для вас персоналізований план мандрівки... ✈️",
-            null,
+            "✅ Дякую! Орієнтовний бюджет: {$budgetOption}.\n\nТепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️",
+            $this->getBuildPlanKeyboard(),
             States::ReadyToBuildPlan
         );
     }

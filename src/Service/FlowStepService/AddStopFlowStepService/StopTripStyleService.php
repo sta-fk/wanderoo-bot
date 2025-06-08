@@ -40,7 +40,12 @@ readonly class StopTripStyleService implements StateAwareFlowStepServiceInterfac
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->buildInterestsKeyboard($context->interests, InterestsService::INTERESTS);
+        $keyboard = $this->buildInterestsKeyboard(
+            CallbackQueryData::StopInterest,
+            CallbackQueryData::StopInterestsDone,
+            $context->currentStopDraft->interests,
+            InterestsService::INTERESTS
+        );
 
         return new SendMessageContext(
             $chatId,

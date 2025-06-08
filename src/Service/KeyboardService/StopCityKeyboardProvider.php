@@ -6,7 +6,7 @@ use App\DTO\Keyboard;
 use App\Enum\CallbackQueryData;
 use App\Service\GeoDbService;
 
-class CityKeyboardProvider
+class StopCityKeyboardProvider
 {
     use BuildPaginationKeyboardTrait;
 
@@ -37,10 +37,10 @@ class CityKeyboardProvider
         return $this->buildPaginationKeyboard(
             new Keyboard(
                 $cities,
-                CallbackQueryData::City->value,
+                CallbackQueryData::StopCity->value,
                 self::KEYBOARD_TEXT_FIELD,
                 self::KEYBOARD_KEY_FIELD,
-                CallbackQueryData::CityPage->value,
+                CallbackQueryData::StopCityPage->value,
                 $nextPageOffset
             ),
         );

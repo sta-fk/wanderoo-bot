@@ -41,7 +41,8 @@ class StopDurationService implements StateAwareFlowStepServiceInterface
                 $chatId,
                 "Введіть кількість днів (наприклад, 4):",
                 null,
-                States::WaitingForStopCustomDuration);
+                States::WaitingForStopCustomDuration
+            );
         }
 
         $context->currentStopDraft->duration = (int) $durationValue;
@@ -49,6 +50,6 @@ class StopDurationService implements StateAwareFlowStepServiceInterface
 
         $text = "Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки. \n\n📅 Оберіть стиль подорожі для цієї зупинки:";
 
-        return new SendMessageContext($chatId, $text, $this->getTripStyleKeyboard(), States::WaitingForStopTripStyle);
+        return new SendMessageContext($chatId, $text, $this->getTripStyleKeyboard(CallbackQueryData::StopTripStyle), States::WaitingForStopTripStyle);
     }
 }

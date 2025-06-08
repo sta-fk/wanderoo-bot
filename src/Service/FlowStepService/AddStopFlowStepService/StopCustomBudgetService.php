@@ -6,12 +6,12 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\GetConfirmKeyboardTrait;
+use App\Service\KeyboardService\GetConfirmStopKeyboardTrait;
 use App\Service\UserStateStorage;
 
 readonly class StopCustomBudgetService implements StateAwareFlowStepServiceInterface
 {
-    use GetConfirmKeyboardTrait;
+    use GetConfirmStopKeyboardTrait;
 
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -37,7 +37,12 @@ readonly class StopCustomBudgetService implements StateAwareFlowStepServiceInter
         $userInput = preg_replace('/[^\d]/', '', $update->message->text);
 
         if (!is_numeric($userInput)) {
-            return new SendMessageContext($chatId, "Не вдалося перетворити на цифру. Повторіть спробу.", null, States::WaitingForStopCustomBudget);
+            return new SendMessageContext(
+                $chatId,
+                "Не вдалося перетворити на цифру. Повторіть спробу.",
+                null,
+                States::WaitingForStopCustomBudget
+            );
         }
 
         $context->currentStopDraft->budget = (int) $userInput;
@@ -45,7 +50,7 @@ readonly class StopCustomBudgetService implements StateAwareFlowStepServiceInter
 
         return new SendMessageContext(
             $chatId,
-            "✅ Дякую! Орієнтовний бюджет: {$context->budget}€ +/-.\n\n Тепер підтвердьте зупинку або додайте ще одну.",
+            "✅ Дякую! Орієнтовний бюджет: {$context->currentStopDraft->budget}€ +/-.\n\n Тепер підтвердьте зупинку або додайте ще одну.",
             $this->getConfirmKeyboard(),
             States::WaitingForConfirmStop
         );

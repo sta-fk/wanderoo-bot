@@ -16,14 +16,12 @@ enum States: string
     case WaitingForCustomBudget = 'waiting_for_custom_budget';
     case ReadyToBuildPlan = 'ready_to_build_plan';
 
-    case WaitingForAddStop = 'waiting_for_add_stop';
     case WaitingForStopCountry = 'waiting_for_stop_country';
     case WaitingForStopCity = 'waiting_for_stop_city';
     case WaitingForStopDuration = 'waiting_for_stop_duration';
     case WaitingForStopCustomDuration = 'waiting_for_stop_custom_duration';
     case WaitingForStopTripStyle = 'waiting_for_stop_trip_style';
     case WaitingForStopInterests = 'waiting_for_stop_interests';
-    case WaitingForStopBudget = 'waiting_for_stop_budget';
     case WaitingForStopCustomBudget = 'waiting_for_stop_custom_budget';
     case WaitingForConfirmStop = 'waiting_confirm_stop';
 

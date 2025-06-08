@@ -7,11 +7,12 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Service\FlowStepServiceInterface;
 use App\Service\KeyboardService\CountryKeyboardProvider;
+use App\Service\KeyboardService\StopCountryKeyboardProvider;
 
 readonly class StopCountryWithPaginationService implements FlowStepServiceInterface
 {
     public function __construct(
-        private CountryKeyboardProvider $countryKeyboardProvider,
+        private StopCountryKeyboardProvider $stopCountryKeyboardProvider,
     ) {
     }
 
@@ -25,7 +26,7 @@ readonly class StopCountryWithPaginationService implements FlowStepServiceInterf
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $offset = (int) substr($update->callbackQuery->data, strlen(CallbackQueryData::StopCountryPage->value));
-        $keyboard = $this->countryKeyboardProvider->providePaginationKeyboard($offset);
+        $keyboard = $this->stopCountryKeyboardProvider->providePaginationKeyboard($offset);
 
         return new SendMessageContext($update->callbackQuery->message->chat->id, "Ще 5 країн:", $keyboard);
     }

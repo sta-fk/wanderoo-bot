@@ -46,7 +46,7 @@ class PickDateService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->getTripStyleKeyboard();
+        $keyboard = $this->getTripStyleKeyboard(CallbackQueryData::TripStyle);
         $text = "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b> \n\nЯкий стиль подорожі ви бажаєте? 🧳";
 
         return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForTripStyle);

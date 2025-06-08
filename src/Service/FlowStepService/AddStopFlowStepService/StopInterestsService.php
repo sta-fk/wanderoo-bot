@@ -61,7 +61,8 @@ readonly class StopInterestsService implements StateAwareFlowStepServiceInterfac
                 $chatId,
                 "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n✍️ Тепер введіть бажаний бюджет у євро (наприклад: <b>150</b>):",
                 null,
-                States::WaitingForCustomBudget);
+                States::WaitingForStopCustomBudget
+            );
         }
 
         $selectedInterest = substr($callbackData, strlen(CallbackQueryData::StopInterest->value));
@@ -79,7 +80,12 @@ readonly class StopInterestsService implements StateAwareFlowStepServiceInterfac
         return new SendMessageContext(
             $chatId,
             "✨ Оновлено. Щось ще?",
-            $this->buildInterestsKeyboard($context->interests, self::INTERESTS),
+            $this->buildInterestsKeyboard(
+                CallbackQueryData::StopInterest,
+                CallbackQueryData::StopInterestsDone,
+                $context->currentStopDraft->interests,
+                self::INTERESTS
+            ),
         );
     }
 }

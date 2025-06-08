@@ -11,7 +11,9 @@ use App\Service\UserStateStorage;
 
 readonly class ConfirmStopService implements StateAwareFlowStepServiceInterface
 {
-    public function __construct(private UserStateStorage $userStateStorage) {}
+    public function __construct(private UserStateStorage $userStateStorage)
+    {
+    }
 
     public function supports(TelegramUpdate $update): bool
     {

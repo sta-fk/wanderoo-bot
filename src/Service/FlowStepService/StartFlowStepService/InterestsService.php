@@ -83,7 +83,12 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         return new SendMessageContext(
             $chatId,
             "✨ Оновлено. Щось ще?",
-            $this->buildInterestsKeyboard($context->interests, self::INTERESTS),
+            $this->buildInterestsKeyboard(
+                CallbackQueryData::Interest,
+                CallbackQueryData::InterestsDone,
+                $context->interests,
+                self::INTERESTS
+            ),
         );
     }
 }

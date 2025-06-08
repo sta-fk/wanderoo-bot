@@ -30,4 +30,5 @@ enum CallbackQueryData: string
 
     case AddStop = 'add_stop';
     case ConfirmStop = 'confirm_stop';
+    case ReadyToBuildPlan = 'ready_to_build_plan';
 }

@@ -39,7 +39,12 @@ readonly class TripStyleService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->buildInterestsKeyboard($context->interests, InterestsService::INTERESTS);
+        $keyboard = $this->buildInterestsKeyboard(
+            CallbackQueryData::Interest,
+            CallbackQueryData::InterestsDone,
+            $context->interests,
+            InterestsService::INTERESTS
+        );
 
         return new SendMessageContext(
             $chatId,

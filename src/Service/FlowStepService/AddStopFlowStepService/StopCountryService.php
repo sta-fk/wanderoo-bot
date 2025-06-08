@@ -9,6 +9,7 @@ use App\Enum\States;
 use App\Service\KeyboardService\BuildKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardService\CityKeyboardProvider;
+use App\Service\KeyboardService\StopCityKeyboardProvider;
 use App\Service\UserStateStorage;
 
 readonly class StopCountryService implements StateAwareFlowStepServiceInterface
@@ -17,8 +18,9 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
 
     public function __construct(
         private UserStateStorage $userStateStorage,
-        private CityKeyboardProvider $cityKeyboardProvider,
-    ) {}
+        private StopCityKeyboardProvider $stopCityKeyboardProvider,
+    ) {
+    }
 
     public function supports(TelegramUpdate $update): bool
     {
@@ -41,7 +43,7 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
         $context->currentStopDraft->country = $countryCode;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->cityKeyboardProvider->provideDefaultKeyboard($countryCode);
+        $keyboard = $this->stopCityKeyboardProvider->provideDefaultKeyboard($countryCode);
 
         return new SendMessageContext($chatId, "🚀Чудово! Тепер оберіть місто:", $keyboard, States::WaitingForStopCity);
 
