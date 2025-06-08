@@ -31,7 +31,7 @@ readonly class ConfirmStopService implements StateAwareFlowStepServiceInterface
         $context = $this->userStateStorage->getContext($chatId);
 
         if (null !== $context->currentStopDraft) {
-            $context->tripStops[] = $context->currentStopDraft;
+            $context->stops[] = $context->currentStopDraft;
             $context->currentStopDraft = null;
             $this->userStateStorage->saveContext($chatId, $context);
         }
