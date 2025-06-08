@@ -13,6 +13,9 @@ class PlanContext
     public array $interests = [];
     public ?string $budget = null;
 
+    public array $tripStops = [];
+    public ?StopContext $currentStopDraft = null;
+
     public static function fromArray(array $data): self
     {
         $ctx = new self();

@@ -17,4 +17,17 @@ enum CallbackQueryData: string
     case Interest = 'interest_';
     case InterestsDone = 'interest_done';
     case Budget = 'budget_';
+
+    case StopCountry = 'stop_country_';
+    case StopCountryPage = 'stop_country_page_';
+    case StopCity = 'stop_city_';
+    case StopCityPage = 'stop_city_page_';
+    case StopDuration = 'stop_duration_';
+    case StopTripStyle = 'stop_trip_style_';
+    case StopInterest = 'stop_interest_';
+    case StopInterestsDone = 'stop_interest_done';
+    case StopBudget = 'stop_budget_';
+
+    case AddStop = 'add_stop';
+    case ConfirmStop = 'confirm_stop';
 }

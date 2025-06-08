@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\KeyboardService\GetTripStyleKeyboardTrait;
 use App\Service\UserStateStorage;
 
 class PickDateService implements StateAwareFlowStepServiceInterface
 {
-    use BuildKeyboardTrait;
+    use GetTripStyleKeyboardTrait;
 
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
@@ -44,16 +46,9 @@ class PickDateService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = [
-            [
-                ['text' => '🧘 Лайтовий', 'callback_data' => CallbackQueryData::TripStyle->value . 'лайтовий'],
-                ['text' => '🚀 Активний', 'callback_data' => CallbackQueryData::TripStyle->value . 'активний'],
-                ['text' => '🎭 Змішаний', 'callback_data' => CallbackQueryData::TripStyle->value . 'змішаний'],
-            ],
-        ];
-
+        $keyboard = $this->getTripStyleKeyboard();
         $text = "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b> \n\nЯкий стиль подорожі ви бажаєте? 🧳";
 
-        return new SendMessageContext($chatId, $text, ['inline_keyboard' => $keyboard], States::WaitingForTripStyle);
+        return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForTripStyle);
     }
 }

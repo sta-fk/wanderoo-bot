@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Service\FlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
+use App\Service\KeyboardService\BuildCalendarKeyboardTrait;
+use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
 class CustomDurationService implements StateAwareFlowStepServiceInterface
 {
-    use BuildKeyboardTrait;
+    use BuildCalendarKeyboardTrait;
 
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
