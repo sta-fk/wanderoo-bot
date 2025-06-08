@@ -29,7 +29,7 @@ trait GetViewTripKeyboardTrait
         }
 
         if ($context->startDate) {
-            $summaryLines[] = "📅 <b>Дата початку:</b> {$context->startDate->format('d.m.Y')}";
+            $summaryLines[] = "📅 <b>Дата початку:</b> {$context->startDate}";
         }
 
         // Зупинки

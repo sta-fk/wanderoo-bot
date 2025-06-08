@@ -39,4 +39,3 @@ readonly class ViewTripService implements FlowStepServiceInterface
         return new SendMessageContext($chatId, $text, $keyboard);
     }
 }
-
