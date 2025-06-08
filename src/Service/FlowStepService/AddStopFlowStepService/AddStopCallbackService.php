@@ -32,7 +32,7 @@ readonly class AddStopCallbackService implements FlowStepServiceInterface
         $context = $this->userStateStorage->getContext($chatId);
 
         if (null !== $context->currentStopDraft) {
-            $context->tripStops[] = $context->currentStopDraft;
+            $context->stops[] = $context->currentStopDraft;
         }
 
         $context->currentStopDraft = new StopContext();
