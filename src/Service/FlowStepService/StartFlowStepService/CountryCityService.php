@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\FlowStepService\AddStopFlowStepService;
+namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
@@ -10,7 +10,7 @@ use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class StopCountryService implements StateAwareFlowStepServiceInterface
+readonly class CountryCityService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
@@ -21,41 +21,21 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && (CallbackQueryData::StopCountryAnother->value === $update->callbackQuery->data
-            || CallbackQueryData::StopCountrySame->value === $update->callbackQuery->data)
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
         ;
     }
 
     public function supportsStates(): array
     {
-        return [States::WaitingForStopCountry];
+        return [States::WaitingForCountryCity];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        if (CallbackQueryData::StopCountryAnother->value === $update->callbackQuery->data) {
-            return $this->buildContextWithAnotherCountry($update);
-        }
-
-        return $this->buildContextWithSameCountry($update);
-    }
-
-    private function buildContextWithAnotherCountry(TelegramUpdate $update): SendMessageContext
-    {
-        return new SendMessageContext(
-            $update->callbackQuery->message->chat->id,
-            "Супер, поїхали ✨! Введіть назву країни (або частину назви):",
-            null,
-            States::WaitingForCountry
-        );
-    }
-
-    private function buildContextWithSameCountry(TelegramUpdate $update): SendMessageContext
-    {
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryPlaceId = ($context->stops[count($context->stops) - 1])->countryPlaceId;
+        $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::Country->value));
 
         $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
 
@@ -66,7 +46,7 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(
-            $update->callbackQuery->message->chat->id,
+            $chatId,
             "Введіть назву міста (або частину назви):",
             null,
             States::WaitingForCitySearch

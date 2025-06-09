@@ -7,15 +7,8 @@ use App\Enum\CallbackQueryData;
 
 trait BuildInterestsKeyboardTrait
 {
-    private function buildInterestsKeyboard(CallbackQueryData $callbackQueryData, CallbackQueryData $callbackQueryDataDone, array $selectedInterests, array $interestsSet): array
+    private function buildInterestsKeyboard(array $selectedInterests, array $interestsSet): array
     {
-        if (
-            ($callbackQueryData !== CallbackQueryData::Interest && $callbackQueryDataDone !== CallbackQueryData::InterestsDone)
-            && ($callbackQueryData !== CallbackQueryData::StopInterest && $callbackQueryDataDone !== CallbackQueryData::StopInterestsDone)
-        ) {
-            return ['inlineKeyboard' => []];
-        }
-
         $buttons = [];
 
         foreach ($interestsSet as $key => $label) {
@@ -24,13 +17,13 @@ trait BuildInterestsKeyboardTrait
 
             $buttons[][] = [
                 'text' => $buttonText,
-                'callback_data' => $callbackQueryData->value . $key,
+                'callback_data' => CallbackQueryData::Interest->value . $key,
             ];
         }
 
         $buttons[][] = [
                 'text' => '✅ Готово',
-                'callback_data' => $callbackQueryDataDone->value,
+                'callback_data' => CallbackQueryData::InterestsDone->value,
             ];
 
         return ['inline_keyboard' => $buttons];

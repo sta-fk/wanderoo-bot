@@ -40,7 +40,7 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
             return new SendMessageContext($chatId, "Не вдалося перетворити на цифру. Повторіть спробу.", null, States::WaitingForCustomBudget);
         }
 
-        $context->budget = $userInput;
+        $context->currentStopDraft->budget = $userInput;
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(

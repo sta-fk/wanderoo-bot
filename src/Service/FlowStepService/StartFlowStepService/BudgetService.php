@@ -46,11 +46,16 @@ class BudgetService implements StateAwareFlowStepServiceInterface
 
         $budgetKey = substr($update->callbackQuery->data, strlen(CallbackQueryData::Budget->value));
 
-        if ('custom' === $budgetKey) {
-            return new SendMessageContext($chatId, "✍️ Введіть бажаний бюджет у євро (наприклад: <b>500</b>):", null, States::WaitingForCustomBudget);
+        if (CallbackQueryData::Custom->value === $budgetKey) {
+            return new SendMessageContext(
+                $chatId,
+                "✍️ Введіть бажаний бюджет у євро (наприклад: <b>500</b>):",
+                null,
+                States::WaitingForCustomBudget
+            );
         }
 
-        $context->budget = $budgetKey;
+        $context->currentStopDraft->budget = $budgetKey;
         $this->userStateStorage->saveContext($chatId, $context);
         $budgetOption = self::BUDGET_OPTIONS[$budgetKey];
 

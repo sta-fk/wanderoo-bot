@@ -7,23 +7,19 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\CityKeyboardProvider;
-use App\Service\UserStateStorage;
+use App\Service\Place\PlaceServiceInterface;
 
 readonly class CountryService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
-        private UserStateStorage     $userStateStorage,
-        private CityKeyboardProvider $cityKeyboardProvider,
+        private PlaceServiceInterface $placeService,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
-            && !strpos($update->callbackQuery->data, 'page')
-        ;
+        return null !== $update->message
+            && null !== $update->message->text;
     }
 
     public function supportsStates(): array
@@ -33,15 +29,23 @@ readonly class CountryService implements StateAwareFlowStepServiceInterface
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-        $context = $this->userStateStorage->getContext($chatId);
+        $chatId = $update->message->chat->id;
+        $countries = $this->placeService->searchCountries($update->message->text);
 
-        $countryCode = substr($update->callbackQuery->data, strlen(CallbackQueryData::Country->value));
-        $context->country = $countryCode;
-        $this->userStateStorage->saveContext($chatId, $context);
+        if (empty($countries)) {
+            return new SendMessageContext($chatId, "Не знайдено такої країни. Спробуйте ще раз.");
+        }
 
-        $keyboard = $this->cityKeyboardProvider->provideDefaultKeyboard($countryCode);
+        $keyboard = [];
+        foreach ($countries as $country) {
+            $keyboard[] = [
+                [
+                    'text' => $country->name,
+                    'callback_data' => CallbackQueryData::Country->value . $country->placeId,
+                ],
+            ];
+        }
 
-        return new SendMessageContext($chatId, "🚀Оберіть місто:", $keyboard, States::WaitingForCity);
+        return new SendMessageContext($chatId, "Оберіть країну:", ['inline_keyboard' => $keyboard], States::WaitingForCountryCity);
     }
 }

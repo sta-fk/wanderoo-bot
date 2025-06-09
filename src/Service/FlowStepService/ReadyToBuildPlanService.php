@@ -11,7 +11,9 @@ class ReadyToBuildPlanService implements FlowStepServiceInterface
 {
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && $update->callbackQuery->data === CallbackQueryData::ReadyToBuildPlan->value;
+        return null !== $update->callbackQuery
+            && CallbackQueryData::ReadyToBuildPlan->value === $update->callbackQuery->data
+        ;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

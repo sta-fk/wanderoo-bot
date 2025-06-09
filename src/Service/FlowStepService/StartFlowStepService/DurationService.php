@@ -21,7 +21,9 @@ class DurationService implements StateAwareFlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value)
+        ;
     }
 
     public function supportsStates(): array
@@ -35,16 +37,21 @@ class DurationService implements StateAwareFlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        if ('custom' === $durationValue) {
-            return new SendMessageContext($chatId, "Введіть кількість днів (наприклад, 4):", null, States::WaitingForCustomDuration);
+        if (CallbackQueryData::Custom->value === $durationValue) {
+            return new SendMessageContext(
+                $chatId,
+                "Введіть кількість днів (наприклад, 4):",
+                null,
+                States::WaitingForCustomDuration
+            );
         }
 
-        $context->duration = (int) $durationValue;
+        $context->currentStopDraft->duration = (int) $durationValue;
         $this->userStateStorage->saveContext($chatId, $context);
 
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
-        $text = "Чудово! Подорож на {$durationValue} днів. Тепер оберіть дати поїздки. \n\n📅 Оберіть дату подорожі:";
+        $text = "Чудово! Подорож на {$durationValue} днів. \n\n📅 Тепер оберіть дату подорожі:";
 
         return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForStartDate);
     }
