@@ -35,14 +35,14 @@ class PickDateService implements StateAwareFlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
 
         $context = $this->userStateStorage->getContext($chatId);
-        if (null === $context->duration) {
+        if (null === $context->currentStopDraft->duration) {
             throw new \RuntimeException("Invalid payload");
         }
 
-        $context->startDate = $dateStr;
+        $context->startDate = (new \DateTimeImmutable($dateStr));
 
-        $endDate = (new \DateTimeImmutable($dateStr))->modify("+$context->duration days");
-        $context->endDate = $endDate->format('Y-m-d');
+        $endDate = (new \DateTimeImmutable($dateStr))->modify("+{$context->currentStopDraft->duration} days");
+        $context->endDate = $endDate;
 
         $this->userStateStorage->saveContext($chatId, $context);
 

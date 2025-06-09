@@ -14,7 +14,9 @@ class CalendarService implements FlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value)
+        ;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -23,6 +25,6 @@ class CalendarService implements FlowStepServiceInterface
 
         $keyboard = $this->buildCalendarKeyboard((int)$year, (int)$month);
 
-        return new SendMessageContext($update->callbackQuery->message->chat->id, "📅 Оберіть дату подорожі:", $keyboard);
+        return new SendMessageContext($update->callbackQuery->message->chat->id, "📅 Оберіть дату виїзду:", $keyboard);
     }
 }

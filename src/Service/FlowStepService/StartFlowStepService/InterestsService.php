@@ -8,8 +8,6 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\KeyboardService\BuildBudgetKeyboardTrait;
 use App\Service\KeyboardService\BuildInterestsKeyboardTrait;
-use App\Service\KeyboardService\BuildKeyboardTrait;
-use App\Service\FlowStepService\StartFlowStepService\BudgetService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -34,9 +32,9 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery &&
-            (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value) ||
-                $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
+        return null !== $update->callbackQuery
+            && (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value)
+            || $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
     }
 
     public function supportsStates(): array
@@ -55,8 +53,17 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
             $selectedLabels = array_map(
                 static fn ($key) => strtolower(self::INTERESTS[$key]) ?? $key,
-                $context->interests ?? []
+                $context->currentStopDraft->interests ?? []
             );
+
+            if ($context->isAddingStopFlow) {
+                return new SendMessageContext(
+                    $chatId,
+                    "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n✍️ Введіть бажаний бюджет у євро (наприклад: <b>100</b>):",
+                    null,
+                    States::WaitingForCustomBudget
+                );
+            }
 
             $keyboard = $this->buildBudgetKeyboard(BudgetService::BUDGET_OPTIONS);
 
@@ -69,11 +76,11 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         }
 
         $selectedInterest = substr($callbackData, strlen(CallbackQueryData::Interest->value));
-        if (!in_array($selectedInterest, $context->interests ?? [], true)) {
-            $context->interests[] = $selectedInterest;
+        if (!in_array($selectedInterest, $context->currentStopDraft->interests ?? [], true)) {
+            $context->currentStopDraft->interests[] = $selectedInterest;
         } else {
-            $context->interests = array_filter(
-                $context->interests,
+            $context->currentStopDraft->interests = array_filter(
+                $context->currentStopDraft->interests,
                 static fn ($interest) => $interest !== $selectedInterest
             );
         }
@@ -84,9 +91,7 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
             $chatId,
             "✨ Оновлено. Щось ще?",
             $this->buildInterestsKeyboard(
-                CallbackQueryData::Interest,
-                CallbackQueryData::InterestsDone,
-                $context->interests,
+                $context->currentStopDraft->interests,
                 self::INTERESTS
             ),
         );

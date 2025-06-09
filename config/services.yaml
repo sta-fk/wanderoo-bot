@@ -25,3 +25,9 @@ services:
             $cache: '@app.redis_cache'
             $stateTtl: '%env(STATE_TTL)%'
             $contextTtl: '%env(CONTEXT_TTL)%'
+
+    App\Service\Place\GooglePlaceService:
+        arguments:
+            $googleApiKey: '%env(GOOGLE_API_KEY)%'
+
+    App\Service\Place\PlaceServiceInterface: '@App\Service\Place\GooglePlaceService'

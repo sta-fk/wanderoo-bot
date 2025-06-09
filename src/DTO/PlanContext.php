@@ -4,44 +4,16 @@ namespace App\DTO;
 
 class PlanContext
 {
-    public ?string $country = null;
-    public ?string $city = null;
-    public ?int $duration = null;
-    public ?string $startDate = null;
-    public ?string $endDate = null;
-    public ?string $tripStyle = null;
-    public array $interests = [];
-    public ?string $budget = null;
+    public bool $isAddingStopFlow = false;
+    public ?string $planName = null;
 
+    public ?\DateTimeImmutable $startDate = null;
+    public ?\DateTimeImmutable $endDate = null;
+    public ?int $totalDuration = null;
+    public ?string $budget = null;
+    public ?string $currency = null;
+
+    /** @var StopContext[] $stops */
     public array $stops = [];
     public ?StopContext $currentStopDraft = null;
-
-    public static function fromArray(array $data): self
-    {
-        $ctx = new self();
-        $ctx->country = $data['country'] ?? null;
-        $ctx->city = $data['city'] ?? null;
-        $ctx->duration = $data['duration'] ?? null;
-        $ctx->startDate = $data['startDate'] ?? null;
-        $ctx->endDate = $data['endDate'] ?? null;
-        $ctx->tripStyle = $data['tripStyle'] ?? null;
-        $ctx->interests = $data['interests'] ?? null;
-        $ctx->budget = $data['budget'] ?? null;
-
-        return $ctx;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'country' => $this->country,
-            'city' => $this->city,
-            'duration' => $this->duration,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
-            'tripStyle' => $this->tripStyle,
-            'interests' => $this->interests,
-            'budget' => $this->budget,
-        ];
-    }
 }

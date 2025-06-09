@@ -5,17 +5,16 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 use App\DTO\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
+use App\DTO\StopContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\CountryKeyboardProvider;
 use App\Service\UserStateStorage;
 
 readonly class StartYesService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
-        private CountryKeyboardProvider $countryKeyboardProvider,
     ) {
     }
 
@@ -34,10 +33,16 @@ readonly class StartYesService implements StateAwareFlowStepServiceInterface
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $chatId = $update->callbackQuery->message->chat->id;
-        $this->userStateStorage->saveContext($chatId, new PlanContext());
+        $context = new PlanContext();
+        $context->currentStopDraft = new StopContext();
 
-        $keyboard = $this->countryKeyboardProvider->provideDefaultKeyboard();
+        $this->userStateStorage->saveContext($chatId, $context);
 
-        return new SendMessageContext($chatId, "Супер, поїхали ✨! Обери країну:", $keyboard, States::WaitingForCountry);
+        return new SendMessageContext(
+            $chatId,
+            "Супер, поїхали ✨! Введіть назву країни (або частину назви):",
+            null,
+            States::WaitingForCountry
+        );
     }
 }

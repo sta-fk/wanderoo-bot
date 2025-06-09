@@ -4,9 +4,12 @@ namespace App\Enum;
 
 enum States: string
 {
+    // Start flow
     case WaitingForStart = 'waiting_for_start';
     case WaitingForCountry = 'waiting_for_country';
-    case WaitingForCity = 'waiting_for_city';
+    case WaitingForCountryCity = 'waiting_for_country_city';
+    case WaitingForCitySearch = 'waiting_for_city_search';
+    case WaitingForCityPick = 'waiting_for_city_pick';
     case WaitingForDuration = 'waiting_for_duration';
     case WaitingForCustomDuration = 'waiting_for_custom_duration';
     case WaitingForStartDate = 'waiting_for_start_date';
@@ -16,13 +19,8 @@ enum States: string
     case WaitingForCustomBudget = 'waiting_for_custom_budget';
     case ReadyToBuildPlan = 'ready_to_build_plan';
 
+    // Add stop flow
     case WaitingForStopCountry = 'waiting_for_stop_country';
-    case WaitingForStopCity = 'waiting_for_stop_city';
-    case WaitingForStopDuration = 'waiting_for_stop_duration';
-    case WaitingForStopCustomDuration = 'waiting_for_stop_custom_duration';
-    case WaitingForStopTripStyle = 'waiting_for_stop_trip_style';
-    case WaitingForStopInterests = 'waiting_for_stop_interests';
-    case WaitingForStopCustomBudget = 'waiting_for_stop_custom_budget';
-    case WaitingForConfirmStop = 'waiting_confirm_stop';
-
+    case WaitingForReuseOrNewTripStyle = 'waiting_for_reuse_or_new_trip_style';
+    case WaitingForReuseOrNewInterests = 'waiting_for_reuse_or_new_interests';
 }
