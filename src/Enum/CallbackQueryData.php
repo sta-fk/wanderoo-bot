@@ -18,16 +18,11 @@ enum CallbackQueryData: string
     case AddStop = 'add_stop';
     case ConfirmStop = 'confirm_stop';
     case ReadyToBuildPlan = 'ready_to_build_plan';
+    case NewTrip = 'new_trip';
 
     // For Adding stop flow
-    case StopCountry = 'stop_country_';
     case StopCountrySame = 'stop_country_same';
     case StopCountryAnother = 'stop_country_another';
-    case StopDuration = 'stop_duration_';
-    case StopTripStyle = 'stop_trip_style_';
-    case StopInterest = 'stop_interest_';
-    case StopInterestsDone = 'stop_interest_done';
-    case StopBudget = 'stop_budget_';
 
     // Query parts
     case Reuse = 'reuse';

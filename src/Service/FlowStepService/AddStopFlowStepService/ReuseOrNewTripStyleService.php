@@ -46,8 +46,10 @@ class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceInterface
 
             $keyboard = [
                 'inline_keyboard' => [
-                    ['✅ Так', CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
-                    ['❌ Ні', CallbackQueryData::Interest->value . CallbackQueryData::New->value],
+                    [
+                        ['text' => '✅ Так', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
+                        ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::New->value]
+                    ],
                 ]
             ];
 
@@ -59,7 +61,7 @@ class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceInterface
             );
         }
 
-        $keyboard = $this->getTripStyleKeyboard(CallbackQueryData::TripStyle);
+        $keyboard = $this->getTripStyleKeyboard();
         $text = "Який стиль подорожі ви бажаєте? 🧳";
 
         return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForTripStyle);

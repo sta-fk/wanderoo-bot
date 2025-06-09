@@ -53,14 +53,12 @@ class CustomDurationService implements StateAwareFlowStepServiceInterface
         if ($context->isAddingStopFlow) {
             $lastOneTripStyle = ($context->stops[count($context->stops) - 1])->tripStyle;
             $text = "Стиль минулої подорожі $lastOneTripStyle. Бажаєте зберегти для цієї?";
-            $keyboard = [
-                'inline_keyboard' => [
-                    [
-                        ['✅ Так', CallbackQueryData::TripStyle->value . CallbackQueryData::Reuse->value],
-                        ['❌ Ні', CallbackQueryData::TripStyle->value . CallbackQueryData::New->value],
-                    ]
-                ]
+            $keyboardItems = [
+                ['label' => '✅ Так', 'callback_data' => CallbackQueryData::Reuse->value],
+                ['label' => '❌ Ні', 'callback_data' => CallbackQueryData::New->value],
             ];
+
+            $keyboard = $this->buildSimpleKeyboard($keyboardItems, CallbackQueryData::TripStyle->value, 'label', 'callback_data');
 
             return new SendMessageContext(
                 $chatId,

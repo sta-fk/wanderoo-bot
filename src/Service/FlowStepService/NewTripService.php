@@ -2,13 +2,16 @@
 
 namespace App\Service\FlowStepService;
 
+use App\DTO\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
+use App\Enum\States;
+use App\Enum\TelegramCommands;
 use App\Service\FlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class ReadyToBuildPlanService implements FlowStepServiceInterface
+readonly class NewTripService implements FlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -18,24 +21,21 @@ readonly class ReadyToBuildPlanService implements FlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && CallbackQueryData::ReadyToBuildPlan->value === $update->callbackQuery->data
-        ;
+            && CallbackQueryData::NewTrip->value === $update->callbackQuery->data;
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $chatId = $update->callbackQuery->message->chat->id;
-        $context = $this->userStateStorage->getContext($chatId);
-
-        $context->saveLastStopDraft();
-        $context->resetCurrentStopDraft();
-        $context->disableAddingStopFlow();
+        $context = new PlanContext();
 
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(
-            $update->callbackQuery->message->chat->id,
-            "Готуємо для вас персоналізований план мандрівки... ✈️"
+            $chatId,
+            "Розпочнімо нову подорож! 🌍\n\nСпершу введіть назву країни (або частину назви):",
+            null,
+            States::WaitingForCountry
         );
     }
 }

@@ -37,10 +37,17 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
         $userInput = preg_replace('/[^\d]/', '', $update->message->text);
 
         if (!is_numeric($userInput)) {
-            return new SendMessageContext($chatId, "Не вдалося перетворити на цифру. Повторіть спробу.", null, States::WaitingForCustomBudget);
+            return new SendMessageContext(
+                $chatId,
+                "Не вдалося перетворити на цифру. Повторіть спробу.",
+                null,
+                States::WaitingForCustomBudget
+            );
         }
 
         $context->currentStopDraft->budget = $userInput;
+        $context->disableAddingStopFlow();
+
         $this->userStateStorage->saveContext($chatId, $context);
 
         return new SendMessageContext(

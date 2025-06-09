@@ -38,7 +38,7 @@ class ReuseOrNewInterestsService implements StateAwareFlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        $action = substr($update->callbackQuery->data, strlen(CallbackQueryData::TripStyle->value));
+        $action = substr($update->callbackQuery->data, strlen(CallbackQueryData::Interest->value));
 
         if ($action === CallbackQueryData::Reuse->value) {
             $lastOneStop = ($context->stops[count($context->stops) - 1]);

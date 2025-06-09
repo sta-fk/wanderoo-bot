@@ -21,16 +21,4 @@ trait BuildGeneralKeyboardTrait
 
         return ['inline_keyboard' => $keyboard];
     }
-
-    private function buildYesNoKeyboard(CallbackQueryData $callbackQueryDataPrefix): array
-    {
-        return [
-            'inline_keyboard' => [
-                [
-                    ['text' => '✅ Так', 'callback_data' => $callbackQueryDataPrefix->value . 'yes'],
-                    ['text' => '❌ Ні', 'callback_data' => $callbackQueryDataPrefix->value . 'no'],
-                ],
-            ],
-        ];
-    }
 }

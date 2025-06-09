@@ -10,7 +10,7 @@ use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardService\GetTripStyleKeyboardTrait;
 use App\Service\UserStateStorage;
 
-class PickDateService implements StateAwareFlowStepServiceInterface
+class DatePickService implements StateAwareFlowStepServiceInterface
 {
     use GetTripStyleKeyboardTrait;
 
@@ -46,7 +46,7 @@ class PickDateService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->getTripStyleKeyboard(CallbackQueryData::TripStyle);
+        $keyboard = $this->getTripStyleKeyboard();
         $text = "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b> \n\nЯкий стиль подорожі ви бажаєте? 🧳";
 
         return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForTripStyle);

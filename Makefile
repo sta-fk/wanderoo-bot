@@ -22,7 +22,7 @@ logs:  ## Show logs for all containers
 	$(COMPOSE) logs -f
 
 shell:  ## Enter PHP container shell
-	$(DOCKER) exec $(PHP_CONTAINER) sh
+	$(DOCKER) exec -it $(PHP_CONTAINER) bash
 
 ## —— Application Setup 🛠 ——
 .PHONY: install migrate seed

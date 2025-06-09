@@ -8,17 +8,14 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\GetDurationKeyboardTrait;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-class CityPickService implements StateAwareFlowStepServiceInterface
+readonly class CityPickService implements StateAwareFlowStepServiceInterface
 {
-    use GetDurationKeyboardTrait;
-
     public function __construct(
-        private readonly PlaceServiceInterface $placeService,
-        private readonly UserStateStorage $userStateStorage,
+        private PlaceServiceInterface $placeService,
+        private UserStateStorage      $userStateStorage,
     ) {
     }
 
@@ -64,8 +61,21 @@ class CityPickService implements StateAwareFlowStepServiceInterface
         return new SendMessageContext(
             $chatId,
             "Чудово! Тепер оберіть тривалість перебування у місті (днів):",
-            $this->getDurationKeyboard(CallbackQueryData::Duration),
+            $this->getDurationKeyboard(),
             States::WaitingForDuration,
         );
+    }
+
+    private function getDurationKeyboard(): array
+    {
+        return [
+            'inline_keyboard' => [
+                [['text' => '1 день', 'callback_data' => CallbackQueryData::Duration->value.'1']],
+                [['text' => '3 дні', 'callback_data' => CallbackQueryData::Duration->value.'3']],
+                [['text' => '5 днів', 'callback_data' => CallbackQueryData::Duration->value.'5']],
+                [['text' => '7 днів', 'callback_data' => CallbackQueryData::Duration->value.'7']],
+                [['text' => '🔢 Інший варіант', 'callback_data' => CallbackQueryData::Duration->value.'custom']],
+            ]
+        ];
     }
 }

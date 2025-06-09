@@ -33,13 +33,20 @@ readonly class AddStopCallbackService implements FlowStepServiceInterface
 
         $context = $this->userStateStorage->getContext($chatId);
 
+        $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в поточній країні";
         $lastOneCountryName = null;
         if (null !== $context->currentStopDraft) {
             $lastOneCountryName = $context->currentStopDraft->countryName;
-            $context->stops[] = $context->currentStopDraft;
+            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в <b>{$lastOneCountryName}</b>";
+            $context->saveLastStopDraft();
+        } elseif (!empty($context->stops)) {
+            $lastOneCountryName = ($context->stops[count($context->stops) - 1])->countryName;
+            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в <b>{$lastOneCountryName}</b>";
         }
 
-        $context->currentStopDraft = new StopContext();
+        $context->resetCurrentStopDraft();
+        $context->enableAddingStopFlow();
+
         $this->userStateStorage->saveContext($chatId, $context);
 
         $keyboard = [
@@ -48,7 +55,7 @@ readonly class AddStopCallbackService implements FlowStepServiceInterface
                     ['text' => "✅ Хочу ще в іншу країну", 'callback_data' => CallbackQueryData::StopCountryAnother->value],
                 ],
                 [
-                    ['text' => "❌ Ні, продовжу подорож в <b>{$lastOneCountryName}</b>", 'callback_data' => CallbackQueryData::StopCountrySame->value],
+                    ['text' => $negativeTextWithLastCountry, 'callback_data' => CallbackQueryData::StopCountrySame->value],
                 ],
             ],
         ];

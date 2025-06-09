@@ -5,7 +5,6 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 use App\DTO\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\DTO\StopContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
@@ -34,7 +33,6 @@ readonly class StartYesService implements StateAwareFlowStepServiceInterface
     {
         $chatId = $update->callbackQuery->message->chat->id;
         $context = new PlanContext();
-        $context->currentStopDraft = new StopContext();
 
         $this->userStateStorage->saveContext($chatId, $context);
 

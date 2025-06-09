@@ -7,6 +7,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\KeyboardService\BuildGeneralKeyboardTrait;
 use App\Service\KeyboardService\BuildInterestsKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\UserStateStorage;
@@ -14,6 +15,7 @@ use App\Service\UserStateStorage;
 readonly class TripStyleService implements StateAwareFlowStepServiceInterface
 {
     use BuildInterestsKeyboardTrait;
+    use BuildGeneralKeyboardTrait;
 
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -48,17 +50,15 @@ readonly class TripStyleService implements StateAwareFlowStepServiceInterface
     private function getSendMessageContext(int $chatId, PlanContext $context): SendMessageContext
     {
         if ($context->isAddingStopFlow) {
-            $keyboard = [
-                'inline_keyboard' => [
-                    ['✅ Так', CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
-                    ['❌ Ні', CallbackQueryData::Interest->value . CallbackQueryData::New->value],
-                ]
+            $keyboardItems = [
+                    ['text' => '✅ Так', 'callback_data' => CallbackQueryData::Reuse->value],
+                    ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::New->value],
             ];
 
             return new SendMessageContext(
                 $chatId,
                 "Стиль подорожі для {$context->currentStopDraft->cityName}: <b>{$context->currentStopDraft->tripStyle}</b>.\n\nНаступний крок...\n\n✨ Використати попередні інтереси для цієї зупинки?",
-                $keyboard,
+                $this->buildSimpleKeyboard($keyboardItems, CallbackQueryData::Interest->value, 'text', 'callback_data'),
                 States::WaitingForReuseOrNewInterests
             );
         }

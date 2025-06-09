@@ -10,7 +10,7 @@ use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class CountryCityService implements StateAwareFlowStepServiceInterface
+readonly class CountryPickService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,

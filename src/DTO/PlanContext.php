@@ -16,4 +16,37 @@ class PlanContext
     /** @var StopContext[] $stops */
     public array $stops = [];
     public ?StopContext $currentStopDraft = null;
+
+    public function __construct()
+    {
+        $this->currentStopDraft = new StopContext();
+    }
+
+    public function enableAddingStopFlow(): self
+    {
+        $this->isAddingStopFlow = true;
+
+        return $this;
+    }
+
+    public function disableAddingStopFlow(): self
+    {
+        $this->isAddingStopFlow = false;
+
+        return $this;
+    }
+
+    public function resetCurrentStopDraft(): self
+    {
+        $this->currentStopDraft = new StopContext();
+
+        return $this;
+    }
+
+    public function saveLastStopDraft(): self
+    {
+        $this->stops[] = $this->currentStopDraft;
+
+        return $this;
+    }
 }
