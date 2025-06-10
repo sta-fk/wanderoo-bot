@@ -23,4 +23,7 @@ enum States: string
     case WaitingForStopCountry = 'waiting_for_stop_country';
     case WaitingForReuseOrNewTripStyle = 'waiting_for_reuse_or_new_trip_style';
     case WaitingForReuseOrNewInterests = 'waiting_for_reuse_or_new_interests';
+    case WaitingForCurrencyChoice = 'waiting_for_currency_choice';
+    case WaitingForCurrencyCountrySearch = 'waiting_for_currency_country_search';
+    case WaitingForCurrencyCountryPick = 'waiting_for_currency_country_pick';
 }

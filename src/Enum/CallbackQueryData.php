@@ -23,9 +23,14 @@ enum CallbackQueryData: string
     // For Adding stop flow
     case StopCountrySame = 'stop_country_same';
     case StopCountryAnother = 'stop_country_another';
+    case CurrencyChoice = 'currency_choice_';
+    case CurrencyCountryPick = 'currency_country_pick_';
 
     // Query parts
     case Reuse = 'reuse';
     case New = 'new';
     case Custom = 'custom';
+    case Usd = 'usd';
+    case Eur = 'eur';
+    case FromCountry = 'from_country';
 }

@@ -7,6 +7,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardProvider\NextStateKeyboardProviderInterface;
 use App\Service\NextStateKeyboardProviderResolver;
@@ -26,6 +27,7 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
     public function __construct(
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private CurrencyResolverService $currencyResolverService,
     ) {
     }
 
@@ -50,7 +52,10 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         $callbackData = $update->callbackQuery->data;
 
         if (CallbackQueryData::InterestsDone->value === $callbackData && $context->isAddingStopFlow) {
-            return $this->buildAddingStopMessageContext($chatId, $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget));
+            $contextCurrencyCode = $this->currencyResolverService->resolveCurrencyCode($context->currentStopDraft->countryCode);
+            $nextState =  $contextCurrencyCode !== $context->currency ? States::WaitingForCurrencyChoice : States::WaitingForCustomBudget;
+
+            return $this->buildAddingStopMessageContext($chatId, $nextState, $this->keyboardProviderResolver->resolve($nextState));
         }
 
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
@@ -70,13 +75,13 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         );
     }
 
-    private function buildAddingStopMessageContext(int $chatId, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
+    private function buildAddingStopMessageContext(int $chatId, States $nextState, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
     {
         return new SendMessageContext(
             $chatId,
             $keyboardProvider->getTextMessage($chatId),
             $keyboardProvider->buildKeyboard(),
-            States::WaitingForCustomBudget
+            $nextState
         );
     }
 

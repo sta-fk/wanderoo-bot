@@ -24,11 +24,10 @@ readonly class NewTripService implements FlowStepServiceInterface
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-
         $chatId = $update->message->chat->id;
-        $context = new PlanContext();
 
-        $this->userStateStorage->saveContext($chatId, $context);
+        $this->userStateStorage->clearContext($chatId);
+        $this->userStateStorage->saveContext($chatId, new PlanContext());
 
         return new SendMessageContext(
             $chatId,

@@ -45,7 +45,9 @@ class PlanContext
 
     public function saveLastStopDraft(): self
     {
-        $this->stops[] = $this->currentStopDraft;
+        if (null !== $this->currentStopDraft->countryName) {
+            $this->stops[] = $this->currentStopDraft;
+        }
 
         return $this;
     }
