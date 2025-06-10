@@ -5,27 +5,24 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 use App\DTO\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\KeyboardService\BuildCalendarKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\BuildGeneralKeyboardTrait;
+use App\Service\KeyboardProvider\WaitingForCustomDurationKeyboardProvider;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-class CustomDurationService implements StateAwareFlowStepServiceInterface
+readonly class CustomDurationService implements StateAwareFlowStepServiceInterface
 {
-    use BuildCalendarKeyboardTrait;
-    use BuildGeneralKeyboardTrait;
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private WaitingForCustomDurationKeyboardProvider $customDurationKeyboardProvider,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->message
-            && States::WaitingForCustomDuration === $this->userStateStorage->getState($update->message->chat->id);
+        return null !== $update->message;
     }
 
     public function supportsStates(): array
@@ -39,7 +36,12 @@ class CustomDurationService implements StateAwareFlowStepServiceInterface
         $context = $this->userStateStorage->getContext($chatId);
 
         if (!is_numeric($update->message->text) || $update->message->text < 0 || $update->message->text >= 30) {
-            return new SendMessageContext($chatId, "Будь ласка, введіть число від 1 до 30.", null, States::WaitingForCustomDuration);
+            return new SendMessageContext(
+                $chatId,
+                $this->customDurationKeyboardProvider->getValidationFailedMessage(),
+                $this->customDurationKeyboardProvider->buildKeyboard(),
+                States::WaitingForCustomDuration
+            );
         }
 
         $context->currentStopDraft->duration = (int)$update->message->text;
@@ -51,27 +53,23 @@ class CustomDurationService implements StateAwareFlowStepServiceInterface
     private function getSendMessageContext(int $chatId, PlanContext $context): SendMessageContext
     {
         if ($context->isAddingStopFlow) {
-            $lastOneTripStyle = ($context->stops[count($context->stops) - 1])->tripStyle;
-            $text = "Стиль минулої подорожі $lastOneTripStyle. Бажаєте зберегти для цієї?";
-            $keyboardItems = [
-                ['label' => '✅ Так', 'callback_data' => CallbackQueryData::Reuse->value],
-                ['label' => '❌ Ні', 'callback_data' => CallbackQueryData::New->value],
-            ];
-
-            $keyboard = $this->buildSimpleKeyboard($keyboardItems, CallbackQueryData::TripStyle->value, 'label', 'callback_data');
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForReuseOrNewTripStyle);
 
             return new SendMessageContext(
                 $chatId,
-                $text,
-                $keyboard,
+                $nextStateKeyboardProvider->getTextMessage($chatId),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForReuseOrNewTripStyle
             );
         }
 
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
-        $text = "Чудово! Подорож на {$context->currentStopDraft->duration} днів. \n\n📅 Тепер оберіть дату подорожі:";
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForStartDate);
 
-        return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForStartDate);
+        return new SendMessageContext(
+            $chatId,
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
+            States::WaitingForStartDate
+        );
     }
 }

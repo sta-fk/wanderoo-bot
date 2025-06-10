@@ -7,14 +7,11 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\FlowStepServiceInterface;
-use App\Service\KeyboardService\GetReadyToBuildPlanKeyboardTrait;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 class BudgetService implements StateAwareFlowStepServiceInterface
 {
-    use GetReadyToBuildPlanKeyboardTrait;
-
     public const BUDGET_OPTIONS = [
         'none' => 'Без бюджету',
         '0_300' => 'До 300€',
@@ -26,12 +23,15 @@ class BudgetService implements StateAwareFlowStepServiceInterface
 
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
+        private readonly NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::Budget->value);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Budget->value)
+        ;
     }
 
     public function supportsStates(): array
@@ -47,22 +47,25 @@ class BudgetService implements StateAwareFlowStepServiceInterface
         $budgetKey = substr($update->callbackQuery->data, strlen(CallbackQueryData::Budget->value));
 
         if (CallbackQueryData::Custom->value === $budgetKey) {
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget);
+
             return new SendMessageContext(
                 $chatId,
-                "✍️ Введіть бажаний бюджет у євро (наприклад: <b>500</b>):",
-                null,
+                $nextStateKeyboardProvider->getTextMessage($chatId),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForCustomBudget
             );
         }
 
         $context->currentStopDraft->budget = $budgetKey;
         $this->userStateStorage->saveContext($chatId, $context);
-        $budgetOption = self::BUDGET_OPTIONS[$budgetKey];
+
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::ReadyToBuildPlan);
 
         return new SendMessageContext(
             $chatId,
-            "✅ Дякую! Орієнтовний бюджет: {$budgetOption}.\n\nТепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️",
-            $this->getBuildPlanKeyboard(),
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::ReadyToBuildPlan
         );
     }

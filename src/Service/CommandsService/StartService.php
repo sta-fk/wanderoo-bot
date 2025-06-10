@@ -9,7 +9,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\TelegramCommands;
 use App\Service\FlowStepServiceInterface;
 
-class StartService implements FlowStepServiceInterface
+readonly class StartService implements FlowStepServiceInterface
 {
     public function supports(TelegramUpdate $update): bool
     {

@@ -8,6 +8,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -15,7 +16,8 @@ readonly class CityPickService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
-        private UserStateStorage      $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -50,32 +52,23 @@ readonly class CityPickService implements StateAwareFlowStepServiceInterface
     private function getSendMessageContext(int $chatId, PlanContext $context): SendMessageContext
     {
         if ($context->isAddingStopFlow) {
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomDuration);
+
             return new SendMessageContext(
                 $chatId,
-                "Введіть кількість днів (наприклад, 4):",
-                null,
+                $nextStateKeyboardProvider->getTextMessage(),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForCustomDuration
             );
         }
 
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForDuration);
+
         return new SendMessageContext(
             $chatId,
-            "Чудово! Тепер оберіть тривалість перебування у місті (днів):",
-            $this->getDurationKeyboard(),
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForDuration,
         );
-    }
-
-    private function getDurationKeyboard(): array
-    {
-        return [
-            'inline_keyboard' => [
-                [['text' => '1 день', 'callback_data' => CallbackQueryData::Duration->value.'1']],
-                [['text' => '3 дні', 'callback_data' => CallbackQueryData::Duration->value.'3']],
-                [['text' => '5 днів', 'callback_data' => CallbackQueryData::Duration->value.'5']],
-                [['text' => '7 днів', 'callback_data' => CallbackQueryData::Duration->value.'7']],
-                [['text' => '🔢 Інший варіант', 'callback_data' => CallbackQueryData::Duration->value.'custom']],
-            ]
-        ];
     }
 }

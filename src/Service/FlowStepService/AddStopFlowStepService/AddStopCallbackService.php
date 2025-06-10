@@ -4,17 +4,13 @@ namespace App\Service\FlowStepService\AddStopFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\DTO\StopContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepServiceInterface;
-use App\Service\KeyboardService\BuildGeneralKeyboardTrait;
 use App\Service\UserStateStorage;
 
 readonly class AddStopCallbackService implements FlowStepServiceInterface
 {
-    use BuildGeneralKeyboardTrait;
-
     public function __construct(
         private UserStateStorage $userStateStorage,
     ) {
@@ -37,11 +33,11 @@ readonly class AddStopCallbackService implements FlowStepServiceInterface
         $lastOneCountryName = null;
         if (null !== $context->currentStopDraft) {
             $lastOneCountryName = $context->currentStopDraft->countryName;
-            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в <b>{$lastOneCountryName}</b>";
+            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в {$lastOneCountryName}";
             $context->saveLastStopDraft();
         } elseif (!empty($context->stops)) {
             $lastOneCountryName = ($context->stops[count($context->stops) - 1])->countryName;
-            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в <b>{$lastOneCountryName}</b>";
+            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в {$lastOneCountryName}";
         }
 
         $context->resetCurrentStopDraft();

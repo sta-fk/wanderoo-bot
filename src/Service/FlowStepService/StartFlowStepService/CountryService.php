@@ -4,15 +4,16 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Place\PlaceServiceInterface;
 
 readonly class CountryService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -36,16 +37,13 @@ readonly class CountryService implements StateAwareFlowStepServiceInterface
             return new SendMessageContext($chatId, "Не знайдено такої країни. Спробуйте ще раз.");
         }
 
-        $keyboard = [];
-        foreach ($countries as $country) {
-            $keyboard[] = [
-                [
-                    'text' => $country->name,
-                    'callback_data' => CallbackQueryData::Country->value . $country->placeId,
-                ],
-            ];
-        }
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCountryPick);
 
-        return new SendMessageContext($chatId, "Оберіть країну:", ['inline_keyboard' => $keyboard], States::WaitingForCountryCity);
+        return new SendMessageContext(
+            $chatId,
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard($countries),
+            States::WaitingForCountryPick
+        );
     }
 }

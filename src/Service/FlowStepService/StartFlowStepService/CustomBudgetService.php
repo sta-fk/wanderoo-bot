@@ -6,22 +6,24 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\GetReadyToBuildPlanKeyboardTrait;
+use App\Service\KeyboardProvider\WaitingForCustomBudgetKeyboardProvider;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
 {
-    use GetReadyToBuildPlanKeyboardTrait;
-
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private WaitingForCustomBudgetKeyboardProvider $customBudgetKeyboardProvider,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
         return $update->message?->text
-            && $this->userStateStorage->getState($update->message->chat->id) === States::WaitingForCustomBudget;
+            && $this->userStateStorage->getState($update->message->chat->id) === States::WaitingForCustomBudget
+        ;
     }
 
     public function supportsStates(): array
@@ -39,8 +41,8 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
         if (!is_numeric($userInput)) {
             return new SendMessageContext(
                 $chatId,
-                "Не вдалося перетворити на цифру. Повторіть спробу.",
-                null,
+                $this->customBudgetKeyboardProvider->getValidationFailedMessage(),
+                $this->customBudgetKeyboardProvider->buildKeyboard(),
                 States::WaitingForCustomBudget
             );
         }
@@ -50,10 +52,12 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::ReadyToBuildPlan);
+
         return new SendMessageContext(
             $chatId,
-            "✅ Дякую! Орієнтовний бюджет: {$context->budget}€ +/-.\n\nГотуємо для вас персоналізований план мандрівки... ✈️",
-            $this->getBuildPlanKeyboard(),
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::ReadyToBuildPlan
         );
     }

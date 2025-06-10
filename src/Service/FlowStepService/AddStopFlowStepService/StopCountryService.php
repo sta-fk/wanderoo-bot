@@ -7,6 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -14,7 +15,8 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
-        private UserStateStorage      $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $nextStateKeyboardProviderResolver,
     ) {
     }
 
@@ -42,10 +44,12 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
 
     private function buildContextWithAnotherCountry(TelegramUpdate $update): SendMessageContext
     {
+        $nextStateKeyboardProvider = $this->nextStateKeyboardProviderResolver->resolve(States::WaitingForCountry);
+
         return new SendMessageContext(
             $update->callbackQuery->message->chat->id,
-            "Супер, поїхали ✨! Введіть назву країни (або частину назви):",
-            null,
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForCountry
         );
     }
@@ -65,10 +69,12 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
+        $nextStateKeyboardProvider = $this->nextStateKeyboardProviderResolver->resolve(States::WaitingForCitySearch);
+
         return new SendMessageContext(
             $update->callbackQuery->message->chat->id,
-            "Введіть назву міста (або частину назви):",
-            null,
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForCitySearch
         );
     }

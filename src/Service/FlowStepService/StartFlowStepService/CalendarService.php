@@ -5,7 +5,7 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
-use App\Service\KeyboardService\BuildCalendarKeyboardTrait;
+use App\Service\KeyboardProvider\BuildCalendarKeyboardTrait;
 use App\Service\FlowStepServiceInterface;
 
 class CalendarService implements FlowStepServiceInterface

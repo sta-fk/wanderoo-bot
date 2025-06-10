@@ -7,21 +7,22 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\GetTripStyleKeyboardTrait;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 class DatePickService implements StateAwareFlowStepServiceInterface
 {
-    use GetTripStyleKeyboardTrait;
-
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
+        private readonly NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery && str_starts_with($update->callbackQuery->data, CallbackQueryData::PickDate->value);
+        return null !== $update->callbackQuery
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::PickDate->value)
+        ;
     }
 
     public function supportsStates(): array
@@ -46,9 +47,13 @@ class DatePickService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->getTripStyleKeyboard();
-        $text = "✅ Подорож з <b>$dateStr</b> по <b>{$endDate->format('Y-m-d')}</b> \n\nЯкий стиль подорожі ви бажаєте? 🧳";
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForTripStyle);
 
-        return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForTripStyle);
+        return new SendMessageContext(
+            $chatId,
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
+            States::WaitingForTripStyle
+        );
     }
 }

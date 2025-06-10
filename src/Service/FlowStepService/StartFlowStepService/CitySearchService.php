@@ -4,9 +4,9 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
-use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -14,7 +14,8 @@ readonly class CitySearchService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
-        private UserStateStorage      $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -42,20 +43,12 @@ readonly class CitySearchService implements StateAwareFlowStepServiceInterface
             return new SendMessageContext($chatId, "Не знайдено такого міста. Спробуйте ще раз.");
         }
 
-        $keyboard = [];
-        foreach ($cities as $city) {
-            $keyboard[] = [
-                [
-                    'text' => $city->name,
-                    'callback_data' => CallbackQueryData::City->value . $city->placeId,
-                ],
-            ];
-        }
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCityPick);
 
         return new SendMessageContext(
             $chatId,
-            "Оберіть місто:",
-            ['inline_keyboard' => $keyboard],
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard($cities),
             States::WaitingForCityPick
         );
     }
