@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Place;
+namespace App\Service\Integrations;
 
 use App\DTO\GooglePlace;
 use App\DTO\GooglePlaceDetails;

@@ -57,7 +57,7 @@ readonly class AddStopCallbackService implements FlowStepServiceInterface
         ];
 
         $text = null !== $lastOneCountryName
-            ? "Ви бажаєте відвідати ще якісь міста в {$lastOneCountryName}? Або бажаєте відвідати ще одну країну?"
+            ? "Поточна країна в цій подорожі: {$lastOneCountryName}. Бажаєте відвідати ще одну країну?"
             : "Чи бажаєте ще в іншу країну?";
 
 

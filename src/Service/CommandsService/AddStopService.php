@@ -28,7 +28,7 @@ readonly class AddStopService implements FlowStepServiceInterface
 
         $context = $this->userStateStorage->getContext($chatId);
 
-        if (null === $context->currentStopDraft) {
+        if (null === $context->currentStopDraft->countryName) {
             $text = "В тебе немає поточної поїздки \n\n Почнемо?";
 
             $keyboard = [
@@ -48,7 +48,14 @@ readonly class AddStopService implements FlowStepServiceInterface
             );
         }
 
+        $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в поточній країні";
         $lastOneCountryName = $context->currentStopDraft->countryName;
+        $context->saveLastStopDraft();
+        if (!empty($context->stops)) {
+            $lastOneCountryName = ($context->stops[count($context->stops) - 1])->countryName;
+            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в {$lastOneCountryName}";
+        }
+
         $context->saveLastStopDraft();
         $context->resetCurrentStopDraft();
         $context->enableAddingStopFlow();
@@ -61,13 +68,13 @@ readonly class AddStopService implements FlowStepServiceInterface
                     ['text' => "✅ Хочу ще в іншу країну", 'callback_data' => CallbackQueryData::StopCountryAnother->value],
                 ],
                 [
-                    ['text' => "❌ Ні, продовжу подорож в <b>{$lastOneCountryName}</b>", 'callback_data' => CallbackQueryData::StopCountrySame->value],
+                    ['text' => $negativeTextWithLastCountry, 'callback_data' => CallbackQueryData::StopCountrySame->value],
                 ],
             ],
         ];
 
         $text = null !== $lastOneCountryName
-            ? "Ви бажаєте відвідати ще якісь міста в {$lastOneCountryName}? Або бажаєте відвідати ще одну країну?"
+            ? "Поточна країна в цій подорожі: {$lastOneCountryName}. Бажаєте відвідати ще одну країну?"
             : "Чи бажаєте ще в іншу країну?";
 
         return new SendMessageContext(

@@ -13,7 +13,7 @@ use App\Service\UserStateStorage;
 readonly class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
-        private UserStateStorage                  $userStateStorage,
+        private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
@@ -43,7 +43,7 @@ readonly class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceIn
             $currentStopDraft->tripStyle = $lastOneStop->tripStyle;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForTripStyle);
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForReuseOrNewInterests);
 
             return new SendMessageContext(
                 $chatId,

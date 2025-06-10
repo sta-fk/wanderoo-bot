@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
-use App\Service\Place\PlaceServiceInterface;
+use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
 readonly class StopCountryService implements StateAwareFlowStepServiceInterface

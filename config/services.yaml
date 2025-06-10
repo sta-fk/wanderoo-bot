@@ -26,8 +26,12 @@ services:
             $stateTtl: '%env(STATE_TTL)%'
             $contextTtl: '%env(CONTEXT_TTL)%'
 
-    App\Service\Place\GooglePlaceService:
+    App\Service\Integrations\CountryCurrencyApiService:
+        arguments:
+            $cache: '@app.redis_cache'
+
+    App\Service\Integrations\GooglePlaceService:
         arguments:
             $googleApiKey: '%env(GOOGLE_API_KEY)%'
 
-    App\Service\Place\PlaceServiceInterface: '@App\Service\Place\GooglePlaceService'
+    App\Service\Integrations\PlaceServiceInterface: '@App\Service\Integrations\GooglePlaceService'

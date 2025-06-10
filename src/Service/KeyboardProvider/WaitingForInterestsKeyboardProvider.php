@@ -27,7 +27,7 @@ readonly class WaitingForInterestsKeyboardProvider implements NextStateKeyboardP
 
         $context = $this->userStateStorage->getContext($chatId);
 
-        return "Стиль цієї подорожі: <b>{$context->currentStopDraft->tripStyle}</b>.\n\nНаступний крок...\n\n✨ Що вас цікавить в {$context->currentStopDraft->cityName}? Оберіть кілька варіантів:";
+        return "Стиль цієї подорожі: <b>{$context->currentStopDraft->tripStyle}</b>.\n\nНаступний крок...\n\n✨ Ви їдете в {$context->currentStopDraft->cityName}. Що вас цікавить? \n<b>Оберіть кілька варіантів:</b>";
     }
 
     public function buildKeyboard(array $keyboardItems = []): array

@@ -32,7 +32,7 @@ readonly class ViewTripService implements FlowStepServiceInterface
         return new SendMessageContext($chatId, $text, $keyboard);
     }
 
-    public function buildViewTripMessage(PlanContext $context): string
+    private function buildViewTripMessage(PlanContext $context): string
     {
         if (empty($context->stops)) {
             return "🚧 Ваш план подорожі поки що порожній.\nДодайте першу зупинку за допомогою /start або /add_stop!";

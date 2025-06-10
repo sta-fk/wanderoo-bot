@@ -33,10 +33,10 @@ readonly class WaitingForReuseOrNewTripStyleKeyboardProvider implements NextStat
     public function buildKeyboard(array $keyboardItems = []): ?array
     {
         return [
-            'inline_keyboard' => [
+            'inline_keyboard' => [[
                 ['text' => '✅ Так', 'callback_data' => CallbackQueryData::TripStyle->value . CallbackQueryData::Reuse->value],
                 ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::TripStyle->value . CallbackQueryData::New->value],
-            ]
+            ]]
         ];
     }
 }
