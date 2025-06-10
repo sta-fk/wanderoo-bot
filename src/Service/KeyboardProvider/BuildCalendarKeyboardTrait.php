@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Service\KeyboardService;
+namespace App\Service\KeyboardProvider;
 
-use App\DTO\Keyboard;
 use App\Enum\CallbackQueryData;
 
 trait BuildCalendarKeyboardTrait
@@ -52,7 +51,7 @@ trait BuildCalendarKeyboardTrait
 
             $row[] = [
                 'text' => (string)$day,
-                'callback_data' => 'pick_date_' . $date,
+                'callback_data' => CallbackQueryData::PickDate->value . $date,
             ];
 
             // Якщо кінець тижня — завершуємо рядок
@@ -92,11 +91,11 @@ trait BuildCalendarKeyboardTrait
         $keyboard[] = [
             [
                 'text' => '◀️',
-                'callback_data' => "calendar_{$prevYear}_" . sprintf('%02d', $prevMonth),
+                'callback_data' => CallbackQueryData::Calendar->value . "{$prevYear}_" . sprintf('%02d', $prevMonth),
             ],
             [
                 'text' => '▶️',
-                'callback_data' => "calendar_{$nextYear}_" . sprintf('%02d', $nextMonth),
+                'callback_data' => CallbackQueryData::Calendar->value . "{$nextYear}_" . sprintf('%02d', $nextMonth),
             ],
         ];
 

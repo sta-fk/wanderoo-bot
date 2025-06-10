@@ -7,15 +7,14 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\GetTripStyleKeyboardTrait;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceInterface
+readonly class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceInterface
 {
-    use GetTripStyleKeyboardTrait;
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
+        private UserStateStorage                  $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -44,27 +43,24 @@ class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceInterface
             $currentStopDraft->tripStyle = $lastOneStop->tripStyle;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            $keyboard = [
-                'inline_keyboard' => [
-                    [
-                        ['text' => '✅ Так', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
-                        ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::New->value]
-                    ],
-                ]
-            ];
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForTripStyle);
 
             return new SendMessageContext(
                 $chatId,
-                "Стиль подорожі для {$currentStopDraft->cityName}: <b>{$currentStopDraft->tripStyle}</b>.\n\nНаступний крок...\n\n✨ Використати попередні інтереси для цієї зупинки?",
-                $keyboard,
+                $nextStateKeyboardProvider->getTextMessage($chatId),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForReuseOrNewInterests
             );
         }
 
-        $keyboard = $this->getTripStyleKeyboard();
-        $text = "Який стиль подорожі ви бажаєте? 🧳";
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForTripStyle);
 
-        return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForTripStyle);
+        return new SendMessageContext(
+            $chatId,
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
+            States::WaitingForTripStyle
+        );
 
     }
 }

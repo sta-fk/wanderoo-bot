@@ -7,7 +7,7 @@ enum States: string
     // Start flow
     case WaitingForStart = 'waiting_for_start';
     case WaitingForCountry = 'waiting_for_country';
-    case WaitingForCountryCity = 'waiting_for_country_city';
+    case WaitingForCountryPick = 'waiting_for_country_pick';
     case WaitingForCitySearch = 'waiting_for_city_search';
     case WaitingForCityPick = 'waiting_for_city_pick';
     case WaitingForDuration = 'waiting_for_duration';

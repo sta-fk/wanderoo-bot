@@ -7,18 +7,15 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\KeyboardService\BuildGeneralKeyboardTrait;
-use App\Service\KeyboardService\BuildInterestsKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class TripStyleService implements StateAwareFlowStepServiceInterface
 {
-    use BuildInterestsKeyboardTrait;
-    use BuildGeneralKeyboardTrait;
-
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -50,28 +47,22 @@ readonly class TripStyleService implements StateAwareFlowStepServiceInterface
     private function getSendMessageContext(int $chatId, PlanContext $context): SendMessageContext
     {
         if ($context->isAddingStopFlow) {
-            $keyboardItems = [
-                    ['text' => '✅ Так', 'callback_data' => CallbackQueryData::Reuse->value],
-                    ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::New->value],
-            ];
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForReuseOrNewInterests);
 
             return new SendMessageContext(
                 $chatId,
-                "Стиль подорожі для {$context->currentStopDraft->cityName}: <b>{$context->currentStopDraft->tripStyle}</b>.\n\nНаступний крок...\n\n✨ Використати попередні інтереси для цієї зупинки?",
-                $this->buildSimpleKeyboard($keyboardItems, CallbackQueryData::Interest->value, 'text', 'callback_data'),
+                $nextStateKeyboardProvider->getTextMessage($chatId),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForReuseOrNewInterests
             );
         }
 
-        $keyboard = $this->buildInterestsKeyboard(
-            $context->currentStopDraft->interests,
-            InterestsService::INTERESTS
-        );
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForInterests);
 
         return new SendMessageContext(
             $chatId,
-            "Ви обрали стиль подорожі: <b>{$context->currentStopDraft->tripStyle}</b>.\n\nНаступний крок...\n\n✨ Що вас цікавить у подорожі? Оберіть кілька варіантів:",
-            $keyboard,
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForInterests
         );
     }

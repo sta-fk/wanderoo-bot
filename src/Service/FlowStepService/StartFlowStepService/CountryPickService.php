@@ -7,6 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Place\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -14,7 +15,8 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
-        private UserStateStorage      $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -27,7 +29,7 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
 
     public function supportsStates(): array
     {
-        return [States::WaitingForCountryCity];
+        return [States::WaitingForCountryPick];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -45,11 +47,13 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCitySearch);
+
         return new SendMessageContext(
             $chatId,
-            "Введіть назву міста (або частину назви):",
-            null,
-            States::WaitingForCitySearch
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard(),
+            States::WaitingForCitySearch,
         );
     }
 }

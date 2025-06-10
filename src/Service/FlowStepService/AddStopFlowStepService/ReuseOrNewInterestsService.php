@@ -6,19 +6,15 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\FlowStepService\StartFlowStepService\BudgetService;
-use App\Service\FlowStepService\StartFlowStepService\InterestsService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardService\BuildInterestsKeyboardTrait;
-use App\Service\KeyboardService\GetTripStyleKeyboardTrait;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-class ReuseOrNewInterestsService implements StateAwareFlowStepServiceInterface
+readonly class ReuseOrNewInterestsService implements StateAwareFlowStepServiceInterface
 {
-    use BuildInterestsKeyboardTrait;
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -47,28 +43,22 @@ class ReuseOrNewInterestsService implements StateAwareFlowStepServiceInterface
             $currentStopDraft->interests = $lastOneStop->interests;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            $selectedLabels = array_map(
-                static fn ($key) => strtolower(InterestsService::INTERESTS[$key]) ?? $key,
-                $context->currentStopDraft->interests ?? []
-            );
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget);
 
             return new SendMessageContext(
                 $chatId,
-                "Чудово! Інтереси для {$currentStopDraft->cityName}: " . implode(', ', $selectedLabels) . ".\n\n✍️ Введіть бажаний бюджет у євро (наприклад: <b>100</b>):",
-                null,
+                $nextStateKeyboardProvider->getTextMessage($chatId),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForCustomBudget
             );
         }
 
-        $keyboard = $this->buildInterestsKeyboard(
-            $context->currentStopDraft->interests,
-            InterestsService::INTERESTS
-        );
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForInterests);
 
         return new SendMessageContext(
             $chatId,
-            "✨ Що вас цікавить в {$context->currentStopDraft->cityName}? Оберіть кілька варіантів:",
-            $keyboard,
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard($context->currentStopDraft->interests),
             States::WaitingForInterests
         );
 

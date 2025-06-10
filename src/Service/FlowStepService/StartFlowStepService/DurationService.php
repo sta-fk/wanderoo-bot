@@ -6,16 +6,15 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\KeyboardService\BuildCalendarKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-class DurationService implements StateAwareFlowStepServiceInterface
+readonly class DurationService implements StateAwareFlowStepServiceInterface
 {
-    use BuildCalendarKeyboardTrait;
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
+        private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -38,10 +37,12 @@ class DurationService implements StateAwareFlowStepServiceInterface
         $context = $this->userStateStorage->getContext($chatId);
 
         if (CallbackQueryData::Custom->value === $durationValue) {
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomDuration);
+
             return new SendMessageContext(
                 $chatId,
-                "Введіть кількість днів (наприклад, 4):",
-                null,
+                $nextStateKeyboardProvider->getTextMessage(),
+                $nextStateKeyboardProvider->buildKeyboard(),
                 States::WaitingForCustomDuration
             );
         }
@@ -49,10 +50,13 @@ class DurationService implements StateAwareFlowStepServiceInterface
         $context->currentStopDraft->duration = (int) $durationValue;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
-        $text = "Чудово! Подорож на {$durationValue} днів. \n\n📅 Тепер оберіть дату подорожі:";
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForStartDate);
 
-        return new SendMessageContext($chatId, $text, $keyboard, States::WaitingForStartDate);
+        return new SendMessageContext(
+            $chatId,
+            $nextStateKeyboardProvider->getTextMessage($chatId),
+            $nextStateKeyboardProvider->buildKeyboard(),
+            States::WaitingForStartDate
+        );
     }
 }

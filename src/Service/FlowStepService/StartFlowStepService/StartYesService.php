@@ -7,6 +7,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -14,6 +15,7 @@ readonly class StartYesService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -36,10 +38,12 @@ readonly class StartYesService implements StateAwareFlowStepServiceInterface
 
         $this->userStateStorage->saveContext($chatId, $context);
 
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCountry);
+
         return new SendMessageContext(
             $chatId,
-            "Супер, поїхали ✨! Введіть назву країни (або частину назви):",
-            null,
+            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForCountry
         );
     }

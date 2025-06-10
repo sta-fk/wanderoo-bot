@@ -7,14 +7,13 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\KeyboardService\BuildInterestsKeyboardTrait;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\KeyboardProvider\NextStateKeyboardProviderInterface;
+use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class InterestsService implements StateAwareFlowStepServiceInterface
 {
-    use BuildInterestsKeyboardTrait;
-
     public const INTERESTS = [
         'city' => '🏙️ Міста',
         'nature' => '🏞️ Природа',
@@ -26,6 +25,7 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
 
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -33,7 +33,8 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
     {
         return null !== $update->callbackQuery
             && (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value)
-            || $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
+            || $update->callbackQuery->data === CallbackQueryData::InterestsDone->value)
+        ;
     }
 
     public function supportsStates(): array
@@ -48,59 +49,45 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
 
         $callbackData = $update->callbackQuery->data;
 
+        if (CallbackQueryData::InterestsDone->value === $callbackData && $context->isAddingStopFlow) {
+            return $this->buildAddingStopMessageContext($chatId, $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget));
+        }
+
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
-            $selectedLabels = array_map(
-                static fn ($key) => strtolower(self::INTERESTS[$key]) ?? $key,
-                $context->currentStopDraft->interests ?? []
-            );
-
-            if ($context->isAddingStopFlow) {
-                return $this->buildAddingStopMessageContext($chatId, $selectedLabels);
-            }
-
-            return $this->buildInterestsDoneMessageContext($chatId, $selectedLabels);
+            return $this->buildInterestsDoneMessageContext($chatId, $this->keyboardProviderResolver->resolve(States::WaitingForBudget));
         }
 
         $this->processSelectedInterests($update, $context);
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $keyboard = $this->buildInterestsKeyboard($context->currentStopDraft->interests, self::INTERESTS);
-
-        return new SendMessageContext($chatId, "✨ Оновлено. Щось ще?", $keyboard);
+        return new SendMessageContext(
+            $chatId,
+            "✨ Оновлено. Щось ще?",
+            $this->keyboardProviderResolver
+                ->resolve(States::WaitingForInterests)
+                ->buildKeyboard($context->currentStopDraft->interests)
+        );
     }
 
-    private function buildAddingStopMessageContext(int $chatId, array $selectedInterestsLabels): SendMessageContext
+    private function buildAddingStopMessageContext(int $chatId, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
     {
         return new SendMessageContext(
             $chatId,
-            "Чудово! Ви обрали інтереси: " . implode(', ', $selectedInterestsLabels) . ".\n\n✍️ Введіть бажаний бюджет у євро (наприклад: <b>100</b>):",
-            null,
+            $keyboardProvider->getTextMessage($chatId),
+            $keyboardProvider->buildKeyboard(),
             States::WaitingForCustomBudget
         );
     }
 
-    private function buildInterestsDoneMessageContext(int $chatId, array $selectedInterestsLabels): SendMessageContext
+    private function buildInterestsDoneMessageContext(int $chatId, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
     {
         return new SendMessageContext(
             $chatId,
-            "Чудово! Ви обрали інтереси: " . implode(', ', $selectedInterestsLabels) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:",
-            $this->buildBudgetKeyboard(BudgetService::BUDGET_OPTIONS),
+            $keyboardProvider->getTextMessage($chatId),
+            $keyboardProvider->buildKeyboard(),
             States::WaitingForBudget
         );
-    }
-
-    private function buildBudgetKeyboard(array $budgetOptions): array
-    {
-        $budgetKeyboard = [];
-        foreach ($budgetOptions as $callback => $label) {
-            $budgetKeyboard[] = [[
-                'text' => $label,
-                'callback_data' => CallbackQueryData::Budget->value . $callback,
-            ]];
-        }
-
-        return ['inline_keyboard' => $budgetKeyboard];
     }
 
     private function processSelectedInterests(TelegramUpdate $update, PlanContext $context): void
