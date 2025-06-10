@@ -49,14 +49,16 @@ readonly class AddStopService implements FlowStepServiceInterface
         }
 
         $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в поточній країні";
-        $lastOneCountryName = $context->currentStopDraft->countryName;
-        $context->saveLastStopDraft();
-        if (!empty($context->stops)) {
+        $lastOneCountryName = null;
+        if (null !== $context->currentStopDraft) {
+            $lastOneCountryName = $context->currentStopDraft->countryName;
+            $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в {$lastOneCountryName}";
+            $context->saveLastStopDraft();
+        } elseif (!empty($context->stops)) {
             $lastOneCountryName = ($context->stops[count($context->stops) - 1])->countryName;
             $negativeTextWithLastCountry = "❌ Ні, продовжу подорож в {$lastOneCountryName}";
         }
 
-        $context->saveLastStopDraft();
         $context->resetCurrentStopDraft();
         $context->enableAddingStopFlow();
 

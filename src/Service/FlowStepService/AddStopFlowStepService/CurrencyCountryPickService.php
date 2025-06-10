@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\FlowStepService\StartFlowStepService;
+namespace App\Service\FlowStepService\AddStopFlowStepService;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
@@ -12,7 +12,7 @@ use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class CountryPickService implements StateAwareFlowStepServiceInterface
+readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
@@ -25,13 +25,13 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyCountryPick->value)
         ;
     }
 
     public function supportsStates(): array
     {
-        return [States::WaitingForCountryPick];
+        return [States::WaitingForCurrencyCountryPick];
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
@@ -39,24 +39,21 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::Country->value));
-
+        $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::CurrencyCountryPick->value));
         $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
 
-        $context->currentStopDraft->countryName = $countryDetails->name;
-        $context->currentStopDraft->countryCode = $countryDetails->countryCode;
-        $context->currentStopDraft->countryPlaceId = $countryPlaceId;
-        $context->currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
+        $currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
 
+        $context->currency = $currency;
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCitySearch);
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget);
 
         return new SendMessageContext(
             $chatId,
             $nextStateKeyboardProvider->getTextMessage(),
             $nextStateKeyboardProvider->buildKeyboard(),
-            States::WaitingForCitySearch,
+            States::WaitingForCustomBudget
         );
     }
 }

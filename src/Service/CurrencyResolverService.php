@@ -31,6 +31,6 @@ class CurrencyResolverService
     {
         $countryCode = strtoupper($countryCode);
 
-        return $this->countryCurrencyMap[$countryCode] ?? $this->countryCurrencyApiService->getCurrencyCode($countryCode);
+        return self::COUNTRY_TO_CURRENCY[$countryCode] ?? $this->countryCurrencyApiService->getCurrencyCode($countryCode);
     }
 }

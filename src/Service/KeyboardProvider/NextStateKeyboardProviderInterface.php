@@ -9,6 +9,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 interface NextStateKeyboardProviderInterface
 {
     public function supports(States $requiredState): bool;
-    public function buildKeyboard(array $keyboardItems = []): ?array;
     public function getTextMessage(int $chatId = 0): string;
+    public function buildKeyboard(array $keyboardItems = []): ?array;
 }
