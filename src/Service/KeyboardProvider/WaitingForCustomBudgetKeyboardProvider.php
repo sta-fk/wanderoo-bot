@@ -53,7 +53,8 @@ readonly class WaitingForCustomBudgetKeyboardProvider implements NextStateKeyboa
 
         return match ($uncompletedState) {
             States::WaitingForCurrencyChoice => "Валюта плану встановлена: {$context->currency}. \n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>100</b>):",
-            States::WaitingForInterests => "Чудово! Інтереси для {$context->currentStopDraft->cityName}: " . implode(', ', $selectedLabels) . ".\n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>100</b>):",
+            States::WaitingForInterests,
+            States::WaitingForReuseOrNewInterests => "Чудово! Інтереси для {$context->currentStopDraft->cityName}: " . implode(', ', $selectedLabels) . ".\n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>100</b>):",
             default => throw new \LogicException("Keyboard is not configured"),
         };
     }

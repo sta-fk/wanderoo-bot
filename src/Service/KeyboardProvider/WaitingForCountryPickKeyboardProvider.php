@@ -24,7 +24,7 @@ readonly class WaitingForCountryPickKeyboardProvider implements NextStateKeyboar
             $keyboard[] = [
                 [
                     'text' => $country->name,
-                    'callback_data' => CallbackQueryData::Country->value . $country->placeId,
+                    'callback_data' => CallbackQueryData::CurrencyCountryPick->value . $country->placeId,
                 ],
             ];
         }

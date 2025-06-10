@@ -6,6 +6,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
@@ -15,6 +16,7 @@ readonly class ReuseOrNewInterestsService implements StateAwareFlowStepServiceIn
     public function __construct(
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private CurrencyResolverService $currencyResolverService,
     ) {
     }
 
@@ -43,13 +45,15 @@ readonly class ReuseOrNewInterestsService implements StateAwareFlowStepServiceIn
             $currentStopDraft->interests = $lastOneStop->interests;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget);
+            $contextCurrencyCode = $this->currencyResolverService->resolveCurrencyCode($context->currentStopDraft->countryCode);
+            $nextState =  $contextCurrencyCode !== $context->currency ? States::WaitingForCurrencyChoice : States::WaitingForCustomBudget;
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve($nextState);
 
             return new SendMessageContext(
                 $chatId,
                 $nextStateKeyboardProvider->getTextMessage($chatId),
                 $nextStateKeyboardProvider->buildKeyboard(),
-                States::WaitingForCustomBudget
+                $nextState
             );
         }
 

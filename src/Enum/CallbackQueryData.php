@@ -30,7 +30,7 @@ enum CallbackQueryData: string
     case Reuse = 'reuse';
     case New = 'new';
     case Custom = 'custom';
-    case Usd = 'usd';
-    case Eur = 'eur';
+    case Usd = 'USD';
+    case Eur = 'EUR';
     case FromCountry = 'from_country';
 }

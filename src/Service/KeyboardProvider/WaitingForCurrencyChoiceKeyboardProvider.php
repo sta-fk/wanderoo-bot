@@ -5,7 +5,7 @@ namespace App\Service\KeyboardProvider;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 
-class WaitingForCurrencyChoiceKeyboardProvider implements NextStateKeyboardProviderInterface
+readonly class WaitingForCurrencyChoiceKeyboardProvider implements NextStateKeyboardProviderInterface
 {
     public function supports(States $requiredState): bool
     {

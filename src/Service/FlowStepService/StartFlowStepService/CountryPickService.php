@@ -46,7 +46,10 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
         $context->currentStopDraft->countryName = $countryDetails->name;
         $context->currentStopDraft->countryCode = $countryDetails->countryCode;
         $context->currentStopDraft->countryPlaceId = $countryPlaceId;
-        $context->currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
+
+        if (!$context->isAddingStopFlow) {
+            $context->currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
+        }
 
         $this->userStateStorage->saveContext($chatId, $context);
 

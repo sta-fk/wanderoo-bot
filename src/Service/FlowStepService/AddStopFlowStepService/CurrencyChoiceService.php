@@ -38,7 +38,7 @@ readonly class CurrencyChoiceService implements StateAwareFlowStepServiceInterfa
 
         $choice = substr($update->callbackQuery->data, strlen(CallbackQueryData::CurrencyChoice->value));
 
-        if ($choice === CallbackQueryData::CurrencyChoice->value) {
+        if ($choice === CallbackQueryData::FromCountry->value) {
             $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCurrencyCountrySearch);
 
             return new SendMessageContext(
@@ -59,7 +59,7 @@ readonly class CurrencyChoiceService implements StateAwareFlowStepServiceInterfa
 
         return new SendMessageContext(
             $chatId,
-            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->getTextMessage($chatId),
             $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForCustomBudget
         );
