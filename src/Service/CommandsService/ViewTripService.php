@@ -40,63 +40,57 @@ readonly class ViewTripService implements FlowStepServiceInterface
 
         $lines = [];
 
-        // Заголовок плану
-        $lines[] = "🗺️ <b>Ваш план подорожі</b>";
         if ($context->planName) {
-            $lines[] = "Назва плану: <b>{$context->planName}</b>";
+            $lines[] = "📍 <b>{$context->planName}</b>";
         }
 
-        // Дати та загальна тривалість
         if ($context->startDate && $context->endDate) {
-            $startDateStr = $context->startDate->format('d.m.Y');
-            $endDateStr = $context->endDate->format('d.m.Y');
-            $lines[] = "📅 Дати: <b>{$startDateStr}</b> - <b>{$endDateStr}</b>";
+            $lines[] = "📅 <b>{$context->startDate->format('d.m.Y')}</b> — <b>{$context->endDate->format('d.m.Y')}</b>";
         }
 
-        if ($context->totalDuration !== null) {
-            $lines[] = "⏳ Загальна тривалість: <b>{$context->totalDuration} днів</b>";
+        if ($context->currency) {
+            $lines[] = "💱 Валюта плану: <b>{$context->currency}</b>";
         }
 
-        // Загальний бюджет + валюта
-        if ($context->totalBudget !== null && $context->currency !== null) {
+        if ($context->totalBudget) {
             $lines[] = "💰 Загальний бюджет: <b>{$context->totalBudget} {$context->currency}</b>";
-        } elseif ($context->totalBudget !== null) {
-            $lines[] = "💰 Загальний бюджет: <b>{$context->totalBudget}</b>";
         }
 
-        $lines[] = ""; // порожній рядок для відступу
+        $lines[] = "\n<b>Зупинки:</b>";
 
-        // Перелік зупинок
-        foreach ($context->stops as $index => $stop) {
-            $stopNumber = $index + 1;
-            $lines[] = "📍 <b>Зупинка {$stopNumber}</b>";
+        foreach ($context->stops as $i => $stop) {
+            $stopLines = [];
 
-            if ($stop->countryName && $stop->cityName) {
-                $lines[] = "🌍 <b>{$stop->countryName}</b> → 🏙️ <b>{$stop->cityName}</b>";
-            } elseif ($stop->cityName) {
-                $lines[] = "🏙️ <b>{$stop->cityName}</b>";
-            } elseif ($stop->countryName) {
-                $lines[] = "🌍 <b>{$stop->countryName}</b>";
+            $stopLines[] = "🔹 <b>" . ($stop->cityName ?? 'Місто?') . "</b>, " . ($stop->countryName ?? 'Країна?');
+
+            if ($stop->duration) {
+                $stopLines[] = "   🕒 Днів: {$stop->duration}";
             }
 
-            if ($stop->duration !== null) {
-                $lines[] = "⏳ Тривалість: <b>{$stop->duration} днів</b>";
-            }
-
-            if ($stop->tripStyle !== null) {
-                $lines[] = "🎒 Стиль подорожі: <b>{$stop->tripStyle}</b>";
+            if ($stop->tripStyle) {
+                $stopLines[] = "   🎒 Стиль: {$stop->getTripStyleLabel()}";
             }
 
             if (!empty($stop->interests)) {
-                $interestsStr = implode(', ', $stop->interests);
-                $lines[] = "🎯 Інтереси: <b>{$interestsStr}</b>";
+                $interests = implode(', ', $stop->getInterestsLabels());
+                $stopLines[] = "   🧭 Інтереси: {$interests}";
             }
 
-            if ($stop->budget !== null) {
-                $lines[] = "💸 Бюджет на зупинку: <b>{$stop->budget}</b>";
+            if ($stop->budget !== null && $stop->budget !== 'none') {
+                $budgetLine = "   💵 Бюджет: {$stop->budget} " . ($stop->currency ?? $context->currency);
+
+                if (
+                    $context->currency &&
+                    isset($stop->budgetInPlanCurrency) &&
+                    $stop->currency !== $context->currency
+                ) {
+                    $budgetLine .= " (~{$stop->budgetInPlanCurrency} {$context->currency})";
+                }
+
+                $stopLines[] = $budgetLine;
             }
 
-            $lines[] = ""; // порожній рядок між зупинками
+            $lines[] = implode("\n", $stopLines);
         }
 
         return implode("\n", $lines);

@@ -25,7 +25,8 @@ class CurrencyResolverService
 
     public function __construct(
         private readonly CountryCurrencyApiService $countryCurrencyApiService,
-    ) {}
+    ) {
+    }
 
     public function resolveCurrencyCode(string $countryCode): ?string
     {

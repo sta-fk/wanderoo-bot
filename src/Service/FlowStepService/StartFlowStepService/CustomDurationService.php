@@ -45,6 +45,9 @@ readonly class CustomDurationService implements StateAwareFlowStepServiceInterfa
         }
 
         $context->currentStopDraft->duration = (int)$update->message->text;
+        $context->updateTotalDuration();
+        $context->updateEndDate();
+
         $this->userStateStorage->saveContext($chatId, $context);
 
         return $this->getSendMessageContext($chatId, $context);

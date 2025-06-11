@@ -25,7 +25,7 @@ readonly class WaitingForReuseOrNewTripStyleKeyboardProvider implements NextStat
         }
 
         $context = $this->userStateStorage->getContext($chatId);
-        $lastOneTripStyle = ($context->stops[count($context->stops) - 1])->tripStyle;
+        $lastOneTripStyle = ($context->stops[count($context->stops) - 1])->getTripStyleLabel();
 
         return "Стиль минулої подорожі $lastOneTripStyle. Бажаєте зберегти для цієї?";
     }

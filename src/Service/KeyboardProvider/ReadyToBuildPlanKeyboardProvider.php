@@ -26,9 +26,8 @@ readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProv
         }
 
         $context = $this->userStateStorage->getContext($chatId);
-        $budgetOption = BudgetService::BUDGET_OPTIONS[$context->currentStopDraft->budget] ?? $context->currentStopDraft->budget;
 
-        return "✅ Дякую! Орієнтовний бюджет: {$budgetOption}.\n\nТепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️";
+        return "✅ Дякую! Орієнтовний бюджет: {$context->currentStopDraft->budgetInPlanCurrency} {$context->currency}.\n\nТепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array

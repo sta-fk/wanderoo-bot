@@ -6,6 +6,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
@@ -17,6 +18,7 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
         private PlaceServiceInterface $placeService,
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $nextStateKeyboardProviderResolver,
+        private CurrencyResolverService $currencyResolverService,
     ) {
     }
 
@@ -66,6 +68,7 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
         $context->currentStopDraft->countryName = $countryDetails->name;
         $context->currentStopDraft->countryCode = $countryDetails->countryCode;
         $context->currentStopDraft->countryPlaceId = $countryPlaceId;
+        $context->currentStopDraft->currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
 
         $this->userStateStorage->saveContext($chatId, $context);
 

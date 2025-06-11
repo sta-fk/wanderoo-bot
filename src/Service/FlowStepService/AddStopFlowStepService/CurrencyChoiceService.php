@@ -6,6 +6,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\BudgetHelperService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
@@ -15,6 +16,7 @@ readonly class CurrencyChoiceService implements StateAwareFlowStepServiceInterfa
     public function __construct(
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private BudgetHelperService $budgetHelperService,
     ) {
     }
 
@@ -22,7 +24,7 @@ readonly class CurrencyChoiceService implements StateAwareFlowStepServiceInterfa
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyChoice->value)
-            ;
+        ;
 
     }
 
@@ -52,6 +54,10 @@ readonly class CurrencyChoiceService implements StateAwareFlowStepServiceInterfa
         if ($choice === CallbackQueryData::Usd->value || $choice === CallbackQueryData::Eur->value) {
             $context->currency = $choice;
         }
+
+        // !! Встановити нову основну валюту
+        $this->budgetHelperService->recalculateAllStopBudgetsToNewCurrency($context, $context->currency);
+        $context->isSetDefaultCurrency = true;
 
         $this->userStateStorage->saveContext($chatId, $context);
 

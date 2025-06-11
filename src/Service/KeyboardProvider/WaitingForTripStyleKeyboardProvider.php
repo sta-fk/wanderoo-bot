@@ -4,6 +4,7 @@ namespace App\Service\KeyboardProvider;
 
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\FlowStepService\StartFlowStepService\TripStyleService;
 use App\Service\UserStateStorage;
 
 readonly class WaitingForTripStyleKeyboardProvider implements NextStateKeyboardProviderInterface
@@ -34,14 +35,23 @@ readonly class WaitingForTripStyleKeyboardProvider implements NextStateKeyboardP
 
     public function buildKeyboard(array $keyboardItems = []): ?array
     {
+        $keyboard = [];
+
+        foreach (array_chunk(TripStyleService::TRIP_STYLE_OPTIONS, 2, true) as $pair) {
+            $row = [];
+
+            foreach ($pair as $key => $label) {
+                $row[] = [
+                    'text' => $label,
+                    'callback_data' => CallbackQueryData::TripStyle->value . $key,
+                ];
+            }
+
+            $keyboard[] = $row;
+        }
+
         return [
-            'inline_keyboard' => [
-                [
-                    ['text' => '🧘 Лайтовий', 'callback_data' => CallbackQueryData::TripStyle->value . 'лайтовий'],
-                    ['text' => '🚀 Активний', 'callback_data' => CallbackQueryData::TripStyle->value . 'активний'],
-                    ['text' => '🎭 Змішаний', 'callback_data' => CallbackQueryData::TripStyle->value . 'змішаний'],
-                ],
-            ]
+            'inline_keyboard' => $keyboard,
         ];
     }
 }

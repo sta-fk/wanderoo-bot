@@ -45,8 +45,7 @@ readonly class ReuseOrNewInterestsService implements StateAwareFlowStepServiceIn
             $currentStopDraft->interests = $lastOneStop->interests;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            $contextCurrencyCode = $this->currencyResolverService->resolveCurrencyCode($context->currentStopDraft->countryCode);
-            $nextState =  $contextCurrencyCode !== $context->currency ? States::WaitingForCurrencyChoice : States::WaitingForCustomBudget;
+            $nextState = $context->currentStopDraft->currency !== $context->currency && false === $context->isSetDefaultCurrency ? States::WaitingForCurrencyChoice : States::WaitingForCustomBudget;
             $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve($nextState);
 
             return new SendMessageContext(

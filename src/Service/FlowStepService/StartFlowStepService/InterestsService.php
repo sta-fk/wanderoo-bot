@@ -26,10 +26,9 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
     ];
 
     public function __construct(
-        private UserStateStorage $userStateStorage,
+        private UserStateStorage                  $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
-        private CurrencyResolverService $currencyResolverService,
-        private BudgetOptionsProvider $budgetOptionsProvider,
+        private BudgetOptionsProvider             $budgetOptionsProvider,
     ) {
     }
 
@@ -37,8 +36,7 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
     {
         return null !== $update->callbackQuery
             && (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value)
-            || $update->callbackQuery->data === CallbackQueryData::InterestsDone->value)
-        ;
+                || $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
     }
 
     public function supportsStates(): array
@@ -54,8 +52,7 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         $callbackData = $update->callbackQuery->data;
 
         if (CallbackQueryData::InterestsDone->value === $callbackData && $context->isAddingStopFlow) {
-            $contextCurrencyCode = $this->currencyResolverService->resolveCurrencyCode($context->currentStopDraft->countryCode);
-            $nextState =  $contextCurrencyCode !== $context->currency ? States::WaitingForCurrencyChoice : States::WaitingForCustomBudget;
+            $nextState = $context->currentStopDraft->currency !== $context->currency && false === $context->isSetDefaultCurrency ? States::WaitingForCurrencyChoice : States::WaitingForCustomBudget;
 
             return $this->buildAddingStopMessageContext($chatId, $nextState, $this->keyboardProviderResolver->resolve($nextState));
         }

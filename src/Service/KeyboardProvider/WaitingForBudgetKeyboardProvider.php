@@ -26,12 +26,8 @@ readonly class WaitingForBudgetKeyboardProvider implements NextStateKeyboardProv
         }
 
         $context = $this->userStateStorage->getContext($chatId);
-        $selectedLabels = array_map(
-            static fn ($key) => strtolower(InterestsService::INTERESTS[$key]) ?? $key,
-            $context->currentStopDraft->interests ?? []
-        );
 
-        return "Чудово! Ви обрали інтереси: " . implode(', ', $selectedLabels) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:";
+        return "Чудово! Ви обрали інтереси: " . implode(', ', $context->currentStopDraft->getInterestsLabels()) . ".\n\n💰 Тепер оберіть орієнтовний бюджет на подорож:";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array

@@ -14,7 +14,7 @@ readonly class WaitingForCountryPickKeyboardProvider implements NextStateKeyboar
 
     public function getTextMessage(int $chatId = 0): string
     {
-        return "Оберіть країну:";
+        return "Країни за вашим запитом:";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array
@@ -24,7 +24,7 @@ readonly class WaitingForCountryPickKeyboardProvider implements NextStateKeyboar
             $keyboard[] = [
                 [
                     'text' => $country->name,
-                    'callback_data' => CallbackQueryData::CurrencyCountryPick->value . $country->placeId,
+                    'callback_data' => CallbackQueryData::Country->value . $country->placeId,
                 ],
             ];
         }

@@ -6,6 +6,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\BudgetHelperService;
 use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
@@ -19,6 +20,7 @@ readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceIn
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
         private CurrencyResolverService $currencyResolverService,
+        private BudgetHelperService $budgetHelperService,
     ) {
     }
 
@@ -44,14 +46,17 @@ readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceIn
 
         $currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
 
-        $context->currency = $currency;
+        // !! Встановити нову основну валюту
+        $this->budgetHelperService->recalculateAllStopBudgetsToNewCurrency($context, $currency);
+        $context->isSetDefaultCurrency = true;
+
         $this->userStateStorage->saveContext($chatId, $context);
 
         $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCustomBudget);
 
         return new SendMessageContext(
             $chatId,
-            $nextStateKeyboardProvider->getTextMessage(),
+            $nextStateKeyboardProvider->getTextMessage($chatId),
             $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForCustomBudget
         );

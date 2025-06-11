@@ -8,7 +8,7 @@ use App\Enum\CallbackQueryData;
 use App\Service\KeyboardProvider\BuildCalendarKeyboardTrait;
 use App\Service\FlowStepServiceInterface;
 
-class CalendarService implements FlowStepServiceInterface
+readonly class CalendarService implements FlowStepServiceInterface
 {
     use BuildCalendarKeyboardTrait;
 

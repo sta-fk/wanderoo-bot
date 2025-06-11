@@ -54,4 +54,39 @@ class PlanContext
 
         return $this;
     }
+
+    public function updateTotalBudget(): void
+    {
+        $total = 0;
+
+        foreach ($this->stops as $stop) {
+            if (isset($stop->budgetInPlanCurrency)) {
+                $total += $stop->budgetInPlanCurrency;
+            }
+        }
+
+        $this->totalBudget = round($total, -1);
+    }
+
+    public function updateTotalDuration(): void
+    {
+        $total = 0;
+
+        foreach ($this->stops as $stop) {
+            if (isset($stop->duration)) {
+                $total += $stop->duration;
+            }
+        }
+
+        $this->totalDuration = $total;
+    }
+
+    public function updateEndDate(): void
+    {
+        if ($this->startDate && $this->totalDuration) {
+            $this->endDate = $this->startDate->modify('+' . $this->totalDuration . ' days');
+        } else {
+            $this->endDate = null;
+        }
+    }
 }

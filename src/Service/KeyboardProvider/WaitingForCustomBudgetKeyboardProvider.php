@@ -3,14 +3,16 @@
 namespace App\Service\KeyboardProvider;
 
 use App\DTO\PlanContext;
+use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\FlowStepService\StartFlowStepService\InterestsService;
+use App\Service\Integrations\CurrencyExchangerService;
 use App\Service\UserStateStorage;
 
 readonly class WaitingForCustomBudgetKeyboardProvider implements NextStateKeyboardProviderInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private CurrencyExchangerService $currencyExchangerService,
     ) {
     }
 
@@ -33,7 +35,9 @@ readonly class WaitingForCustomBudgetKeyboardProvider implements NextStateKeyboa
         $context = $this->userStateStorage->getContext($chatId);
 
         if (!$context->isAddingStopFlow) {
-            return "✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>500</b>):";
+            $potentialAmount = $this->currencyExchangerService->convert(500, CallbackQueryData::Usd->value, $context->currency);
+
+            return "✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>{$potentialAmount}</b>):";
         }
 
         return $this->getTextMessageAfterStates($context, $this->userStateStorage->getState($chatId));
@@ -46,15 +50,13 @@ readonly class WaitingForCustomBudgetKeyboardProvider implements NextStateKeyboa
 
     private function getTextMessageAfterStates(PlanContext $context, States $uncompletedState): string
     {
-        $selectedLabels = array_map(
-            static fn ($key) => strtolower(InterestsService::INTERESTS[$key]) ?? $key,
-            $context->currentStopDraft->interests ?? []
-        );
+        $potentialAmount = $this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $context->currency);
 
         return match ($uncompletedState) {
-            States::WaitingForCurrencyChoice => "Валюта плану встановлена: {$context->currency}. \n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>100</b>):",
+            States::WaitingForCurrencyChoice,
+            States::WaitingForCurrencyCountryPick => "Валюта плану встановлена: {$context->currency}. \n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>{$potentialAmount}</b>):",
             States::WaitingForInterests,
-            States::WaitingForReuseOrNewInterests => "Чудово! Інтереси для {$context->currentStopDraft->cityName}: " . implode(', ', $selectedLabels) . ".\n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>100</b>):",
+            States::WaitingForReuseOrNewInterests => "Чудово! Інтереси для {$context->currentStopDraft->cityName}: " . implode(', ', $context->currentStopDraft->getInterestsLabels()) . ".\n\n✍️ Введіть бажаний бюджет у {$context->currency} (наприклад: <b>{$potentialAmount}</b>):",
             default => throw new \LogicException("Keyboard is not configured"),
         };
     }

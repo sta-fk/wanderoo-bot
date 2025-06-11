@@ -12,7 +12,8 @@ class CountryCurrencyApiService
     public function __construct(
         private readonly CacheInterface $cache,
         private readonly HttpClientInterface $httpClient,
-    ) {}
+    ) {
+    }
 
     public function getCurrencyCode(string $countryCode): ?string
     {

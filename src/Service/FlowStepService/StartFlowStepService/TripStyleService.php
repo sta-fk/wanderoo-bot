@@ -13,6 +13,17 @@ use App\Service\UserStateStorage;
 
 readonly class TripStyleService implements StateAwareFlowStepServiceInterface
 {
+    public const TRIP_STYLE_OPTIONS = [
+        'light' => '🧘 Лайтовий',
+        'active' => '🚀 Активний',
+        'mixed' => '🎭 Змішаний',
+        'relax' => '🛌 Релакс',
+        'cultural' => '🏛️ Культурний',
+        'roadtrip' => '🚗 Роадтрип',
+        'luxury' => '💎 Люкс',
+        'budget' => '💰 Бюджетний',
+    ];
+
     public function __construct(
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,

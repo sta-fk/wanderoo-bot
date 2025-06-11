@@ -11,21 +11,12 @@ use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-class BudgetService implements StateAwareFlowStepServiceInterface
+readonly class BudgetService implements StateAwareFlowStepServiceInterface
 {
-    public const BUDGET_OPTIONS = [
-        'none' => 'Без бюджету',
-        '0_300' => 'До 300€',
-        '300_700' => '300€ — 700€',
-        '700_1500' => '700€ — 1500€',
-        '1500_plus' => 'Понад 1500€',
-        'custom' => 'Ввести вручну',
-    ];
-
     public function __construct(
-        private readonly UserStateStorage $userStateStorage,
-        private readonly NextStateKeyboardProviderResolver $keyboardProviderResolver,
-        private readonly BudgetHelperService $budgetHelper,
+        private UserStateStorage                  $userStateStorage,
+        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private BudgetHelperService               $budgetHelper,
     ) {
     }
 
@@ -64,10 +55,10 @@ class BudgetService implements StateAwareFlowStepServiceInterface
         // ⬇️ NEW: розрахунок бюджету в валюті загального плану
         $range = $this->budgetHelper->resolveBudgetRange($budgetKey, $context->currency);
         if ($range !== null) {
-            [$minUsd, $maxUsd] = $range;
-            $avgUsd = $maxUsd ? ($minUsd + $maxUsd) / 2 : $minUsd;
+            [$minBudget, $maxBudget] = $range;
+            $avgBudget = $maxBudget ? ($minBudget + $maxBudget) / 2 : $minBudget;
 
-            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $avgUsd, $context->currency);
+            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $avgBudget, true);
         }
 
         $this->userStateStorage->saveContext($chatId, $context);

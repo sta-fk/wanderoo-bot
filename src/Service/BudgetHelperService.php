@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\DTO\PlanContext;
 use App\DTO\StopContext;
+use App\Enum\CallbackQueryData;
 use App\Service\Integrations\CurrencyExchangerService;
 
 readonly class BudgetHelperService
@@ -18,43 +19,69 @@ readonly class BudgetHelperService
 
     public function __construct(
         private CurrencyExchangerService $exchanger
-    ) {}
+    ) {
+    }
 
-    public function resolveBudgetRange(string $rangeKey, string $targetCurrency): ?array
+    public function resolveBudgetRange(string $rangeKey, string $stopCurrency): ?array
     {
         if (!isset(self::BUDGET_RANGES_USD[$rangeKey])) {
             throw new \InvalidArgumentException("Unknown budget range: $rangeKey");
         }
 
         [$min, $max] = self::BUDGET_RANGES_USD[$rangeKey];
-        $minConverted = $this->exchanger->convert($min, 'USD', $targetCurrency);
+        $minConverted = $this->exchanger->convert($min, CallbackQueryData::Usd->value, $stopCurrency);
         $maxConverted = $max !== null
-            ? $this->exchanger->convert($max, 'USD', $targetCurrency)
+            ? $this->exchanger->convert($max, CallbackQueryData::Usd->value, $stopCurrency)
             : null;
 
         return [$minConverted, $maxConverted];
     }
 
-    public function applyBudgetToStop(
-        StopContext $stop,
-        PlanContext $plan,
-        float $enteredBudget,
-        string $enteredCurrency,
-    ): void {
-        $stop->budget = $enteredBudget;
-        $stop->budgetCurrency = $enteredCurrency;
+    public function applyBudgetToStop(StopContext $stop, PlanContext $plan, float $enteredBudget, bool $isFirstStop = false): void
+    {
+        $stop->budgetInPlanCurrency = round($enteredBudget, -1);
 
-        if ($plan->currency && $enteredCurrency !== $plan->currency) {
+        if ($isFirstStop) {
+            $plan->currency = $stop->currency;
+            $stop->budget = round($enteredBudget, -1);
+            return;
+        }
+
+        if ($stop->currency !== $plan->currency) {
             $converted = $this->convertStopBudgetToPlanCurrency(
                 $enteredBudget,
-                $enteredCurrency,
-                $plan->currency
+                $plan->currency,
+                $stop->currency
             );
-
-            $stop->budgetInPlanCurrency = round($converted, -1);
+            $stop->budget = round($converted, -1);
         } else {
-            $stop->budgetInPlanCurrency = $enteredBudget;
+            $stop->budget = round($enteredBudget, -1);
         }
+
+        $plan->updateTotalBudget();
+    }
+
+    public function recalculateAllStopBudgetsToNewCurrency(PlanContext $plan, string $newCurrency): void
+    {
+        foreach ($plan->stops as $stop) {
+            if (!$stop->budget || !$stop->currency) {
+                continue;
+            }
+
+            if ($stop->currency !== $newCurrency) {
+                $converted = $this->convertStopBudgetToPlanCurrency(
+                    $stop->budget,
+                    $stop->currency,
+                    $newCurrency
+                );
+                $stop->budgetInPlanCurrency = round($converted, -1);
+            } else {
+                $stop->budgetInPlanCurrency = $stop->budget;
+            }
+        }
+
+        $plan->currency = $newCurrency;
+        $plan->updateTotalBudget();
     }
 
     public function convertStopBudgetToPlanCurrency(

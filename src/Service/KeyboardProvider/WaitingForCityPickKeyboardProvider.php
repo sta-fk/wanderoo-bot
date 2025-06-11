@@ -14,7 +14,7 @@ readonly class WaitingForCityPickKeyboardProvider implements NextStateKeyboardPr
 
     public function getTextMessage(int $chatId = 0): string
     {
-        return "Оберіть місто:";
+        return "Міста за вашим запитом:";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array

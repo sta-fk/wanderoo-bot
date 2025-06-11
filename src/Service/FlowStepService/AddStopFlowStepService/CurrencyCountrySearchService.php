@@ -40,7 +40,7 @@ readonly class CurrencyCountrySearchService implements StateAwareFlowStepService
             return new SendMessageContext($chatId, "Не знайдено такої країни. Спробуйте ще раз.");
         }
 
-        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCountryPick);
+        $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCurrencyCountryPick);
 
         return new SendMessageContext(
             $chatId,

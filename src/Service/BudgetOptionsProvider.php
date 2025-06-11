@@ -10,7 +10,8 @@ readonly class BudgetOptionsProvider
 {
     public function __construct(
         private CurrencyExchangerService $exchanger
-    ) {}
+    ) {
+    }
 
     public function getBudgetOptionsInCurrency(string $targetCurrency): array
     {

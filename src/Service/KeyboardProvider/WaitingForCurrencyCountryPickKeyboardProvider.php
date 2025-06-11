@@ -14,7 +14,7 @@ class WaitingForCurrencyCountryPickKeyboardProvider implements NextStateKeyboard
 
     public function getTextMessage(int $chatId = 0): string
     {
-        return "Оберіть країну, валюту якої буде присвоєно:";
+        return "Оберіть країну, валюту якої буде встановлено для планування:";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array

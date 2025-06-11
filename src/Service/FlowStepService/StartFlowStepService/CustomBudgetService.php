@@ -49,11 +49,8 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
             );
         }
 
-        $context->currentStopDraft->budget = $userInput;
         // ⬇️ Конвертація бюджету в валюту плану
-        if ($context->currency !== null) {
-            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $userInput, $context->currentStopDraft->budgetCurrency ?? $context->currency);
-        }
+        $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $userInput);
 
         $context->disableAddingStopFlow();
 

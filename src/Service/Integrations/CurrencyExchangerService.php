@@ -7,40 +7,51 @@ use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class CurrencyExchangerService
-{    private const EXCHANGE_API_URL = 'https://api.exchangerate.host/latest';
+{
+    private const EXCHANGE_API_URL = 'https://open.er-api.com/v6/latest/';
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly CacheInterface $cache,
         private readonly int $exchangerTtl,
-    ) {}
-
-    public function convert(float $amount, string $fromCurrency, string $toCurrency): float
-    {
-        if (strtoupper($fromCurrency) === strtoupper($toCurrency)) {
-            return $amount;
-        }
-
-        $rate = $this->getExchangeRate($fromCurrency, $toCurrency);
-        return round($amount * $rate, 2);
+    ) {
     }
 
-    public function getExchangeRate(string $fromCurrency, string $toCurrency): float
+    public function getExchangeRate(string $from, string $to): float
     {
-        $cacheKey = "exchange_rate_{$fromCurrency}_{$toCurrency}";
+        $from = strtoupper($from);
+        $to = strtoupper($to);
 
-        return $this->cache->get($cacheKey, function (ItemInterface $item) use ($fromCurrency, $toCurrency) {
+        if ($from === $to) {
+            return 1.0;
+        }
+
+        $cacheKey = sprintf('exchange_rates_%s', $from);
+
+        $rates = $this->cache->get($cacheKey, function (ItemInterface $item) use ($from) {
             $item->expiresAfter($this->exchangerTtl);
 
-            $response = $this->httpClient->request('GET', self::EXCHANGE_API_URL, [
-                'query' => [
-                    'base' => $fromCurrency,
-                    'symbols' => $toCurrency,
-                ]
-            ]);
+            $response = $this->httpClient->request('GET', self::EXCHANGE_API_URL . $from);
 
             $data = $response->toArray();
-            return $data['rates'][$toCurrency] ?? throw new \RuntimeException("Exchange rate $fromCurrency → $toCurrency not found");
+
+            if (!isset($data['rates']) || !is_array($data['rates'])) {
+                throw new \RuntimeException("Invalid exchange rate response for base currency: {$from}");
+            }
+
+            return $data['rates'];
         });
+
+        if (!isset($rates[$to])) {
+            throw new \RuntimeException("Exchange rate from {$from} to {$to} not found.");
+        }
+
+        return (float) $rates[$to];
+    }
+
+    public function convert(float $amount, string $from, string $to): float
+    {
+        $rate = $this->getExchangeRate($from, $to);
+        return round($amount * $rate, 2);
     }
 }
