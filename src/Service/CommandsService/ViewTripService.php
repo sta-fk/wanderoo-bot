@@ -58,10 +58,10 @@ readonly class ViewTripService implements FlowStepServiceInterface
         }
 
         // Загальний бюджет + валюта
-        if ($context->budget !== null && $context->currency !== null) {
-            $lines[] = "💰 Загальний бюджет: <b>{$context->budget} {$context->currency}</b>";
-        } elseif ($context->budget !== null) {
-            $lines[] = "💰 Загальний бюджет: <b>{$context->budget}</b>";
+        if ($context->totalBudget !== null && $context->currency !== null) {
+            $lines[] = "💰 Загальний бюджет: <b>{$context->totalBudget} {$context->currency}</b>";
+        } elseif ($context->totalBudget !== null) {
+            $lines[] = "💰 Загальний бюджет: <b>{$context->totalBudget}</b>";
         }
 
         $lines[] = ""; // порожній рядок для відступу

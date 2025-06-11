@@ -5,6 +5,7 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
+use App\Service\BudgetHelperService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardProvider\WaitingForCustomBudgetKeyboardProvider;
 use App\Service\NextStateKeyboardProviderResolver;
@@ -16,6 +17,7 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
         private WaitingForCustomBudgetKeyboardProvider $customBudgetKeyboardProvider,
+        private BudgetHelperService $budgetHelper,
     ) {
     }
 
@@ -48,6 +50,11 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
         }
 
         $context->currentStopDraft->budget = $userInput;
+        // ⬇️ Конвертація бюджету в валюту плану
+        if ($context->currency !== null) {
+            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $userInput, $context->currentStopDraft->budgetCurrency ?? $context->currency);
+        }
+
         $context->disableAddingStopFlow();
 
         $this->userStateStorage->saveContext($chatId, $context);
