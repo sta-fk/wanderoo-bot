@@ -16,5 +16,8 @@ class StopContext
     public ?int $duration = null;
     public ?string $tripStyle = null;
     public array $interests = [];
+    public ?string $budgetCurrency = null;
+    public ?string $budgetInPlanCurrency = null;
+
     public ?string $budget = null;
 }

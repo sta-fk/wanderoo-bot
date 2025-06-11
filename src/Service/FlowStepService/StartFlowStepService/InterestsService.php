@@ -7,6 +7,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\BudgetOptionsProvider;
 use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardProvider\NextStateKeyboardProviderInterface;
@@ -28,6 +29,7 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
         private CurrencyResolverService $currencyResolverService,
+        private BudgetOptionsProvider $budgetOptionsProvider,
     ) {
     }
 
@@ -59,20 +61,16 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         }
 
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
-            return $this->buildInterestsDoneMessageContext($chatId, $this->keyboardProviderResolver->resolve(States::WaitingForBudget));
+            $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForBudget);
+
+            return $this->buildInterestsDoneMessageContext($chatId, $context, $nextStateKeyboardProvider);
         }
 
         $this->processSelectedInterests($update, $context);
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        return new SendMessageContext(
-            $chatId,
-            "✨ Оновлено. Щось ще?",
-            $this->keyboardProviderResolver
-                ->resolve(States::WaitingForInterests)
-                ->buildKeyboard($context->currentStopDraft->interests)
-        );
+        return $this->buildContinueSelectingInterestsMessageContext($chatId, $context);
     }
 
     private function buildAddingStopMessageContext(int $chatId, States $nextState, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
@@ -85,12 +83,17 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
         );
     }
 
-    private function buildInterestsDoneMessageContext(int $chatId, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
+    private function buildInterestsDoneMessageContext(int $chatId, PlanContext $context, NextStateKeyboardProviderInterface $keyboardProvider): SendMessageContext
     {
+        // $context->currency - Основна валюта для першого кроку, надалі буде CustomBudget
+        $keyboard = $keyboardProvider->buildKeyboard(
+            $this->budgetOptionsProvider->getBudgetOptionsInCurrency($context->currency)
+        );
+
         return new SendMessageContext(
             $chatId,
             $keyboardProvider->getTextMessage($chatId),
-            $keyboardProvider->buildKeyboard(),
+            $keyboard,
             States::WaitingForBudget
         );
     }
@@ -108,5 +111,16 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
                 static fn ($interest) => $interest !== $selectedInterest
             );
         }
+    }
+
+    private function buildContinueSelectingInterestsMessageContext(int $chatId, PlanContext $context): SendMessageContext
+    {
+        return new SendMessageContext(
+            $chatId,
+            "✨ Оновлено. Щось ще?",
+            $this->keyboardProviderResolver
+                ->resolve(States::WaitingForInterests)
+                ->buildKeyboard($context->currentStopDraft->interests)
+        );
     }
 }

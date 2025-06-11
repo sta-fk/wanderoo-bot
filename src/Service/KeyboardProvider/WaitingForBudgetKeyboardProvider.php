@@ -4,7 +4,6 @@ namespace App\Service\KeyboardProvider;
 
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\FlowStepService\StartFlowStepService\BudgetService;
 use App\Service\FlowStepService\StartFlowStepService\InterestsService;
 use App\Service\UserStateStorage;
 
@@ -38,7 +37,7 @@ readonly class WaitingForBudgetKeyboardProvider implements NextStateKeyboardProv
     public function buildKeyboard(array $keyboardItems = []): ?array
     {
         $budgetKeyboard = [];
-        foreach (BudgetService::BUDGET_OPTIONS as $callback => $label) {
+        foreach ($keyboardItems as $callback => $label) {
             $budgetKeyboard[] = [[
                 'text' => $label,
                 'callback_data' => CallbackQueryData::Budget->value . $callback,

@@ -30,6 +30,11 @@ services:
         arguments:
             $cache: '@app.redis_cache'
 
+    App\Service\Integrations\CurrencyExchangerService:
+        arguments:
+            $cache: '@app.redis_cache'
+            $exchangerTtl: '%env(EXCHANGER_TTL)%'
+
     App\Service\Integrations\GooglePlaceService:
         arguments:
             $googleApiKey: '%env(GOOGLE_API_KEY)%'

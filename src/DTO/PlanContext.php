@@ -2,15 +2,18 @@
 
 namespace App\DTO;
 
+use App\Service\BudgetHelperService;
+
 class PlanContext
 {
     public bool $isAddingStopFlow = false;
+    public bool $isSetDefaultCurrency = false;
     public ?string $planName = null;
 
     public ?\DateTimeImmutable $startDate = null;
     public ?\DateTimeImmutable $endDate = null;
     public ?int $totalDuration = null;
-    public ?string $budget = null;
+    public ?string $totalBudget = null;
     public ?string $currency = null;
 
     /** @var StopContext[] $stops */

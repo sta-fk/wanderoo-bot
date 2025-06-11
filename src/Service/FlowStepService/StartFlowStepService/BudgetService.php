@@ -6,6 +6,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\BudgetHelperService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
@@ -24,6 +25,7 @@ class BudgetService implements StateAwareFlowStepServiceInterface
     public function __construct(
         private readonly UserStateStorage $userStateStorage,
         private readonly NextStateKeyboardProviderResolver $keyboardProviderResolver,
+        private readonly BudgetHelperService $budgetHelper,
     ) {
     }
 
@@ -58,6 +60,16 @@ class BudgetService implements StateAwareFlowStepServiceInterface
         }
 
         $context->currentStopDraft->budget = $budgetKey;
+
+        // ⬇️ NEW: розрахунок бюджету в валюті загального плану
+        $range = $this->budgetHelper->resolveBudgetRange($budgetKey, $context->currency);
+        if ($range !== null) {
+            [$minUsd, $maxUsd] = $range;
+            $avgUsd = $maxUsd ? ($minUsd + $maxUsd) / 2 : $minUsd;
+
+            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $avgUsd, $context->currency);
+        }
+
         $this->userStateStorage->saveContext($chatId, $context);
 
         $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::ReadyToBuildPlan);
