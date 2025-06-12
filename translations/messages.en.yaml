@@ -1,0 +1,8 @@
+trip.header: "<b>🌍 {title}</b>\n<b>🗓️</b> {start_date} — {end_date}\n<b>💰 Total Budget:</b> <b>{total_budget} {currency}</b>\n<b>⏰ Duration:</b> <b>{total_duration} days</b>"
+trip.stop_header: "<b>🔹 Stop {index}: {city}, {country}</b>\n📍 <i>{start_date} — {end_date}</i>"
+trip.day_title: "<u>🗓️ Day {index}</u>"
+trip.activities_title: "<b>🎯 Activities:</b>"
+trip.free_time: "<i>Free time or explore the city on your own</i>"
+trip.food_title: "<b>🍽️ Food Places:</b>"
+trip.no_food: "<i>No recommended places</i>"
+trip.stop_separator: "━━━━━━━━━━━━━━━━━━━━"

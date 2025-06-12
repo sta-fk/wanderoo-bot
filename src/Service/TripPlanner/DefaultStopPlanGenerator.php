@@ -9,7 +9,7 @@ use App\Service\Integrations\TransportProviderInterface;
 readonly class DefaultStopPlanGenerator implements StopPlanGeneratorInterface
 {
     public function __construct(
-        private TransportProviderInterface $transportProvider,
+        private TransportProviderInterface $transportProvider
     ) {
     }
 
@@ -21,7 +21,9 @@ readonly class DefaultStopPlanGenerator implements StopPlanGeneratorInterface
         $stopPlan->cityName = $stop->cityName;
         $stopPlan->countryName = $stop->countryName;
         $stopPlan->localTransportInfo = $transportInfo;
-        $stopPlan->tripStyle = $stop->tripStyle;
+
+        // Дати та дні будуть призначені у PlanBuilderService
+        $stopPlan->days = [];
 
         return $stopPlan;
     }

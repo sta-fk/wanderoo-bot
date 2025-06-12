@@ -6,7 +6,6 @@
 parameters:
     telegram_bot_token: '%env(TELEGRAM_BOT_TOKEN)%'
     telegram_bot_api_url: '%env(TELEGRAM_BOT_API_URL)%'
-    geodb_api_key: '%env(GEODB_API_KEY)%'
 
 services:
     _defaults:
@@ -53,4 +52,4 @@ services:
     App\Service\Integrations\TransportProviderInterface: '@App\Service\Integrations\GoogleTransitTransportProvider'
 
     App\Service\TripPlanner\DailyScheduleFormatterInterface: '@App\Service\TripPlanner\SimpleDailyScheduleFormatter'
-    App\Service\TripPlanner\TripPlanFormatterInterface: '@App\Service\TripPlanner\SimpleTripPlanFormatter'
+    App\Service\TripPlanner\TripPlanFormatterInterface: '@App\Service\TripPlanner\HtmlTripPlanFormatter'

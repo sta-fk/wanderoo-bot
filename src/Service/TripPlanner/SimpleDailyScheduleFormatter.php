@@ -7,30 +7,43 @@ use App\DTO\StopPlan;
 
 class SimpleDailyScheduleFormatter implements DailyScheduleFormatterInterface
 {
-    public function format(StopPlan $stopPlan, array $activities, array $foodPlaces): array
+    public function format(StopPlan $stop, array $activities, array $foodPlaces): array
     {
         $days = [];
-        $startDate = $stopPlan->startDate;
-        $endDate = $stopPlan->endDate;
+        $duration = $stop->startDate->diff($stop->endDate)->days + 1;
 
-        $duration = $startDate->diff($endDate)->days + 1;
+        $style = $stop->style ?? 'balanced';
+        $activityCount = match ($style) {
+            'active', 'mixed', 'cultural' => 15,
+            'relax', 'budget' => 10,
+            default => 5,
+        };
+
+        $foodCount = $duration * 2;
+        $activities = array_slice($activities, 0, $activityCount);
+        $foodPlaces = array_slice($foodPlaces, 0, $foodCount);
+
+        $daysWithFreeTime = (int) floor($duration / 4);
+        $usedActivities = 0;
+        $usedFood = 0;
 
         for ($i = 0; $i < $duration; $i++) {
-            $date = $startDate->modify("+{$i} days");
-
             $day = new DayPlan();
+            $date = (clone $stop->startDate)->modify("+{$i} day");
             $day->date = $date;
 
-            $style = $stopPlan->style ?? 'balanced';
-            $activityCount = match ($style) {
-                'active', 'mixed', 'cultural' => 15,
-                'relax', 'budget' => 10,
-                default => 5,
-            };
-            $foodCount = 2;
+            $hasFreeTime = $daysWithFreeTime > 0 && ($usedActivities >= count($activities));
 
-            $day->activities = array_slice($activities, $i * $activityCount, $activityCount);
-            $day->foodPlaces = array_slice($foodPlaces, $i * $foodCount, $foodCount);
+            if (!$hasFreeTime) {
+                $day->activities = array_slice($activities, $usedActivities, 3);
+                $usedActivities += 3;
+            } else {
+                $day->activities = [];
+                $daysWithFreeTime--;
+            }
+
+            $day->foodPlaces = array_slice($foodPlaces, $usedFood, 2);
+            $usedFood += 2;
 
             $days[] = $day;
         }

@@ -6,5 +6,5 @@ use App\DTO\StopPlan;
 
 interface DailyScheduleFormatterInterface
 {
-    public function format(StopPlan $stopPlan, array $activities, array $foodPlaces): array;
+    public function format(StopPlan $stop, array $activities, array $foodPlaces): array;
 }

@@ -4,6 +4,9 @@ namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
+use App\Service\CommandsService\ViewGeneratedTripService;
+use App\Service\FlowStepService\FinalStateAwareFlowStepServiceInterface;
+use App\Service\FlowStepService\GeneratingTripPlanService;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -26,6 +29,20 @@ class TelegramService
     public function handleUpdate(TelegramUpdate $update): void
     {
         $flowStepService = $this->flowRegistry->findMatchingService($update);
+
+        if ($flowStepService instanceof FinalStateAwareFlowStepServiceInterface) {
+            $messages = $flowStepService->getSplitFormattedPlan($update);
+            foreach ($messages as $message) {
+                if (mb_strlen($message->text) > 4096) {
+                    throw new \RuntimeException('Telegram message too long: ' . mb_strlen($message->text));
+                }
+
+                $this->sendMarkdownMessage($message);
+                usleep(3000);
+            }
+
+            return;
+        }
 
         if (null !== $flowStepService) {
             $message = $flowStepService->buildNextStepMessage($update);

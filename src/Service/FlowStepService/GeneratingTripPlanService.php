@@ -5,12 +5,11 @@ namespace App\Service\FlowStepService;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
-use App\Service\FlowStepServiceInterface;
 use App\Service\TripPlanner\PlanBuilderService;
 use App\Service\TripPlanner\TripPlanFormatterInterface;
 use App\Service\UserStateStorage;
 
-readonly class GeneratingTripPlanService implements FlowStepServiceInterface
+readonly class GeneratingTripPlanService implements FinalStateAwareFlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -26,7 +25,7 @@ readonly class GeneratingTripPlanService implements FlowStepServiceInterface
         ;
     }
 
-    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
+    public function getSplitFormattedPlan(TelegramUpdate $update): array
     {
         $chatId = $update->callbackQuery->message->chat->id;
         $context = $this->userStateStorage->getContext($chatId);
@@ -37,11 +36,29 @@ readonly class GeneratingTripPlanService implements FlowStepServiceInterface
         $this->userStateStorage->saveContext($chatId, $context);
 
         $tripPlan = $this->planBuilderService->buildPlan($context);
-        $message = $this->tripPlanFormatter->format($tripPlan);
 
+        $texts = $this->tripPlanFormatter->splitFormattedPlan($tripPlan);
+
+        $i = 0;
+        $messages = [];
+        while ($i < count($texts)) {
+            $messages[] = new SendMessageContext(
+                $chatId,
+                $texts[$i],
+            );
+            $i++;
+        }
+
+        $messages[] = $this->buildNextStepMessage($update);
+
+        return $messages;
+    }
+
+    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
+    {
         return new SendMessageContext(
-            $chatId,
-            $message . "\n\n" . "Що бажаєте зробити з цим маршрутом?",
+            $update->callbackQuery->message->chat->id,
+            "Що бажаєте зробити з цим маршрутом?",
             $this->getKeyboard(),
         );
     }
