@@ -57,9 +57,10 @@ readonly class BudgetService implements StateAwareFlowStepServiceInterface
             [$minBudget, $maxBudget] = $range;
             $avgBudget = $maxBudget ? ($minBudget + $maxBudget) / 2 : $minBudget;
 
-            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $avgBudget, true);
+            $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $avgBudget);
         }
 
+        $context->finishCreatingNewStop();
         $this->userStateStorage->saveContext($chatId, $context);
 
         $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::ReadyToBuildPlan);

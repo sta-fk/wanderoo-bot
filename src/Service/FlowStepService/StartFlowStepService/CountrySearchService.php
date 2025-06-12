@@ -9,7 +9,7 @@ use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
 
-readonly class CountryService implements StateAwareFlowStepServiceInterface
+readonly class CountrySearchService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,

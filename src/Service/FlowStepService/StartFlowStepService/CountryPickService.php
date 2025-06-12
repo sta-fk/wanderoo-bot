@@ -41,15 +41,16 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
         $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::Country->value));
 
         $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
+        $countryCurrency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
 
         $context->currentStopDraft->countryName = $countryDetails->name;
         $context->currentStopDraft->countryCode = $countryDetails->countryCode;
         $context->currentStopDraft->countryPlaceId = $countryPlaceId;
-        $context->currentStopDraft->currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
+        $context->currentStopDraft->currency = $countryCurrency;
 
         // !! Тільки для ПЕРШОГО степу встановити валюту країни перебування
         if (!$context->isAddingStopFlow) {
-            $context->currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
+            $context->currency = $countryCurrency;
         }
 
         $this->userStateStorage->saveContext($chatId, $context);

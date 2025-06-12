@@ -47,7 +47,6 @@ readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceIn
 
         // !! Встановити нову основну валюту
         $this->budgetHelperService->recalculateAllStopBudgetsToNewCurrency($context, $currency);
-        $context->isSetDefaultCurrency = true;
 
         $this->userStateStorage->saveContext($chatId, $context);
 

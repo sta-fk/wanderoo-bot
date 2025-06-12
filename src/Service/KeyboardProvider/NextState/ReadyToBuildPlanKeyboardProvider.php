@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StartFlowStepService\BudgetService;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use App\Service\UserStateStorage;
 
 readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProviderInterface
@@ -26,8 +27,15 @@ readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProv
         }
 
         $context = $this->userStateStorage->getContext($chatId);
+        if (null !== $context->currentStopDraft?->countryName) {
+            $enteredBudget = $context->currentStopDraft->budgetInPlanCurrency;
+        } elseif (!empty($context->stops)) {
+            $enteredBudget = ($context->stops[count($context->stops) - 1])->budgetInPlanCurrency;
+        } else {
+            return "✅ Дякую! Тепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️";
+        }
 
-        return "✅ Дякую! Орієнтовний бюджет: {$context->currentStopDraft->budgetInPlanCurrency} {$context->currency}.\n\nТепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️";
+        return "✅ Дякую! Орієнтовний бюджет: {$enteredBudget} {$context->currency}.\n\nТепер підтвердьте план подорожі або додайте ще одну зупинку... ✈️";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array
@@ -36,7 +44,7 @@ readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProv
             'inline_keyboard' => [
                 [
                     ['text' => '➕ Додати зупинку', 'callback_data' => CallbackQueryData::AddStop->value],
-                    ['text' => '✅ Завершити планування', 'callback_data' => CallbackQueryData::ReadyToBuildPlan->value],
+                    ['text' => '✅ Завершити планування', 'callback_data' => CallbackQueryData::GeneratingTripPlan->value],
                 ],
             ],
         ];

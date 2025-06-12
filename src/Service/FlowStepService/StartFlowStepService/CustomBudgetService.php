@@ -7,7 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\BudgetHelperService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardProvider\WaitingForCustomBudgetKeyboardProvider;
+use App\Service\KeyboardProvider\NextState\WaitingForCustomBudgetKeyboardProvider;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
@@ -23,9 +23,7 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
 
     public function supports(TelegramUpdate $update): bool
     {
-        return $update->message?->text
-            && $this->userStateStorage->getState($update->message->chat->id) === States::WaitingForCustomBudget
-        ;
+        return null !== $update->message?->text;
     }
 
     public function supportsStates(): array
@@ -52,8 +50,7 @@ readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface
         // ⬇️ Конвертація бюджету в валюту плану
         $this->budgetHelper->applyBudgetToStop($context->currentStopDraft, $context, $userInput);
 
-        $context->disableAddingStopFlow();
-
+        $context->finishCreatingNewStop();
         $this->userStateStorage->saveContext($chatId, $context);
 
         $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::ReadyToBuildPlan);

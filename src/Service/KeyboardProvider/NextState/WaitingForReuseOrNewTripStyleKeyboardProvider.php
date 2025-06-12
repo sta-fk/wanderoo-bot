@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use App\Service\UserStateStorage;
 
 readonly class WaitingForReuseOrNewTripStyleKeyboardProvider implements NextStateKeyboardProviderInterface

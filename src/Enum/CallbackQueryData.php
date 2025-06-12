@@ -15,9 +15,11 @@ enum CallbackQueryData: string
     case Interest = 'interest_';
     case InterestsDone = 'interest_done';
     case Budget = 'budget_';
-    case AddStop = 'add_stop';
-    case ConfirmStop = 'confirm_stop';
     case ReadyToBuildPlan = 'ready_to_build_plan';
+    case GeneratingTripPlan = 'generating_trip_plan';
+
+    // Commands as callback
+    case AddStop = 'add_stop';
     case NewTrip = 'new_trip';
 
     // For Adding stop flow

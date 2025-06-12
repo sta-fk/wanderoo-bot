@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 
-readonly class WaitingForCountryPickKeyboardProvider implements NextStateKeyboardProviderInterface
+class WaitingForCurrencyCountryPickKeyboardProvider implements NextStateKeyboardProviderInterface
 {
     public function supports(States $requiredState): bool
     {
-        return States::WaitingForCountryPick === $requiredState;
+        return States::WaitingForCurrencyCountryPick === $requiredState;
     }
 
     public function getTextMessage(int $chatId = 0): string
     {
-        return "Країни за вашим запитом:";
+        return "Оберіть країну, валюту якої буде встановлено для планування:";
     }
 
     public function buildKeyboard(array $keyboardItems = []): ?array
@@ -24,7 +25,7 @@ readonly class WaitingForCountryPickKeyboardProvider implements NextStateKeyboar
             $keyboard[] = [
                 [
                     'text' => $country->name,
-                    'callback_data' => CallbackQueryData::Country->value . $country->placeId,
+                    'callback_data' => CallbackQueryData::CurrencyCountryPick->value . $country->placeId,
                 ],
             ];
         }

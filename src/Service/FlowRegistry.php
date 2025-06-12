@@ -20,9 +20,7 @@ readonly class FlowRegistry
         $chatId = $update->callbackQuery->message->chat->id ?? $update->message->chat->id ?? null;
         $currentState = $chatId ? $this->userStateStorage->getState($chatId) : null;
 
-        /**
- * @var FlowStepServiceInterface $flowStepService
-*/
+        /** @var FlowStepServiceInterface $flowStepService */
         foreach ($this->flowStepsServices as $flowStepService) {
             if ($flowStepService instanceof StateAwareFlowStepServiceInterface && $flowStepService->supports($update)) {
                 if ($currentState !== null && in_array($currentState, $flowStepService->supportsStates(), true)) {

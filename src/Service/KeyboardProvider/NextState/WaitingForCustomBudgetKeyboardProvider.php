@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\DTO\PlanContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\Integrations\CurrencyExchangerService;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use App\Service\UserStateStorage;
 
 readonly class WaitingForCustomBudgetKeyboardProvider implements NextStateKeyboardProviderInterface

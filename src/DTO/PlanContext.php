@@ -2,8 +2,6 @@
 
 namespace App\DTO;
 
-use App\Service\BudgetHelperService;
-
 class PlanContext
 {
     public bool $isAddingStopFlow = false;
@@ -39,18 +37,24 @@ class PlanContext
         return $this;
     }
 
-    public function resetCurrentStopDraft(): self
+    public function finishCreatingNewStop(): self
     {
-        $this->currentStopDraft = new StopContext();
+        if (null === $this->currentStopDraft->countryName) {
+            return $this;
+        }
+
+        $this->stops[] = $this->currentStopDraft;
+        $this->resetCurrentStopDraft();
+        $this->updateTotalBudget();
+        $this->updateTotalDuration();
+        $this->updateEndDate();
 
         return $this;
     }
 
-    public function saveLastStopDraft(): self
+    public function resetCurrentStopDraft(): self
     {
-        if (null !== $this->currentStopDraft->countryName) {
-            $this->stops[] = $this->currentStopDraft;
-        }
+        $this->currentStopDraft = new StopContext();
 
         return $this;
     }
@@ -68,7 +72,7 @@ class PlanContext
         $this->totalBudget = round($total, -1);
     }
 
-    public function updateTotalDuration(): void
+    private function updateTotalDuration(): void
     {
         $total = 0;
 
@@ -81,7 +85,7 @@ class PlanContext
         $this->totalDuration = $total;
     }
 
-    public function updateEndDate(): void
+    private function updateEndDate(): void
     {
         if ($this->startDate && $this->totalDuration) {
             $this->endDate = $this->startDate->modify('+' . $this->totalDuration . ' days');

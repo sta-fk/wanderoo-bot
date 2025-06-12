@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Enum\States;
-use App\Service\KeyboardProvider\NextStateKeyboardProviderInterface;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 readonly class NextStateKeyboardProviderResolver
