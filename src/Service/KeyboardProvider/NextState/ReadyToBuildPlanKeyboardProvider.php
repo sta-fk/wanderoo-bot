@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StartFlowStepService\BudgetService;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use App\Service\UserStateStorage;
 
 readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProviderInterface
@@ -16,7 +17,7 @@ readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProv
 
     public function supports(States $requiredState): bool
     {
-        return States::ReadyToBuildPlan === $requiredState;
+        return States::GeneratingTripPlan === $requiredState;
     }
 
     public function getTextMessage(int $chatId = 0): string
@@ -36,7 +37,7 @@ readonly class ReadyToBuildPlanKeyboardProvider implements NextStateKeyboardProv
             'inline_keyboard' => [
                 [
                     ['text' => '➕ Додати зупинку', 'callback_data' => CallbackQueryData::AddStop->value],
-                    ['text' => '✅ Завершити планування', 'callback_data' => CallbackQueryData::ReadyToBuildPlan->value],
+                    ['text' => '✅ Завершити планування', 'callback_data' => CallbackQueryData::GeneratingTripPlan->value],
                 ],
             ],
         ];

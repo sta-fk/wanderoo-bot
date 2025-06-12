@@ -18,6 +18,7 @@ enum States: string
     case WaitingForBudget = 'waiting_for_budget';
     case WaitingForCustomBudget = 'waiting_for_custom_budget';
     case ReadyToBuildPlan = 'ready_to_build_plan';
+    case GeneratingTripPlan = 'generating_trip_plan';
 
     // Add stop flow
     case WaitingForStopCountry = 'waiting_for_stop_country';

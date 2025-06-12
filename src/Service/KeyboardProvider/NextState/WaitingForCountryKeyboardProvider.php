@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\Enum\States;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 
 readonly class WaitingForCountryKeyboardProvider implements NextStateKeyboardProviderInterface
 {

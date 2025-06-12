@@ -48,9 +48,14 @@ class PlanContext
 
     public function saveLastStopDraft(): self
     {
-        if (null !== $this->currentStopDraft->countryName) {
-            $this->stops[] = $this->currentStopDraft;
+        if (null === $this->currentStopDraft->countryName) {
+            return $this;
         }
+
+        $this->stops[] = $this->currentStopDraft;
+        $this->updateTotalBudget();
+        $this->updateTotalDuration();
+        $this->updateEndDate();
 
         return $this;
     }
@@ -68,7 +73,7 @@ class PlanContext
         $this->totalBudget = round($total, -1);
     }
 
-    public function updateTotalDuration(): void
+    private function updateTotalDuration(): void
     {
         $total = 0;
 
@@ -81,7 +86,7 @@ class PlanContext
         $this->totalDuration = $total;
     }
 
-    public function updateEndDate(): void
+    private function updateEndDate(): void
     {
         if ($this->startDate && $this->totalDuration) {
             $this->endDate = $this->startDate->modify('+' . $this->totalDuration . ' days');

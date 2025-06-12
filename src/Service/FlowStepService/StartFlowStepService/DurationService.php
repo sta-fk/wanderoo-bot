@@ -47,8 +47,6 @@ readonly class DurationService implements StateAwareFlowStepServiceInterface
         }
 
         $context->currentStopDraft->duration = (int) $durationValue;
-        $context->updateTotalDuration();
-        $context->updateEndDate();
 
         $this->userStateStorage->saveContext($chatId, $context);
 

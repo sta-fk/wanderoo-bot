@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\Enum\States;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;

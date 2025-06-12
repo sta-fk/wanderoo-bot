@@ -37,33 +37,30 @@ readonly class BudgetHelperService
         return [$minConverted, $maxConverted];
     }
 
-    public function applyBudgetToStop(StopContext $stop, PlanContext $plan, float $enteredBudget, bool $isFirstStop = false): void
+    public function applyBudgetToStop(StopContext $stopContext, PlanContext $context, float $enteredBudgetInPlan): void
     {
-        $stop->budgetInPlanCurrency = round($enteredBudget, -1);
+        $stopContext->budgetInPlanCurrency = round($enteredBudgetInPlan, -1);
 
-        if ($isFirstStop) {
-            $plan->currency = $stop->currency;
-            $stop->budget = round($enteredBudget, -1);
+        if (empty($context->stops)) {
+            $stopContext->budget = round($enteredBudgetInPlan, -1);
             return;
         }
 
-        if ($stop->currency !== $plan->currency) {
+        if ($stopContext->currency !== $context->currency) {
             $converted = $this->convertStopBudgetToPlanCurrency(
-                $enteredBudget,
-                $plan->currency,
-                $stop->currency
+                $enteredBudgetInPlan,
+                $context->currency,
+                $stopContext->currency
             );
-            $stop->budget = round($converted, -1);
+            $stopContext->budget = round($converted, -1);
         } else {
-            $stop->budget = round($enteredBudget, -1);
+            $stopContext->budget = round($enteredBudgetInPlan, -1);
         }
-
-        $plan->updateTotalBudget();
     }
 
-    public function recalculateAllStopBudgetsToNewCurrency(PlanContext $plan, string $newCurrency): void
+    public function recalculateAllStopBudgetsToNewCurrency(PlanContext $context, string $newCurrency): void
     {
-        foreach ($plan->stops as $stop) {
+        foreach ($context->stops as $stop) {
             if (!$stop->budget || !$stop->currency) {
                 continue;
             }
@@ -80,8 +77,9 @@ readonly class BudgetHelperService
             }
         }
 
-        $plan->currency = $newCurrency;
-        $plan->updateTotalBudget();
+        $context->currency = $newCurrency;
+        $context->isSetDefaultCurrency = true;
+        $context->updateTotalBudget();
     }
 
     public function convertStopBudgetToPlanCurrency(

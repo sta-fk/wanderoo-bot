@@ -10,7 +10,8 @@ readonly class SimpleTripPlanFormatter implements TripPlanFormatterInterface
 {
     public function __construct(
         private string $locale = 'uk_UA'
-    ) {}
+    ) {
+    }
 
     public function format(TripPlan $plan): string
     {
@@ -24,7 +25,8 @@ readonly class SimpleTripPlanFormatter implements TripPlanFormatterInterface
         );
 
         $message = "<b>🧭 Ваш маршрут:</b>\n";
-        $message .= sprintf("📅 %s — %s\n",
+        $message .= sprintf(
+            "📅 %s — %s\n",
             $formatter->format($plan->startDate),
             $formatter->format($plan->endDate)
         );

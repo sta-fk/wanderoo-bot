@@ -9,12 +9,14 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Enum\TelegramCommands;
 use App\Service\FlowStepServiceInterface;
+use App\Service\KeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class NewTripService implements FlowStepServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private KeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -27,14 +29,16 @@ readonly class NewTripService implements FlowStepServiceInterface
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
         $chatId = $update->callbackQuery->message->chat->id;
-        $context = new PlanContext();
 
-        $this->userStateStorage->saveContext($chatId, $context);
+        $this->userStateStorage->clearContext($chatId);
+        $this->userStateStorage->saveContext($chatId, new PlanContext());
+
+        $keyboardProvider = $this->keyboardProviderResolver->resolve($update);
 
         return new SendMessageContext(
             $chatId,
-            "Розпочнімо нову подорож! 🌍\n\nСпершу введіть назву країни (або частину назви):",
-            null,
+            $keyboardProvider->getTextMessage(),
+            $keyboardProvider->buildKeyboard(),
             States::WaitingForCountry
         );
     }

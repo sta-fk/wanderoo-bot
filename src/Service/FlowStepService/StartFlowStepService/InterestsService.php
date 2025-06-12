@@ -10,7 +10,7 @@ use App\Enum\States;
 use App\Service\BudgetOptionsProvider;
 use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardProvider\NextStateKeyboardProviderInterface;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 

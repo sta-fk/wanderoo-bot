@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Service\KeyboardProvider;
+namespace App\Service\KeyboardProvider\NextState;
 
 use App\DTO\PlanContext;
 use App\Enum\States;
+use App\Service\KeyboardProvider\NextState\BuildCalendarKeyboardTrait;
+use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
 use App\Service\UserStateStorage;
 
 readonly class WaitingForStartDateKeyboardProvider implements NextStateKeyboardProviderInterface

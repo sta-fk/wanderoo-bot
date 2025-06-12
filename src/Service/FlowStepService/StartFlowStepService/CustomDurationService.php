@@ -7,7 +7,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\KeyboardProvider\WaitingForCustomDurationKeyboardProvider;
+use App\Service\KeyboardProvider\NextState\WaitingForCustomDurationKeyboardProvider;
 use App\Service\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
@@ -45,8 +45,6 @@ readonly class CustomDurationService implements StateAwareFlowStepServiceInterfa
         }
 
         $context->currentStopDraft->duration = (int)$update->message->text;
-        $context->updateTotalDuration();
-        $context->updateEndDate();
 
         $this->userStateStorage->saveContext($chatId, $context);
 
