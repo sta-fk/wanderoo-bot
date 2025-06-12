@@ -50,7 +50,7 @@ readonly class WaitingForCustomBudgetKeyboardProvider implements NextStateKeyboa
 
     private function getTextMessageAfterStates(PlanContext $context, States $uncompletedState): string
     {
-        $potentialAmount = $this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $context->currency);
+        $potentialAmount = round($this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $context->currency), -1);
 
         return match ($uncompletedState) {
             States::WaitingForCurrencyChoice,

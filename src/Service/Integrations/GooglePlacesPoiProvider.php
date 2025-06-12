@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Service\TripPlanner;
+namespace App\Service\Integrations;
 
+use App\Service\Integrations\PoiProviderInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class GooglePlacesPoiProvider implements PoiProviderInterface

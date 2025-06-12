@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Service\TripPlanner;
+namespace App\Service\Integrations;
 
+use App\Service\Integrations\TransportProviderInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class GoogleTransitTransportProvider implements TransportProviderInterface

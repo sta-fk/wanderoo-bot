@@ -24,7 +24,7 @@ readonly class BudgetHelperService
 
     public function resolveBudgetRange(string $rangeKey, string $stopCurrency): ?array
     {
-        if (!isset(self::BUDGET_RANGES_USD[$rangeKey])) {
+        if (!array_key_exists($rangeKey, self::BUDGET_RANGES_USD)) {
             throw new \InvalidArgumentException("Unknown budget range: $rangeKey");
         }
 

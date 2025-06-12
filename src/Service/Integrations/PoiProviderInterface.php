@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\TripPlanner;
+namespace App\Service\Integrations;
 
 interface PoiProviderInterface
 {

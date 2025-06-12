@@ -4,11 +4,14 @@ namespace App\Service\TripPlanner;
 
 use App\DTO\PlanContext;
 use App\DTO\TripPlan;
+use App\Service\Integrations\PoiProviderInterface;
 
 readonly class PlanBuilderService
 {
     public function __construct(
-        private StopPlanGeneratorInterface $stopPlanGenerator
+        private StopPlanGeneratorInterface $stopPlanGenerator,
+        private DailyScheduleFormatterInterface $dailyScheduleFormatter,
+        private PoiProviderInterface $poiProvider,
     ) {
     }
 
@@ -29,6 +32,11 @@ readonly class PlanBuilderService
             $stopPlan->startDate = $currentDate;
             $stopPlan->endDate = $currentDate->modify('+' . ($stop->duration - 1) . ' days');
             $currentDate = $stopPlan->endDate->modify('+1 day');
+
+            // 🔁 після того як є дати — формуємо день за днем
+            $activities = $this->poiProvider->getActivities($stop->cityName, $stop->interests);
+            $foodPlaces = $this->poiProvider->getFoodPlaces($stop->cityName);
+            $stopPlan->days = $this->dailyScheduleFormatter->format($stopPlan, $activities, $foodPlaces);
 
             $trip->stops[] = $stopPlan;
         }

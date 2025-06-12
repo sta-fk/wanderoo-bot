@@ -3,28 +3,29 @@
 namespace App\Service\TripPlanner;
 
 use App\DTO\DayPlan;
-use App\DTO\StopContext;
-use App\Service\TripPlanner\DailyScheduleFormatterInterface;
+use App\DTO\StopPlan;
 
 class SimpleDailyScheduleFormatter implements DailyScheduleFormatterInterface
 {
-    public function format(StopContext $stop, array $activities, array $foodPlaces): array
+    public function format(StopPlan $stopPlan, array $activities, array $foodPlaces): array
     {
         $days = [];
-        $duration = (int) $stop->startDate->diff($stop->endDate)->format('%a') + 1;
+        $startDate = $stopPlan->startDate;
+        $endDate = $stopPlan->endDate;
+
+        $duration = $startDate->diff($endDate)->days + 1;
 
         for ($i = 0; $i < $duration; $i++) {
-            $date = (clone $stop->startDate)->modify("+{$i} day");
+            $date = $startDate->modify("+{$i} days");
 
             $day = new DayPlan();
             $day->date = $date;
 
-            $style = $stop->style ?? 'balanced';
+            $style = $stopPlan->style ?? 'balanced';
             $activityCount = match ($style) {
-                'active', 'mixed', 'cultural' => 4,
-                'roadtrip' => 3,
-                'relax', 'budget' => 5,
-                default => 2,
+                'active', 'mixed', 'cultural' => 15,
+                'relax', 'budget' => 10,
+                default => 5,
             };
             $foodCount = 2;
 
