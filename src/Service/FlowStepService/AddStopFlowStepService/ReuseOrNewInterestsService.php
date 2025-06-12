@@ -64,6 +64,5 @@ readonly class ReuseOrNewInterestsService implements StateAwareFlowStepServiceIn
             $nextStateKeyboardProvider->buildKeyboard($context->currentStopDraft->interests),
             States::WaitingForInterests
         );
-
     }
 }

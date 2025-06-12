@@ -48,8 +48,8 @@ db-reset:  ## Drop and recreate the database
 ## —— Quality Assurance ✅ ——
 .PHONY: cs phpstan test
 
-cs:  ## Run PHP Code Sniffer
-	$(DOCKER) exec $(PHP_CONTAINER) vendor/bin/php-cs-fixer fix src
+cs-fix:
+	$(DOCKER) exec $(PHP_CONTAINER) vendor/bin/phpcbf src tests
 
 phpstan:  ## Run PHPStan static analysis
 	$(DOCKER) exec $(PHP_CONTAINER) vendor/bin/phpstan analyse src --level=max

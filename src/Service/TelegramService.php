@@ -56,9 +56,13 @@ class TelegramService
             $payload['reply_markup'] = $this->serializer->serialize($message->replyMarkup, 'json', [AbstractObjectNormalizer::ENABLE_MAX_DEPTH => true]);
         }
 
-        $this->httpClient->request('POST', "{$this->apiUrl}/sendMessage", [
+        $this->httpClient->request(
+            'POST',
+            "{$this->apiUrl}/sendMessage",
+            [
             'json' => $payload,
-        ]);
+            ]
+        );
     }
 
     private function updateState(SendMessageContext $message): void

@@ -22,13 +22,17 @@ class GeoDbService
 
     private function request(string $endpoint, array $query = []): array
     {
-        $response = $this->client->request('GET', self::BASE_URL.$endpoint, [
+        $response = $this->client->request(
+            'GET',
+            self::BASE_URL . $endpoint,
+            [
             'headers' => [
                 'X-RapidAPI-Key' => $this->geoDbApiKey,
                 'X-RapidAPI-Host' => 'wft-geo-db.p.rapidapi.com',
             ],
             'query' => $query,
-        ]);
+            ]
+        );
 
         $data = $response->toArray(false); // false — щоб уникнути винятків при 4xx
 
@@ -37,11 +41,14 @@ class GeoDbService
 
     public function getCountries(int $offset = 0, int $limit = 5): array
     {
-        return $this->request('/countries', [
+        return $this->request(
+            '/countries',
+            [
             'offset' => $offset,
             'limit' => $limit,
             'sort' => 'name',
-        ]);
+            ]
+        );
     }
 
     public function getCountryDetails(string $code): array
@@ -51,10 +58,13 @@ class GeoDbService
 
     public function getCitiesByCountry(string $countryCode, int $offset = 0, int $limit = 5): array
     {
-        return $this->request('/cities', [
+        return $this->request(
+            '/cities',
+            [
             'countryIds' => $countryCode,
             'offset' => $offset,
             'limit' => $limit,
-        ]);
+            ]
+        );
     }
 }

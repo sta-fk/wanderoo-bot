@@ -28,19 +28,22 @@ class CurrencyExchangerService
 
         $cacheKey = sprintf('exchange_rates_%s', $from);
 
-        $rates = $this->cache->get($cacheKey, function (ItemInterface $item) use ($from) {
-            $item->expiresAfter($this->exchangerTtl);
+        $rates = $this->cache->get(
+            $cacheKey,
+            function (ItemInterface $item) use ($from) {
+                $item->expiresAfter($this->exchangerTtl);
 
-            $response = $this->httpClient->request('GET', self::EXCHANGE_API_URL . $from);
+                $response = $this->httpClient->request('GET', self::EXCHANGE_API_URL . $from);
 
-            $data = $response->toArray();
+                $data = $response->toArray();
 
-            if (!isset($data['rates']) || !is_array($data['rates'])) {
-                throw new \RuntimeException("Invalid exchange rate response for base currency: {$from}");
+                if (!isset($data['rates']) || !is_array($data['rates'])) {
+                    throw new \RuntimeException("Invalid exchange rate response for base currency: {$from}");
+                }
+
+                return $data['rates'];
             }
-
-            return $data['rates'];
-        });
+        );
 
         if (!isset($rates[$to])) {
             throw new \RuntimeException("Exchange rate from {$from} to {$to} not found.");

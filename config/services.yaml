@@ -39,4 +39,17 @@ services:
         arguments:
             $googleApiKey: '%env(GOOGLE_API_KEY)%'
 
+    App\Service\TripPlanner\GooglePlacesPoiProvider:
+        arguments:
+            $apiKey: '%env(GOOGLE_API_KEY)%'
+
+    App\Service\TripPlanner\GoogleTransitTransportProvider:
+        arguments:
+            $apiKey: '%env(GOOGLE_API_KEY)%'
+            $searchEngineId: '%env(GOOGLE_SEARCH_ID)%'
+
     App\Service\Integrations\PlaceServiceInterface: '@App\Service\Integrations\GooglePlaceService'
+    App\Service\TripPlanner\PoiProviderInterface: '@App\Service\TripPlanner\GooglePlacesPoiProvider'
+    App\Service\TripPlanner\TransportProviderInterface: '@App\Service\TripPlanner\GoogleTransitTransportProvider'
+    App\Service\TripPlanner\DailyScheduleFormatterInterface: '@App\Service\TripPlanner\SimpleDailyScheduleFormatter'
+    App\Service\TripPlanner\TripPlanFormatterInterface: '@App\Service\TripPlanner\SimpleTripPlanFormatter'

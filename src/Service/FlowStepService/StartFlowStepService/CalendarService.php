@@ -15,8 +15,7 @@ readonly class CalendarService implements FlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value);
     }
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext

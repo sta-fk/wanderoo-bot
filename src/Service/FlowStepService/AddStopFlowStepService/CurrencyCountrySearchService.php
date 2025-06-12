@@ -23,7 +23,6 @@ readonly class CurrencyCountrySearchService implements StateAwareFlowStepService
     {
         return null !== $update->message
             && null !== $update->message->text;
-
     }
 
     public function supportsStates(): array

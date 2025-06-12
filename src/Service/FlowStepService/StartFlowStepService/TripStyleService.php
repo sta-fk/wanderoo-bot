@@ -33,8 +33,7 @@ readonly class TripStyleService implements StateAwareFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value);
     }
 
     public function supportsStates(): array

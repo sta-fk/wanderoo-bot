@@ -26,9 +26,9 @@ readonly class InterestsService implements StateAwareFlowStepServiceInterface
     ];
 
     public function __construct(
-        private UserStateStorage                  $userStateStorage,
+        private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
-        private BudgetOptionsProvider             $budgetOptionsProvider,
+        private BudgetOptionsProvider $budgetOptionsProvider,
     ) {
     }
 

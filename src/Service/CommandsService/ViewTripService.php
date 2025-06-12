@@ -80,9 +80,9 @@ readonly class ViewTripService implements FlowStepServiceInterface
                 $budgetLine = "   💵 Бюджет: {$stop->budget} " . ($stop->currency ?? $context->currency);
 
                 if (
-                    $context->currency &&
-                    isset($stop->budgetInPlanCurrency) &&
-                    $stop->currency !== $context->currency
+                    $context->currency
+                    && isset($stop->budgetInPlanCurrency)
+                    && $stop->currency !== $context->currency
                 ) {
                     $budgetLine .= " (~{$stop->budgetInPlanCurrency} {$context->currency})";
                 }

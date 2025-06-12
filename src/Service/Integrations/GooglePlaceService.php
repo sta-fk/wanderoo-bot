@@ -30,14 +30,18 @@ class GooglePlaceService implements PlaceServiceInterface
 
     public function getPlaceDetails(string $placeId): GooglePlaceDetails
     {
-        $response = $this->httpClient->request('GET', self::DETAILS_URL, [
+        $response = $this->httpClient->request(
+            'GET',
+            self::DETAILS_URL,
+            [
             'query' => [
                 'place_id' => $placeId,
                 'key' => $this->googleApiKey,
                 'fields' => 'place_id,name,geometry,adr_address,address_components',
                 'language' => 'uk',
             ],
-        ]);
+            ]
+        );
 
         $data = $response->toArray();
 
@@ -82,9 +86,13 @@ class GooglePlaceService implements PlaceServiceInterface
             $params['components'] = 'country:' . strtolower($countryCode);
         }
 
-        $response = $this->httpClient->request('GET', self::AUTOCOMPLETE_URL, [
+        $response = $this->httpClient->request(
+            'GET',
+            self::AUTOCOMPLETE_URL,
+            [
             'query' => $params,
-        ]);
+            ]
+        );
 
         $data = $response->toArray();
 
