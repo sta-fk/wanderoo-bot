@@ -28,7 +28,7 @@ readonly class WaitingForReuseOrNewInterestsKeyboardProvider implements NextStat
         $context = $this->userStateStorage->getContext($chatId);
 
         if (null !== $context->stops[count($context->stops) - 1]) {
-            return "Стиль подорожі для {$context->currentStopDraft->cityName}: <b>{$context->currentStopDraft->getTripStyleLabel()}</b>.\n\nНаступний крок...\n\n✨ Використати попередні інтереси для цієї зупинки? \n". implode(', ', $context->stops[count($context->stops) - 1]->getInterestsLabels()) . ".";
+            return "Стиль подорожі для {$context->currentStopDraft->cityName}: <b>{$context->currentStopDraft->getTripStyleLabel()}</b>.\n\nНаступний крок...\n\n✨ Використати попередні інтереси для цієї зупинки? \n" . implode(', ', $context->stops[count($context->stops) - 1]->getInterestsLabels()) . ".";
         }
 
         return "Стиль подорожі для {$context->currentStopDraft->cityName}: <b>{$context->currentStopDraft->getTripStyleLabel()}</b>.\n\nНаступний крок...\n\n✨ Використати попередні інтереси для цієї зупинки?";

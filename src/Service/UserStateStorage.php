@@ -23,19 +23,25 @@ readonly class UserStateStorage
     {
         $this->cache->delete(self::getStateKey($chatId)); // Очистити, щоб перезаписати
 
-        $this->cache->get(self::getStateKey($chatId), function (ItemInterface $item) use ($state) {
-            $item->expiresAfter($this->stateTtl);
+        $this->cache->get(
+            self::getStateKey($chatId),
+            function (ItemInterface $item) use ($state) {
+                $item->expiresAfter($this->stateTtl);
 
-            return $state->value;
-        });
+                return $state->value;
+            }
+        );
     }
 
     public function getState(int $chatId): ?States
     {
         return States::tryFrom(
-            $this->cache->get(self::getStateKey($chatId), function () {
-                return null;
-            })
+            $this->cache->get(
+                self::getStateKey($chatId),
+                function () {
+                    return null;
+                }
+            )
         );
     }
 
@@ -43,11 +49,14 @@ readonly class UserStateStorage
     {
         $this->cache->delete(self::getContextKey($chatId));
 
-        $this->cache->get(self::getContextKey($chatId), function (ItemInterface $item) use ($context) {
-            $item->expiresAfter($this->contextTtl);
+        $this->cache->get(
+            self::getContextKey($chatId),
+            function (ItemInterface $item) use ($context) {
+                $item->expiresAfter($this->contextTtl);
 
-            return $context;
-        });
+                return $context;
+            }
+        );
     }
 
     public function getContext(int $chatId): PlanContext

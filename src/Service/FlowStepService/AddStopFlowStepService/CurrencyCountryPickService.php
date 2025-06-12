@@ -27,8 +27,7 @@ readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceIn
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyCountryPick->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyCountryPick->value);
     }
 
     public function supportsStates(): array

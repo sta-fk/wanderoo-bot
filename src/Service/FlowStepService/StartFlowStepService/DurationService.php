@@ -21,8 +21,7 @@ readonly class DurationService implements StateAwareFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value);
     }
 
     public function supportsStates(): array

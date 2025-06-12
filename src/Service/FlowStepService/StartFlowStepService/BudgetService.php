@@ -14,17 +14,16 @@ use App\Service\UserStateStorage;
 readonly class BudgetService implements StateAwareFlowStepServiceInterface
 {
     public function __construct(
-        private UserStateStorage                  $userStateStorage,
+        private UserStateStorage $userStateStorage,
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
-        private BudgetHelperService               $budgetHelper,
+        private BudgetHelperService $budgetHelper,
     ) {
     }
 
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Budget->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Budget->value);
     }
 
     public function supportsStates(): array

@@ -25,8 +25,7 @@ readonly class CountryPickService implements StateAwareFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value);
     }
 
     public function supportsStates(): array

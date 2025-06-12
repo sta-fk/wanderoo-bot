@@ -19,19 +19,22 @@ class CountryCurrencyApiService
     {
         $countryCode = strtoupper($countryCode);
 
-        return $this->cache->get('currency_' . $countryCode, function () use ($countryCode) {
-            $response = $this->httpClient->request('GET', self::REST_COUNTRIES_URL . $countryCode);
-            $data = $response->toArray();
+        return $this->cache->get(
+            'currency_' . $countryCode,
+            function () use ($countryCode) {
+                $response = $this->httpClient->request('GET', self::REST_COUNTRIES_URL . $countryCode);
+                $data = $response->toArray();
 
-            if (empty($data) || !isset($data[0]['currencies'])) {
-                return null;
+                if (empty($data) || !isset($data[0]['currencies'])) {
+                    return null;
+                }
+
+                // currencies is an object with currencyCode as key (e.g. "EUR")
+                $currencies = $data[0]['currencies'];
+                $currencyCodes = array_keys($currencies);
+
+                return $currencyCodes[0] ?? null;
             }
-
-            // currencies is an object with currencyCode as key (e.g. "EUR")
-            $currencies = $data[0]['currencies'];
-            $currencyCodes = array_keys($currencies);
-
-            return $currencyCodes[0] ?? null;
-        });
+        );
     }
 }

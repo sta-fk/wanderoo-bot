@@ -21,8 +21,7 @@ class DatePickService implements StateAwareFlowStepServiceInterface
     public function supports(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::PickDate->value)
-        ;
+            && str_starts_with($update->callbackQuery->data, CallbackQueryData::PickDate->value);
     }
 
     public function supportsStates(): array

@@ -61,6 +61,5 @@ readonly class ReuseOrNewTripStyleService implements StateAwareFlowStepServiceIn
             $nextStateKeyboardProvider->buildKeyboard(),
             States::WaitingForTripStyle
         );
-
     }
 }
