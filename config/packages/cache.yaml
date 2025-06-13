@@ -4,3 +4,12 @@ framework:
         pools:
             app.redis_cache:
                 adapter: cache.adapter.redis
+            app.cache.user:
+                adapter: cache.adapter.redis
+                provider: app.redis.user
+            app.cache.exchanger:
+                adapter: cache.adapter.redis
+                provider: app.redis.exchanger
+            app.cache.google:
+                adapter: cache.adapter.redis
+                provider: app.redis.google

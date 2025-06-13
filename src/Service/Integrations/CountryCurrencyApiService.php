@@ -5,13 +5,13 @@ namespace App\Service\Integrations;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class CountryCurrencyApiService
+readonly class CountryCurrencyApiService
 {
     private const REST_COUNTRIES_URL = 'https://restcountries.com/v3.1/alpha/';
 
     public function __construct(
-        private readonly CacheInterface $cache,
-        private readonly HttpClientInterface $httpClient,
+        private  CacheInterface $cache,
+        private HttpClientInterface $httpClient,
     ) {
     }
 

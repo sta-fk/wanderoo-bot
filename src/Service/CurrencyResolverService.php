@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Service\Integrations\CountryCurrencyApiService;
 
-class CurrencyResolverService
+readonly class CurrencyResolverService
 {
     private const COUNTRY_TO_CURRENCY = [
         'US' => 'USD',
@@ -24,7 +24,7 @@ class CurrencyResolverService
     ];
 
     public function __construct(
-        private readonly CountryCurrencyApiService $countryCurrencyApiService,
+        private CountryCurrencyApiService $countryCurrencyApiService,
     ) {
     }
 

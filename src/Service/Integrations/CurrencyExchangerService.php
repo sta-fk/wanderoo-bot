@@ -6,14 +6,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
-class CurrencyExchangerService
+readonly class CurrencyExchangerService
 {
     private const EXCHANGE_API_URL = 'https://open.er-api.com/v6/latest/';
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly CacheInterface $cache,
-        private readonly int $exchangerTtl,
+        private HttpClientInterface $httpClient,
+        private CacheInterface $cache,
+        private int $exchangerTtl,
     ) {
     }
 

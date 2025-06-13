@@ -7,14 +7,14 @@ use App\DTO\GooglePlaceDetails;
 use App\Service\Integrations\PlaceServiceInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class GooglePlaceService implements PlaceServiceInterface
+readonly class GooglePlaceService implements PlaceServiceInterface
 {
     private const AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     private const DETAILS_URL = 'https://maps.googleapis.com/maps/api/place/details/json';
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly string $googleApiKey,
+        private HttpClientInterface $httpClient,
+        private string $googleApiKey,
     ) {
     }
 
