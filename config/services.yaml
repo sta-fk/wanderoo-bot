@@ -19,37 +19,70 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    app.redis.user:
+        class: Redis
+        factory: ['Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection']
+        arguments:
+            - '%env(REDIS_USER_URL)%'
+
+    app.redis.exchanger:
+        class: Redis
+        factory: ['Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection']
+        arguments:
+            - '%env(REDIS_EXCHANGER_URL)%'
+
+    app.redis.google:
+        class: Redis
+        factory: ['Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection']
+        arguments:
+            - '%env(REDIS_GOOGLE_URL)%'
+
     App\Service\UserStateStorage:
         arguments:
-            $cache: '@app.redis_cache'
+            $cache: '@app.cache.user'
             $stateTtl: '%env(STATE_TTL)%'
             $contextTtl: '%env(CONTEXT_TTL)%'
 
     App\Service\Integrations\CountryCurrencyApiService:
         arguments:
-            $cache: '@app.redis_cache'
+            $cache: '@app.cache.exchanger'
 
     App\Service\Integrations\CurrencyExchangerService:
         arguments:
-            $cache: '@app.redis_cache'
+            $cache: '@app.cache.exchanger'
             $exchangerTtl: '%env(EXCHANGER_TTL)%'
 
     App\Service\Integrations\GooglePlaceService:
         arguments:
             $googleApiKey: '%env(GOOGLE_API_KEY)%'
 
+    App\Service\Integrations\PlaceServiceInterface: '@App\Service\Integrations\GooglePlaceService'
+
+    App\Service\TripPlanner\DailyScheduleFormatterInterface: '@App\Service\TripPlanner\SimpleDailyScheduleFormatter'
+    App\Service\TripPlanner\TripPlanFormatterInterface: '@App\Service\TripPlanner\HtmlTripPlanFormatter'
+
+    # Google Places POI
     App\Service\Integrations\GooglePlacesPoiProvider:
         arguments:
             $apiKey: '%env(GOOGLE_API_KEY)%'
 
+    App\Service\Integrations\PoiProviderInterface: '@App\Service\Integrations\CacheableGooglePlacesPoiProvider'
+    App\Service\Integrations\CacheableGooglePlacesPoiProvider:
+        arguments:
+            $inner: '@App\Service\Integrations\GooglePlacesPoiProvider'
+            $cache: '@app.cache.google'
+            $googlePlacesPOITtl: '%env(GOOGLE_PLACES_POI_TTL)%'
+
+    # Google Transit Transport
     App\Service\Integrations\GoogleTransitTransportProvider:
         arguments:
             $apiKey: '%env(GOOGLE_SEARCH_API_KEY)%'
             $searchEngineId: '%env(GOOGLE_SEARCH_ID)%'
 
-    App\Service\Integrations\PlaceServiceInterface: '@App\Service\Integrations\GooglePlaceService'
-    App\Service\Integrations\PoiProviderInterface: '@App\Service\Integrations\GooglePlacesPoiProvider'
-    App\Service\Integrations\TransportProviderInterface: '@App\Service\Integrations\GoogleTransitTransportProvider'
+    App\Service\Integrations\TransportProviderInterface: '@App\Service\Integrations\CacheableGoogleTransitTransportProvider'
+    App\Provider\Integrations\CacheableGoogleTransitTransportProvider:
+        arguments:
+            $inner: '@App\Service\Integrations\GoogleTransitTransportProvider'
+            $cache: '@app.cache.google'
+            $googleTransitTransportTtl: '%env(GOOGLE_PLACES_POI_TTL)%'
 
-    App\Service\TripPlanner\DailyScheduleFormatterInterface: '@App\Service\TripPlanner\SimpleDailyScheduleFormatter'
-    App\Service\TripPlanner\TripPlanFormatterInterface: '@App\Service\TripPlanner\HtmlTripPlanFormatter'
