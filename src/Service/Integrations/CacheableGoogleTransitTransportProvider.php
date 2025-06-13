@@ -31,6 +31,6 @@ class CacheableGoogleTransitTransportProvider implements TransportProviderInterf
     private function makeKey(string $city): string
     {
         $citySlug = mb_strtolower(trim($city));
-        return sprintf('transport:%s', $citySlug);
+        return sprintf('transport_%s', $citySlug);
     }
 }

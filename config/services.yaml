@@ -80,7 +80,7 @@ services:
             $searchEngineId: '%env(GOOGLE_SEARCH_ID)%'
 
     App\Service\Integrations\TransportProviderInterface: '@App\Service\Integrations\CacheableGoogleTransitTransportProvider'
-    App\Provider\Integrations\CacheableGoogleTransitTransportProvider:
+    App\Service\Integrations\CacheableGoogleTransitTransportProvider:
         arguments:
             $inner: '@App\Service\Integrations\GoogleTransitTransportProvider'
             $cache: '@app.cache.google'

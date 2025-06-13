@@ -42,6 +42,6 @@ class CacheableGooglePlacesPoiProvider implements PoiProviderInterface
     {
         $citySlug = mb_strtolower(trim($city));
         $interestsKey = $interests ? implode(',', array_map('mb_strtolower', $interests)) : 'none';
-        return sprintf('poi:%s:%s:%s', $type, $citySlug, md5($interestsKey));
+        return sprintf('poi_%s_%s_%s', $type, $citySlug, md5($interestsKey));
     }
 }
