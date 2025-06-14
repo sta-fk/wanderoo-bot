@@ -21,6 +21,9 @@ readonly class DefaultStopPlanGenerator implements StopPlanGeneratorInterface
         $stopPlan->cityName = $stop->cityName;
         $stopPlan->countryName = $stop->countryName;
         $stopPlan->localTransportInfo = $transportInfo;
+        $stopPlan->currency = $stop->currency;
+        $stopPlan->budget = $stop->budget;
+        $stopPlan->tripStyle = $stop->tripStyle;
 
         // Дати та дні будуть призначені у PlanBuilderService
         $stopPlan->days = [];

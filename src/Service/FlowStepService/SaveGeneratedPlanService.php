@@ -30,7 +30,7 @@ readonly class SaveGeneratedPlanService implements FlowStepServiceInterface
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
-        $chatId = $update->message->chat->id;
+        $chatId = $update->callbackQuery->message->chat->id;
 
         $context = $this->stateStorage->getContext($chatId);
         if (empty($context->stops)) {
@@ -42,7 +42,7 @@ readonly class SaveGeneratedPlanService implements FlowStepServiceInterface
 
         $tripPlan = $this->planBuilderService->buildPlan($context);
 
-        $user = $this->userRepository->findOrCreateFromTelegramUser($update->callbackQuery->message);
+        $user = $this->userRepository->findOrCreateFromTelegramUser($update);
 
         $trip = $this->tripPersister->persistFromPlan($tripPlan, $user);
         $this->stateStorage->clearContext($chatId);

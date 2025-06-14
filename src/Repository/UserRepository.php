@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\DTO\Request\TelegramMessage;
+use App\DTO\Request\TelegramUpdate;
 use App\Entity\User;
 use App\Enum\SupportedLanguages;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -18,17 +19,20 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function findOrCreateFromTelegramUser(TelegramMessage $telegramMessage): User
+    public function findOrCreateFromTelegramUser(TelegramUpdate $telegramUpdate): User
     {
-        $user = $this->findOneBy(['chatId' => $telegramMessage->chat->id]);
+        $chatId = $telegramUpdate->callbackQuery?->message?->chat->id ?? $telegramUpdate->message->chat->id;
+        $languageCode = $telegramUpdate->callbackQuery?->from->languageCode ?? $telegramUpdate->message->from->languageCode;
+
+        $user = $this->findOneBy(['chatId' => $chatId]);
         if ($user) {
             return $user;
         }
 
         $user = new User();
-        $user->setChatId($telegramMessage->chat->id);
+        $user->setChatId($chatId);
         $user->setLanguage(
-            SupportedLanguages::Ukrainian->value === $telegramMessage->from->languageCode
+            SupportedLanguages::Ukrainian->value === $languageCode
                 ? SupportedLanguages::Ukrainian->value
                 : SupportedLanguages::English->value
         );
