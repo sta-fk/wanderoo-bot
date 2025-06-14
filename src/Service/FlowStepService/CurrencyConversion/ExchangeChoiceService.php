@@ -50,7 +50,7 @@ readonly class ExchangeChoiceService implements StateAwareFlowStepServiceInterfa
             );
         }
 
-        if ($choice !== CallbackQueryData::Usd->value || $choice !== CallbackQueryData::Eur->value) {
+        if ($choice !== CallbackQueryData::Usd->value && $choice !== CallbackQueryData::Eur->value) {
             throw new \LogicException('Unavailable currency conversion step');
         }
 
