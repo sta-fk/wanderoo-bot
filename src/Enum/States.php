@@ -27,4 +27,10 @@ enum States: string
     case WaitingForCurrencyChoice = 'waiting_for_currency_choice';
     case WaitingForCurrencyCountrySearch = 'waiting_for_currency_country_search';
     case WaitingForCurrencyCountryPick = 'waiting_for_currency_country_pick';
+
+    // Currency exchanger command
+    case WaitingForExchangeChoice = 'waiting_for_exchange_choice';
+    case WaitingForExchangeCountrySearch = 'waiting_for_exchange_country_search';
+    case WaitingForExchangeCountryPick = 'waiting_for_exchange_country_pick';
+    case ExchangeDone = 'exchange_done';
 }
