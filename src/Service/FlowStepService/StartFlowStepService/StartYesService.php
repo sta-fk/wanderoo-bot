@@ -7,7 +7,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\CallbackQueryData;
-use App\Service\NextStateKeyboardProviderResolver;
+use App\Service\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\UserStateStorage;
 

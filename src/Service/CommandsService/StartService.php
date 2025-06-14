@@ -7,7 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Enum\TelegramCommands;
 use App\Service\FlowStepServiceInterface;
-use App\Service\KeyboardProviderResolver;
+use App\Service\KeyboardResolver\KeyboardProviderResolver;
 
 readonly class StartService implements FlowStepServiceInterface
 {

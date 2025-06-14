@@ -10,7 +10,7 @@ readonly class CountryCurrencyApiService
     private const REST_COUNTRIES_URL = 'https://restcountries.com/v3.1/alpha/';
 
     public function __construct(
-        private  CacheInterface $cache,
+        private CacheInterface $cache,
         private HttpClientInterface $httpClient,
     ) {
     }

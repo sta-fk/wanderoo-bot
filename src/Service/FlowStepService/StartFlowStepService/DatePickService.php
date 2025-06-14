@@ -7,7 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\NextStateKeyboardProviderResolver;
+use App\Service\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 class DatePickService implements StateAwareFlowStepServiceInterface

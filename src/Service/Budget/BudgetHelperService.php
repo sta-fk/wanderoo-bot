@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Budget;
 
 use App\DTO\PlanContext;
 use App\DTO\StopContext;

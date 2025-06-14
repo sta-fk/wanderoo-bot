@@ -9,7 +9,7 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Enum\TelegramCommands;
 use App\Service\FlowStepServiceInterface;
-use App\Service\KeyboardProviderResolver;
+use App\Service\KeyboardResolver\KeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class NewTripService implements FlowStepServiceInterface

@@ -9,7 +9,7 @@ use App\Enum\States;
 use App\Enum\TelegramCommands;
 use App\Service\FlowStepServiceInterface;
 use App\Service\KeyboardProvider\Message\StartMessageKeyboardProvider;
-use App\Service\KeyboardProviderResolver;
+use App\Service\KeyboardResolver\KeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class AddStopService implements FlowStepServiceInterface

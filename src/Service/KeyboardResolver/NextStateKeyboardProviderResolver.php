@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\KeyboardResolver;
 
 use App\Enum\States;
 use App\Service\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;
