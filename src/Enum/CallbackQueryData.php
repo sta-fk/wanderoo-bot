@@ -22,6 +22,10 @@ enum CallbackQueryData: string
     case AddStop = 'add_stop';
     case NewTrip = 'new_trip';
 
+    // Currency exchanger command
+    case ExchangeChoice = 'exchange_choice_';
+    case ExchangeCountryPick = 'exchange_country_pick_';
+
     // For Adding stop flow
     case StopCountrySame = 'stop_country_same';
     case StopCountryAnother = 'stop_country_another';
