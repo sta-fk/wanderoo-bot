@@ -6,10 +6,10 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\BudgetHelperService;
+use App\Service\Budget\BudgetHelperService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardProvider\NextState\ExchangeDoneKeyboardProvider;
-use App\Service\NextStateKeyboardProviderResolver;
+use App\Service\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class ExchangeChoiceService implements StateAwareFlowStepServiceInterface

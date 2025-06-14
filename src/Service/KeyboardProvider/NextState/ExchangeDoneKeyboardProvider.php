@@ -14,7 +14,8 @@ readonly class ExchangeDoneKeyboardProvider implements NextStateKeyboardProvider
 
     public function __construct(
         private UserStateStorage $userStateStorage,
-    ){}
+    ) {
+    }
 
     public function supports(States $requiredState): bool
     {
@@ -39,15 +40,15 @@ readonly class ExchangeDoneKeyboardProvider implements NextStateKeyboardProvider
             return sprintf(
                 "🔁 Бюджет було перераховано. \n\n💰У <b>%s</b> становить <b>%s</b>",
                 $context->currency,
-                $context->totalBudget.' '.$context->currency,
+                $context->totalBudget . ' ' . $context->currency,
             );
         }
 
         return sprintf(
             "🔁 Бюджет було перераховано у <b>%s</b>\n\n💰 <b>%s → %s</b>",
             $this->toCurrency,
-            $this->fromAmount.' '.$this->fromCurrency,
-            $this->toAmount.' '.$this->toCurrency
+            $this->fromAmount . ' ' . $this->fromCurrency,
+            $this->toAmount . ' ' . $this->toCurrency
         );
     }
 

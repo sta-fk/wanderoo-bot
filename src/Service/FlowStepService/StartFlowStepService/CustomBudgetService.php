@@ -5,10 +5,10 @@ namespace App\Service\FlowStepService\StartFlowStepService;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
-use App\Service\BudgetHelperService;
+use App\Service\Budget\BudgetHelperService;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\KeyboardProvider\NextState\WaitingForCustomBudgetKeyboardProvider;
-use App\Service\NextStateKeyboardProviderResolver;
+use App\Service\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
 readonly class CustomBudgetService implements StateAwareFlowStepServiceInterface

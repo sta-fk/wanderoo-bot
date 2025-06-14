@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\KeyboardResolver;
 
 use App\DTO\Request\TelegramCallbackQuery;
 use App\DTO\Request\TelegramMessage;

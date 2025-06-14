@@ -21,6 +21,9 @@ enum CallbackQueryData: string
     // Commands as callback
     case AddStop = 'add_stop';
     case NewTrip = 'new_trip';
+    case SaveGeneratedPlan = 'save_generated_plan';
+    case EditGeneratedPlan = 'edit_generated_plan';
+    case BackToMainMenu = 'back_to_main_menu';
 
     // Currency exchanger command
     case ExchangeChoice = 'exchange_choice_';

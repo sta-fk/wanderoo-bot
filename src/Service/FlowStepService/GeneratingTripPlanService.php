@@ -5,6 +5,7 @@ namespace App\Service\FlowStepService;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
+use App\Service\KeyboardResolver\KeyboardProviderResolver;
 use App\Service\TripPlanner\PlanBuilderService;
 use App\Service\TripPlanner\TripPlanFormatterInterface;
 use App\Service\UserStateStorage;
@@ -15,6 +16,7 @@ readonly class GeneratingTripPlanService implements FinalStateAwareFlowStepServi
         private UserStateStorage $userStateStorage,
         private PlanBuilderService $planBuilderService,
         private TripPlanFormatterInterface $tripPlanFormatter,
+        private KeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
@@ -49,6 +51,7 @@ readonly class GeneratingTripPlanService implements FinalStateAwareFlowStepServi
             $i++;
         }
 
+        // Final message with keyboard
         $messages[] = $this->buildNextStepMessage($update);
 
         return $messages;
@@ -56,30 +59,12 @@ readonly class GeneratingTripPlanService implements FinalStateAwareFlowStepServi
 
     public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
     {
+        $keyboardProvider = $this->keyboardProviderResolver->resolve($update);
+
         return new SendMessageContext(
             $update->callbackQuery->message->chat->id,
-            "Що бажаєте зробити з цим маршрутом?",
-            $this->getKeyboard(),
+            $keyboardProvider->getTextMessage(),
+            $keyboardProvider->buildKeyboard(),
         );
-    }
-
-    private function getKeyboard(): array
-    {
-        return [
-            'inline_keyboard' => [
-                [
-                    ['text' => '✅ Зберегти план', 'callback_data' => 'save_generated_plan'],
-                ],
-                [
-                    ['text' => '✏️ Змінити план', 'callback_data' => 'edit_generated_plan'],
-                ],
-                [
-                    ['text' => '🔄 Почати заново', 'callback_data' => CallbackQueryData::NewTrip->value],
-                ],
-                [
-                    ['text' => '🔙 Назад', 'callback_data' => 'back_to_main_menu'],
-                ],
-            ]
-        ];
     }
 }

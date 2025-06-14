@@ -6,7 +6,7 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
-use App\Service\NextStateKeyboardProviderResolver;
+use App\Service\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
 
 readonly class CountrySearchService implements StateAwareFlowStepServiceInterface

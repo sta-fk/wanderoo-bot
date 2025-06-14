@@ -7,7 +7,7 @@ use App\DTO\SendMessageContext;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareFlowStepServiceInterface;
 use App\Service\Integrations\PlaceServiceInterface;
-use App\Service\NextStateKeyboardProviderResolver;
+use App\Service\KeyboardResolver\NextStateKeyboardProviderResolver;
 
 readonly class ExchangeCountrySearchService implements StateAwareFlowStepServiceInterface
 {

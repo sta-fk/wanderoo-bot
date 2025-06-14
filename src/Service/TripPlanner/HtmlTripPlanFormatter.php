@@ -14,7 +14,8 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
 
     public function __construct(
         private TranslatorInterface $translator,
-    ) {}
+    ) {
+    }
 
     public function format(TripPlan $plan): string
     {
@@ -143,7 +144,7 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
     {
         $convertedParams = [];
         foreach ($params as $id => $value) {
-            $convertedParams['{'.$id.'}'] = $value;
+            $convertedParams['{' . $id . '}'] = $value;
         }
 
         return $this->translator->trans($key, $convertedParams, 'messages', $this->translator->getLocale());
