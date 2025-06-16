@@ -2,8 +2,8 @@
 
 namespace App\DTO;
 
-use App\Service\FlowStepService\StartFlowStepService\InterestsService;
-use App\Service\FlowStepService\StartFlowStepService\TripStyleService;
+use App\Service\Draft\FlowStepService\StartFlowStepService\InterestsService;
+use App\Service\Draft\FlowStepService\StartFlowStepService\TripStyleService;
 
 class StopContext
 {
