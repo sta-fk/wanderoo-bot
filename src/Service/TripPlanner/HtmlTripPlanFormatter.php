@@ -30,7 +30,7 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
         $currentMessage = $this->renderHeader($plan, $locale);
 
         foreach ($plan->stops as $index => $stop) {
-            $separator = $this->t('trip.stop_separator');
+            $separator = $this->t('trip_plan.stop_separator');
             $stopHeader = $separator . "\n\n" . $this->renderStopHeader($stop, $index, $locale);
             $dayBlocks = [];
 
@@ -64,8 +64,8 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
         $start = $this->formatDate($plan->startDate, $locale);
         $end = $this->formatDate($plan->endDate, $locale);
 
-        return $this->t('trip.header', [
-            'title' => null !== $plan->name ? htmlspecialchars($plan->name) : $this->translator->trans('trip.absent_title'),
+        return $this->t('trip_plan.header', [
+            'title' => null !== $plan->name ? htmlspecialchars($plan->name) : $this->translator->trans('trip_plan.absent_title'),
             'start_date' => $start,
             'end_date' => $end,
             'total_budget' => $plan->totalBudget,
@@ -79,7 +79,7 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
         $start = $this->formatDate($stop->startDate, $locale);
         $end = $this->formatDate($stop->endDate, $locale);
 
-        return $this->t('trip.stop_header', [
+        return $this->t('trip_plan.stop_header', [
             'index' => $index + 1,
             'city' => htmlspecialchars($stop->cityName),
             'country' => htmlspecialchars($stop->countryName),
@@ -90,20 +90,20 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
 
     private function renderDay(DayPlan $day, int $dayIndex): string
     {
-        $text = $this->t('trip.day_title', ['index' => $dayIndex]);
+        $text = $this->t('trip_plan.day_title', ['index' => $dayIndex]);
 
-        $text .= "\n" . $this->t('trip.activities_title');
+        $text .= "\n" . $this->t('trip_plan.activities_title');
         if (empty($day->activities)) {
-            $text .= "\n" . $this->t('trip.free_time');
+            $text .= "\n" . $this->t('trip_plan.free_time');
         } else {
             foreach ($day->activities as $activity) {
                 $text .= "\n• " . htmlspecialchars($activity);
             }
         }
 
-        $text .= "\n\n" . $this->t('trip.food_title');
+        $text .= "\n\n" . $this->t('trip_plan.food_title');
         if (empty($day->foodPlaces)) {
-            $text .= "\n" . $this->t('trip.no_food');
+            $text .= "\n" . $this->t('trip_plan.no_food');
         } else {
             foreach ($day->foodPlaces as $food) {
                 $text .= "\n• " . htmlspecialchars($food);

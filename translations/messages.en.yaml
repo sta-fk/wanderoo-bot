@@ -1,8 +1,17 @@
-trip.header: "<b>🌍 {title}</b>\n<b>🗓️</b> {start_date} — {end_date}\n<b>💰 Total Budget:</b> <b>{total_budget} {currency}</b>\n<b>⏰ Duration:</b> <b>{total_duration} days</b>"
-trip.stop_header: "<b>🔹 Stop {index}: {city}, {country}</b>\n📍 <i>{start_date} — {end_date}</i>"
-trip.day_title: "<u>🗓️ Day {index}</u>"
-trip.activities_title: "<b>🎯 Activities:</b>"
-trip.free_time: "<i>Free time or explore the city on your own</i>"
-trip.food_title: "<b>🍽️ Food Places:</b>"
-trip.no_food: "<i>No recommended places</i>"
-trip.stop_separator: "━━━━━━━━━━━━━━━━━━━━"
+trip:
+  list:
+    empty: "You don't have any saved plans yet 🕸️"
+    select: "Choose a plan to view 👇"
+  deleted:
+    success: "The plan has been successfully deleted 🗑️"
+
+trip_plan:
+  header: "<b>🌍 {title}</b>\n<b>🗓️</b> {start_date} — {end_date}\n<b>💰 Total budget:</b> <b>{total_budget} {currency}</b>\n<b>⏰ Duration:</b> <b>{total_duration} days</b>"
+  stop_header: "<b>🔹 Stop {index}: {city}, {country}</b>\n📍 <i>{start_date} — {end_date}</i>"
+  day_title: "<u>🗓️ Day {index}</u>"
+  activities_title: "<b>🎯 Activities:</b>"
+  free_time: "<i>Free time or explore the city at your own pace</i>"
+  food_title: "<b>🍽️ Places to eat:</b>"
+  no_food: "<i>No recommended places</i>"
+  stop_separator: "━━━━━━━━━━━━━━━━━━━━"
+  absent_title: "Your itinerary"

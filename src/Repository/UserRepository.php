@@ -19,7 +19,7 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function findOrCreateFromTelegramUser(TelegramUpdate $telegramUpdate): User
+    public function findOrCreateFromTelegramUpdate(TelegramUpdate $telegramUpdate): User
     {
         $chatId = $telegramUpdate->callbackQuery?->message?->chat->id ?? $telegramUpdate->message->chat->id;
         $languageCode = $telegramUpdate->callbackQuery?->from->languageCode ?? $telegramUpdate->message->from->languageCode;
