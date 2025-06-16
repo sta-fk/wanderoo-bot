@@ -63,7 +63,7 @@ class TripStop
         $this->days = new ArrayCollection();
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }

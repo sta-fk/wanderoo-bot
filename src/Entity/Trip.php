@@ -48,7 +48,7 @@ class Trip
         $this->stops = new ArrayCollection();
     }
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
@@ -60,7 +60,7 @@ class Trip
 
     public function getTitle(): ?string
     {
-        return $this->title ?? $this->stops->first()->getCountryName() . ', ' . $this->stops->first()->getCityName();
+        return $this->title ?? $this->stops->toArray()[0]->getCountryName(). ', ' . $this->stops->toArray()[0]->getCityName();
     }
 
     public function getStartDate(): \DateTimeImmutable

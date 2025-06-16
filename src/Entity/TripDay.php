@@ -35,7 +35,7 @@ class TripDay
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $date;
 
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }

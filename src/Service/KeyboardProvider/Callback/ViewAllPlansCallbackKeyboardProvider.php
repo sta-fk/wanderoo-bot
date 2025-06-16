@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Service\KeyboardProvider\Message;
+namespace App\Service\KeyboardProvider\Callback;
 
-use App\DTO\Request\TelegramMessage;
+use App\DTO\Request\TelegramCallbackQuery;
 use App\Entity\Trip;
 use App\Enum\CallbackQueryData;
-use App\Enum\TelegramCommands;
 use App\Repository\TripRepository;
 use App\Repository\UserRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-readonly class ViewAllPlansKeyboardProvider implements MessageKeyboardProviderInterface
+readonly class ViewAllPlansCallbackKeyboardProvider implements CallbackKeyboardProviderInterface
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -19,9 +18,9 @@ readonly class ViewAllPlansKeyboardProvider implements MessageKeyboardProviderIn
     ) {
     }
 
-    public function supports(TelegramMessage $message): bool
+    public function supports(TelegramCallbackQuery $callbackQuery): bool
     {
-        return TelegramCommands::ViewAllPlans->value === $message->text;
+        return CallbackQueryData::ViewAllTrips->value === $callbackQuery->data;
     }
 
     public function getTextMessage(int $chatId = 0): string
