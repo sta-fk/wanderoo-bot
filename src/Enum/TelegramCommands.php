@@ -10,4 +10,5 @@ enum TelegramCommands: string
     case ViewTrip = '/view_trip';
     case Exchanger = '/currency';
     case ViewGeneratedPlan = '/view_generated_plan';
+    case ViewAllPlans = '/view_all_plans';
 }

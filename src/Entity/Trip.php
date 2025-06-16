@@ -60,7 +60,7 @@ class Trip
 
     public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->title ?? $this->stops->first()->getCountryName() . ', ' . $this->stops->first()->getCityName();
     }
 
     public function getStartDate(): \DateTimeImmutable
@@ -82,6 +82,24 @@ class Trip
     public function getStops(): Collection
     {
         return $this->stops;
+    }
+
+    public function getTotalDuration(): int
+    {
+        return array_reduce(
+            $this->stops->toArray(),
+            static fn(int $carry, TripStop $stop) => $carry + $stop->getDuration(),
+            0
+        );
+    }
+
+    public function getTotalBudget(): float
+    {
+        return array_reduce(
+            $this->stops->toArray(),
+            static fn(int $carry, TripStop $stop) => $carry + $stop->getBudget(),
+            0.0
+        );
     }
 
     public function setUser(User $user): void

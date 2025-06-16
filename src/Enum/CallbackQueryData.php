@@ -18,11 +18,16 @@ enum CallbackQueryData: string
     case ReadyToBuildPlan = 'ready_to_build_plan';
     case GeneratingTripPlan = 'generating_trip_plan';
 
+    case ViewTrip = 'view_trip_';
+    case DeleteTrip = 'delete_trip_';
+    case EditTrip = 'edit_trip_';
+
     // Commands as callback
     case AddStop = 'add_stop';
     case NewTrip = 'new_trip';
     case SaveGeneratedPlan = 'save_generated_plan';
     case EditGeneratedPlan = 'edit_generated_plan';
+    case ViewAllTrips = 'view_all_trips';
     case BackToMainMenu = 'back_to_main_menu';
 
     // Currency exchanger command

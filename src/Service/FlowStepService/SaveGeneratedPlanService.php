@@ -42,7 +42,7 @@ readonly class SaveGeneratedPlanService implements FlowStepServiceInterface
 
         $tripPlan = $this->planBuilderService->buildPlan($context);
 
-        $user = $this->userRepository->findOrCreateFromTelegramUser($update);
+        $user = $this->userRepository->findOrCreateFromTelegramUpdate($update);
 
         $trip = $this->tripPersister->persistFromPlan($tripPlan, $user);
         $this->stateStorage->clearContext($chatId);
