@@ -2,8 +2,8 @@
 
 namespace App\Service\TripPlanner;
 
-use App\DTO\DayPlan;
-use App\DTO\StopPlan;
+use App\DTO\TripPlan\DayPlan;
+use App\DTO\TripPlan\StopPlan;
 
 class SimpleDailyScheduleFormatter implements DailyScheduleFormatterInterface
 {

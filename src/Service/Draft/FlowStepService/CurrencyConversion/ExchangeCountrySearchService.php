@@ -5,11 +5,11 @@ namespace App\Service\Draft\FlowStepService\CurrencyConversion;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\States;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 
-readonly class ExchangeCountrySearchService implements StateAwareFlowStepServiceInterface
+readonly class ExchangeCountrySearchService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
@@ -17,7 +17,7 @@ readonly class ExchangeCountrySearchService implements StateAwareFlowStepService
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->message
             && null !== $update->message->text;

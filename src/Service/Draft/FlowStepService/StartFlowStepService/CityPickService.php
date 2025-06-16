@@ -2,17 +2,17 @@
 
 namespace App\Service\Draft\FlowStepService\StartFlowStepService;
 
-use App\DTO\PlanContext;
+use App\DTO\Context\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class CityPickService implements StateAwareFlowStepServiceInterface
+readonly class CityPickService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
@@ -21,7 +21,7 @@ readonly class CityPickService implements StateAwareFlowStepServiceInterface
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::City->value);

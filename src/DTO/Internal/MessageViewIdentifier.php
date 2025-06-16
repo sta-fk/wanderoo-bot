@@ -3,7 +3,7 @@
 namespace App\DTO\Internal;
 
 use App\Enum\States;
-use App\Enum\View;
+use App\Enum\MessageView;
 
 final readonly class MessageViewIdentifier
 {
@@ -14,7 +14,7 @@ final readonly class MessageViewIdentifier
         return new self($state->value);
     }
 
-    public static function fromView(View $view): self
+    public static function fromView(MessageViewIdentifier $view): self
     {
         return new self($view->value);
     }

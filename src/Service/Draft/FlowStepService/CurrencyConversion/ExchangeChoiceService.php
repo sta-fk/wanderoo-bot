@@ -7,12 +7,12 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\Draft\Budget\BudgetHelperService;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Draft\KeyboardProvider\NextState\ExchangeDoneKeyboardProvider;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-readonly class ExchangeChoiceService implements StateAwareFlowStepServiceInterface
+readonly class ExchangeChoiceService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
@@ -21,7 +21,7 @@ readonly class ExchangeChoiceService implements StateAwareFlowStepServiceInterfa
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::ExchangeChoice->value);

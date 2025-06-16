@@ -1,6 +1,9 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\TripPlan;
+
+use App\DTO\Context\PlanContext;
+use App\DTO\TripPlan\StopPlan;
 
 class TripPlan
 {

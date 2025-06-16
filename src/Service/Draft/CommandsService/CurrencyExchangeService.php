@@ -2,7 +2,7 @@
 
 namespace App\Service\Draft\CommandsService;
 
-use App\DTO\PlanContext;
+use App\DTO\Context\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;

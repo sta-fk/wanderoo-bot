@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO\TelegramMessage;
+namespace App\DTO\TelegramResponseMessage;
 
 final class AnswerCallbackQueryContext implements TelegramMessageInterface
 {

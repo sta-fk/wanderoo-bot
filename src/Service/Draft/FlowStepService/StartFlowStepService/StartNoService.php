@@ -23,7 +23,7 @@ readonly class StartNoService implements FlowStepServiceInterface
             $update->callbackQuery->message->chat->id,
             "Натисни “🧳 Так”, щоб почати планування ✈️",
             null,
-            States::WaitingForStart
+            States::WaitingForStartNew
         );
     }
 }

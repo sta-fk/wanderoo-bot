@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Context;
 
 use App\Service\Draft\FlowStepService\StartFlowStepService\InterestsService;
 use App\Service\Draft\FlowStepService\StartFlowStepService\TripStyleService;

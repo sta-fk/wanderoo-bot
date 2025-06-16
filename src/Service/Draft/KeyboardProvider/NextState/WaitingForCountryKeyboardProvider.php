@@ -9,7 +9,7 @@ readonly class WaitingForCountryKeyboardProvider implements NextStateKeyboardPro
 {
     public function supports(States $requiredState): bool
     {
-        return $requiredState === States::WaitingForCountry;
+        return $requiredState === States::WaitingForCountryName;
     }
 
     public function getTextMessage(int $chatId = 0): string

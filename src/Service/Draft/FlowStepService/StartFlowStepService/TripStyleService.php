@@ -2,16 +2,16 @@
 
 namespace App\Service\Draft\FlowStepService\StartFlowStepService;
 
-use App\DTO\PlanContext;
+use App\DTO\Context\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-readonly class TripStyleService implements StateAwareFlowStepServiceInterface
+readonly class TripStyleService implements StateAwareFlowViewDataServiceInterface
 {
     public const TRIP_STYLE_OPTIONS = [
         'light' => '🧘 Лайтовий',
@@ -30,7 +30,7 @@ readonly class TripStyleService implements StateAwareFlowStepServiceInterface
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value);

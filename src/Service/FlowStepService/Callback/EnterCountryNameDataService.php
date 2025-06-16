@@ -1,26 +1,29 @@
 <?php
 
-namespace App\Service\Draft\FlowStepService\StartFlowStepService;
+namespace App\Service\FlowStepService\Callback;
 
+use App\DTO\Internal\EnterCountryNameViewData;
+use App\DTO\Internal\StartNewViewData;
+use App\DTO\Internal\ViewDataInterface;
+use App\DTO\Context\PlanContext;
 use App\DTO\Request\TelegramUpdate;
-use App\DTO\SendMessageContext;
+use App\Enum\CallbackData;
 use App\Enum\States;
-use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
-use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
+use App\Service\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Integrations\PlaceServiceInterface;
+use App\Service\UserStateStorage;
 
-readonly class CountrySearchService implements StateAwareFlowViewDataServiceInterface
+readonly class EnterCountryNameDataService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
+        private UserStateStorage $userStateStorage,
         private PlaceServiceInterface $placeService,
-        private NextStateKeyboardProviderResolver $keyboardProviderResolver,
     ) {
     }
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->message
-            && null !== $update->message->text;
+        return null !== $update->message;
     }
 
     public function supportsStates(): array
@@ -28,13 +31,14 @@ readonly class CountrySearchService implements StateAwareFlowViewDataServiceInte
         return [States::WaitingForCountryName];
     }
 
-    public function buildNextStepMessage(TelegramUpdate $update): SendMessageContext
+    public function buildNextStepViewData(TelegramUpdate $update): ViewDataInterface
     {
         $chatId = $update->message->chat->id;
         $countries = $this->placeService->searchCountries($update->message->text);
 
         if (empty($countries)) {
-            return new SendMessageContext($chatId, "Не знайдено такої країни. Спробуйте ще раз.");
+            return new EnterCountryNameViewData($chatId, []);
+                // new SendMessageContext($chatId, "Не знайдено такої країни. Спробуйте ще раз.");
         }
 
         $nextStateKeyboardProvider = $this->keyboardProviderResolver->resolve(States::WaitingForCountryPick);
@@ -45,5 +49,7 @@ readonly class CountrySearchService implements StateAwareFlowViewDataServiceInte
             $nextStateKeyboardProvider->buildKeyboard($countries),
             States::WaitingForCountryPick
         );
+
+        return new StartNewViewData($update->message->chat->id);
     }
 }

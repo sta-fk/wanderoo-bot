@@ -1,9 +1,10 @@
 <?php
 
-namespace App\DTO\Internal\ViewData;
+namespace App\DTO\Internal;
 
+use App\DTO\Internal\ViewDataInterface;
 use App\Enum\States;
-use App\Enum\View;
+use App\Enum\MessageView;
 
 readonly class StartViewData implements ViewDataInterface
 {
@@ -16,13 +17,13 @@ readonly class StartViewData implements ViewDataInterface
         return $this->chatId;
     }
 
-    public function getCurrentView(): View
+    public function getCurrentView(): MessageView
     {
-        return View::Start;
+        return MessageView::Start;
     }
 
-    public function getState(): States
+    public function getNextStates(): States
     {
-        return States::WaitingForStart;
+        return States::WaitingForStartNew;
     }
 }

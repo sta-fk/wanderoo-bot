@@ -1,10 +1,10 @@
 <?php
 
-namespace App\DTO\Internal\TelegramView;
+namespace App\Service\FlowStepService\TelegramView;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\ViewData\ViewDataInterface;
-use App\DTO\TelegramMessage\TelegramMessageInterface;
+use App\DTO\Internal\ViewDataInterface;
+use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('telegram.view')]

@@ -3,9 +3,9 @@
 namespace App\Service;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\TelegramView\TelegramViewInterface;
-use App\DTO\Internal\ViewData\ViewDataInterface;
-use App\DTO\TelegramMessage\TelegramMessageInterface;
+use App\Service\FlowStepService\TelegramView\TelegramViewInterface;
+use App\DTO\Internal\ViewDataInterface;
+use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class TelegramMessageFactory implements MessageFactoryInterface

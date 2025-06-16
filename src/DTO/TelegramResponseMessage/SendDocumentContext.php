@@ -1,12 +1,12 @@
 <?php
 
-namespace App\DTO\TelegramMessage;
+namespace App\DTO\TelegramResponseMessage;
 
-final class SendPhotoContext implements TelegramMessageInterface
+final class SendDocumentContext implements TelegramMessageInterface
 {
     public function __construct(
         public int $chatId,
-        public string $photoUrl,
+        public string $documentUrl,
         public ?string $caption = null,
         public ?array $replyMarkup = null,
     ) {}

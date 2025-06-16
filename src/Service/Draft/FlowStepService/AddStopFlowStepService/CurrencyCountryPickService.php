@@ -8,12 +8,12 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\Draft\Budget\BudgetHelperService;
 use App\Service\CurrencyResolverService;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceInterface
+readonly class CurrencyCountryPickService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
@@ -24,7 +24,7 @@ readonly class CurrencyCountryPickService implements StateAwareFlowStepServiceIn
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
             && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyCountryPick->value);

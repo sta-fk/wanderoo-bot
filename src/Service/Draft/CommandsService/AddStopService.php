@@ -37,7 +37,7 @@ readonly class AddStopService implements FlowStepServiceInterface
                 $chatId,
                 "В тебе немає поточної поїздки \n\n Почнемо?",
                 $this->startMessageKeyboardProvider->buildKeyboard(),
-                States::WaitingForStart
+                States::WaitingForStartNew
             );
         }
 

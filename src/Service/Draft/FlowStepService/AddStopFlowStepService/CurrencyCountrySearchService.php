@@ -6,12 +6,12 @@ use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\UserStateStorage;
 
-readonly class CurrencyCountrySearchService implements StateAwareFlowStepServiceInterface
+readonly class CurrencyCountrySearchService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
         private NextStateKeyboardProviderResolver $keyboardProviderResolver,
@@ -19,7 +19,7 @@ readonly class CurrencyCountrySearchService implements StateAwareFlowStepService
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->message
             && null !== $update->message->text;

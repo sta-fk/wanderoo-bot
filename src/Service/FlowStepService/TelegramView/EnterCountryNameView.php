@@ -1,16 +1,16 @@
 <?php
 
-namespace App\DTO\Internal\TelegramView;
+namespace App\Service\FlowStepService\TelegramView;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\ViewData\StartViewData;
-use App\DTO\Internal\ViewData\ViewDataInterface;
-use App\DTO\TelegramMessage\SendMessageContext;
+use App\DTO\Internal\StartViewData;
+use App\DTO\Internal\ViewDataInterface;
+use App\DTO\TelegramResponseMessage\SendMessageContext;
 use App\Enum\CallbackData;
-use App\Enum\View;
+use App\Enum\MessageView;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final readonly class StartView implements TelegramViewInterface
+final readonly class EnterCountryNameView implements TelegramViewInterface
 {
     public function __construct(
         private TranslatorInterface $translator,
@@ -19,7 +19,7 @@ final readonly class StartView implements TelegramViewInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return View::Start->value === $identifier->value;
+        return MessageView::EnterCountryName->value === $identifier->value;
     }
 
     public function render(ViewDataInterface $data): SendMessageContext

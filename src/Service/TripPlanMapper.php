@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-use App\DTO\DayPlan;
-use App\DTO\StopPlan;
-use App\DTO\TripPlan;
+use App\DTO\TripPlan\DayPlan;
+use App\DTO\TripPlan\StopPlan;
+use App\DTO\TripPlan\TripPlan;
 use App\Entity\Trip;
 
 readonly class TripPlanMapper

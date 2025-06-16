@@ -2,7 +2,7 @@
 
 namespace App\Service\Draft\KeyboardProvider\NextState;
 
-use App\DTO\PlanContext;
+use App\DTO\Context\PlanContext;
 use App\Enum\States;
 use App\Service\Draft\KeyboardProvider\NextState\BuildCalendarKeyboardTrait;
 use App\Service\Draft\KeyboardProvider\NextState\NextStateKeyboardProviderInterface;

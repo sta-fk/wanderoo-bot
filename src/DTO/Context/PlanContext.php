@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Context;
+
+use App\DTO\Context\StopContext;
 
 class PlanContext
 {

@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\DTO\PlanContext;
+use App\DTO\Context\PlanContext;
 use App\Enum\States;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;

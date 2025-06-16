@@ -2,7 +2,7 @@
 
 namespace App\Service\Draft\FlowStepService;
 
-use App\DTO\PlanContext;
+use App\DTO\Context\PlanContext;
 use App\DTO\Request\TelegramUpdate;
 use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
@@ -39,7 +39,7 @@ readonly class NewTripService implements FlowStepServiceInterface
             $chatId,
             $keyboardProvider->getTextMessage(),
             $keyboardProvider->buildKeyboard(),
-            States::WaitingForCountry
+            States::WaitingForCountryName
         );
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Service;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\ViewData\ViewDataInterface;
-use App\DTO\TelegramMessage\TelegramMessageInterface;
+use App\DTO\Internal\ViewDataInterface;
+use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
 
 interface MessageFactoryInterface
 {

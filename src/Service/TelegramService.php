@@ -3,13 +3,13 @@
 namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
-use App\DTO\TelegramMessage\AnswerCallbackQueryContext;
-use App\DTO\TelegramMessage\DeleteMessageContext;
-use App\DTO\TelegramMessage\EditMessageTextContext;
-use App\DTO\TelegramMessage\SendDocumentContext;
-use App\DTO\TelegramMessage\SendMessageContext;
-use App\DTO\TelegramMessage\SendPhotoContext;
-use App\DTO\TelegramMessage\TelegramMessageInterface;
+use App\DTO\TelegramResponseMessage\AnswerCallbackQueryContext;
+use App\DTO\TelegramResponseMessage\DeleteMessageContext;
+use App\DTO\TelegramResponseMessage\EditMessageTextContext;
+use App\DTO\TelegramResponseMessage\SendDocumentContext;
+use App\DTO\TelegramResponseMessage\SendMessageContext;
+use App\DTO\TelegramResponseMessage\SendPhotoContext;
+use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -42,16 +42,14 @@ final class TelegramService
             return;
         }
 
-        $viewData = $flowStepService->buildViewData($update);
+        $viewData = $flowStepService->buildNextStepViewData($update);
         $identifier = $this->flowRegistry->resolveMessageViewIdentifier($viewData->getCurrentView());
 
-        $messages = $this->messageFactory->create($identifier, $viewData);
+        $message = $this->messageFactory->create($identifier, $viewData);
 
-        foreach ($messages as $message) {
-            $this->sendMessage($message);
-        }
+        $this->sendMessage($message);
 
-        $this->stateStorage->updateState($chatId, $viewData->getState());
+        $this->stateStorage->updateState($chatId, $viewData->getNextStates());
     }
 
     public function sendMessage(TelegramMessageInterface $message): void

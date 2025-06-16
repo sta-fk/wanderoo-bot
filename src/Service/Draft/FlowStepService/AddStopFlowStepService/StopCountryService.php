@@ -7,12 +7,12 @@ use App\DTO\SendMessageContext;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\CurrencyResolverService;
-use App\Service\Draft\FlowStepService\StateAwareFlowStepServiceInterface;
+use App\Service\Draft\FlowStepService\StateAwareFlowViewDataServiceInterface;
 use App\Service\Draft\KeyboardResolver\NextStateKeyboardProviderResolver;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
-readonly class StopCountryService implements StateAwareFlowStepServiceInterface
+readonly class StopCountryService implements StateAwareFlowViewDataServiceInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
@@ -22,7 +22,7 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
     ) {
     }
 
-    public function supports(TelegramUpdate $update): bool
+    public function supportsUpdate(TelegramUpdate $update): bool
     {
         return null !== $update->callbackQuery
             && (CallbackQueryData::StopCountryAnother->value === $update->callbackQuery->data
@@ -46,13 +46,13 @@ readonly class StopCountryService implements StateAwareFlowStepServiceInterface
 
     private function buildContextWithAnotherCountry(TelegramUpdate $update): SendMessageContext
     {
-        $nextStateKeyboardProvider = $this->nextStateKeyboardProviderResolver->resolve(States::WaitingForCountry);
+        $nextStateKeyboardProvider = $this->nextStateKeyboardProviderResolver->resolve(States::WaitingForCountryName);
 
         return new SendMessageContext(
             $update->callbackQuery->message->chat->id,
             $nextStateKeyboardProvider->getTextMessage(),
             $nextStateKeyboardProvider->buildKeyboard(),
-            States::WaitingForCountry
+            States::WaitingForCountryName
         );
     }
 

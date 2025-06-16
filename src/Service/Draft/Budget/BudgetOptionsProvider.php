@@ -2,8 +2,8 @@
 
 namespace App\Service\Draft\Budget;
 
-use App\DTO\PlanContext;
-use App\DTO\StopContext;
+use App\DTO\Context\PlanContext;
+use App\DTO\Context\StopContext;
 use App\Service\Draft\Budget\BudgetHelperService;
 use App\Service\Integrations\CurrencyExchangerService;
 
