@@ -32,13 +32,6 @@ class PlanContext
         return $this;
     }
 
-    public function disableAddingStopFlow(): self
-    {
-        $this->isAddingStopFlow = false;
-
-        return $this;
-    }
-
     public function finishCreatingNewStop(): self
     {
         if (null === $this->currentStopDraft->countryName) {
@@ -50,6 +43,7 @@ class PlanContext
         $this->updateTotalBudget();
         $this->updateTotalDuration();
         $this->updateEndDate();
+        $this->disableAddingStopFlow();
 
         return $this;
     }
@@ -57,6 +51,13 @@ class PlanContext
     public function resetCurrentStopDraft(): self
     {
         $this->currentStopDraft = new StopContext();
+
+        return $this;
+    }
+
+    public function disableAddingStopFlow(): self
+    {
+        $this->isAddingStopFlow = false;
 
         return $this;
     }

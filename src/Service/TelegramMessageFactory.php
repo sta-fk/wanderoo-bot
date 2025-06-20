@@ -3,28 +3,38 @@
 namespace App\Service;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\Service\FlowStepService\TelegramView\TelegramViewInterface;
-use App\DTO\Internal\ViewDataInterface;
-use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
+use App\DTO\Internal\ViewDataCollection;
+use App\DTO\TelegramMessageResponse\TelegramMessageCollection;
+use App\Enum\MessageView;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class TelegramMessageFactory implements MessageFactoryInterface
 {
     public function __construct(
-        #[AutowireIterator(tag: 'telegram.view')]
-        private iterable $views
-    ) {}
+        #[AutowireIterator(tag: 'telegram_viewer')]
+        private iterable $viewers,
+    ) {
+    }
 
-    public function create(MessageViewIdentifier $identifier, ViewDataInterface $data): TelegramMessageInterface
+    public function create(ViewDataCollection $collection): TelegramMessageCollection
     {
-        /** @var TelegramViewInterface $view */
-        foreach ($this->views as $view) {
-            if ($view->supports($identifier)) {
-                return $view->render($data);
+        $telegramMessageCollection = new TelegramMessageCollection();
+
+        foreach ($collection->toArray() as $viewData) {
+            $identifier = $this->resolveMessageViewIdentifier($viewData->getCurrentView());
+
+            foreach ($this->viewers as $viewer) {
+                if ($viewer->supports($identifier)) {
+                    $telegramMessageCollection->add($viewer->render($viewData));
+                }
             }
         }
 
-        throw new \RuntimeException("No view found for: {$identifier->value}");
+        return $telegramMessageCollection;
+    }
+
+    public function resolveMessageViewIdentifier(MessageView $view): MessageViewIdentifier
+    {
+        return new MessageViewIdentifier($view->value);
     }
 }
-

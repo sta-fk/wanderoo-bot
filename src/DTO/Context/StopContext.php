@@ -4,6 +4,8 @@ namespace App\DTO\Context;
 
 use App\Service\Draft\FlowStepService\StartFlowStepService\InterestsService;
 use App\Service\Draft\FlowStepService\StartFlowStepService\TripStyleService;
+use App\Service\FlowStepService\TelegramView\InterestsViewer;
+use App\Service\FlowStepService\TelegramView\TripStyleViewer;
 
 class StopContext
 {
@@ -27,13 +29,13 @@ class StopContext
     public function getInterestsLabels(): array
     {
         return array_map(
-            static fn ($key) => strtolower(InterestsService::INTERESTS[$key]) ?? $key,
+            static fn ($key) => strtolower(InterestsViewer::INTERESTS[$key]) ?? $key,
             $this->interests ?? []
         );
     }
 
     public function getTripStyleLabel(): string
     {
-        return TripStyleService::TRIP_STYLE_OPTIONS[$this->tripStyle] ?? '???';
+        return TripStyleViewer::TRIP_STYLE_OPTIONS[$this->tripStyle] ?? '???';
     }
 }

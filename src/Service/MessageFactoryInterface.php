@@ -2,11 +2,10 @@
 
 namespace App\Service;
 
-use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\ViewDataInterface;
-use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
+use App\DTO\Internal\ViewDataCollection;
+use App\DTO\TelegramMessageResponse\TelegramMessageCollection;
 
 interface MessageFactoryInterface
 {
-    public function create(MessageViewIdentifier $identifier, ViewDataInterface $data): TelegramMessageInterface;
+    public function create(ViewDataCollection $collection): TelegramMessageCollection;
 }

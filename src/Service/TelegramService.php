@@ -3,13 +3,13 @@
 namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
-use App\DTO\TelegramResponseMessage\AnswerCallbackQueryContext;
-use App\DTO\TelegramResponseMessage\DeleteMessageContext;
-use App\DTO\TelegramResponseMessage\EditMessageTextContext;
-use App\DTO\TelegramResponseMessage\SendDocumentContext;
-use App\DTO\TelegramResponseMessage\SendMessageContext;
-use App\DTO\TelegramResponseMessage\SendPhotoContext;
-use App\DTO\TelegramResponseMessage\TelegramMessageInterface;
+use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
+use App\DTO\TelegramMessageResponse\DeleteMessageContext;
+use App\DTO\TelegramMessageResponse\EditMessageTextContext;
+use App\DTO\TelegramMessageResponse\SendDocumentContext;
+use App\DTO\TelegramMessageResponse\SendMessageContext;
+use App\DTO\TelegramMessageResponse\SendPhotoContext;
+use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -22,7 +22,7 @@ final class TelegramService
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         private readonly TelegramMessageFactory $messageFactory,
-        private readonly FlowRegistry $flowRegistry,
+        private readonly ViewDataRegistry $viewDataRegistry,
         private readonly UserStateStorage $stateStorage,
         private readonly SerializerInterface $serializer,
         ParameterBagInterface $params,
@@ -37,19 +37,21 @@ final class TelegramService
             return;
         }
 
-        $flowStepService = $this->flowRegistry->findMatchingService($update);
-        if (null === $flowStepService) {
+        $viewDataBuilder = $this->viewDataRegistry->findMatchingBuilder($update);
+        if (null === $viewDataBuilder) {
             return;
         }
 
-        $viewData = $flowStepService->buildNextStepViewData($update);
-        $identifier = $this->flowRegistry->resolveMessageViewIdentifier($viewData->getCurrentView());
+        $viewDataCollection = $viewDataBuilder->buildNextViewDataCollection($update);
 
-        $message = $this->messageFactory->create($identifier, $viewData);
+        $messages = $this->messageFactory->create($viewDataCollection);
 
-        $this->sendMessage($message);
+        foreach ($messages as $message) {
+            $this->sendMessage($message);
+            usleep(3000);
+        }
 
-        $this->stateStorage->updateState($chatId, $viewData->getNextStates());
+        $this->stateStorage->updateState($chatId, $viewDataCollection->getNextState());
     }
 
     public function sendMessage(TelegramMessageInterface $message): void

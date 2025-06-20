@@ -7,7 +7,9 @@ use App\Enum\MessageView;
 
 final readonly class MessageViewIdentifier
 {
-    public function __construct(public string $value) {}
+    public function __construct(public string $value)
+    {
+    }
 
     public static function fromState(States $state): self
     {
