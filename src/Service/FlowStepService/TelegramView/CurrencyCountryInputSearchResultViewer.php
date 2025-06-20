@@ -44,7 +44,7 @@ final readonly class CurrencyCountryInputSearchResultViewer implements TelegramV
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.currency.country.choice'),
+            text: $this->translator->trans('trip.context.currency.country.choice.message'),
             replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }

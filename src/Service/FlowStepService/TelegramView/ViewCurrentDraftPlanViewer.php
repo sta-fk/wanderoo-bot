@@ -28,7 +28,6 @@ final readonly class ViewCurrentDraftPlanViewer implements TelegramViewerInterfa
     {
         assert($data instanceof ViewCurrentDraftPlanViewData);
 
-
         return new SendMessageContext(
             chatId: $data->chatId,
             text: $this->buildMessage($data->planContext),
@@ -104,7 +103,7 @@ final readonly class ViewCurrentDraftPlanViewer implements TelegramViewerInterfa
     {
         if (empty($context->stops)) {
             return [[[
-                'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::StartNew->value),
+                'text' => $this->translator->trans('menu.keyboard.start_new'),
                 'callback_data' => CallbackQueryData::StartNew->value
             ]]];
         }
@@ -112,11 +111,11 @@ final readonly class ViewCurrentDraftPlanViewer implements TelegramViewerInterfa
         if (null !== $context->currentStopDraft?->countryName) {
             return [
                     [[
-                        'text' => '✏️ Змінити план',
+                        'text' => $this->translator->trans('commands.view_saved.details.edit'),
                         'callback_data' => CallbackQueryData::EditGeneratedPlan->value
                     ]],
                     [[
-                        'text' => '🔄 Почати заново',
+                        'text' => $this->translator->trans('trip.plan_generated.start_over'),
                         'callback_data' => CallbackQueryData::StartNew->value
                     ]],
             ];
@@ -128,11 +127,11 @@ final readonly class ViewCurrentDraftPlanViewer implements TelegramViewerInterfa
                 'callback_data' => CallbackQueryData::GeneratingTripPlan->value
             ]],
             [
-                ['text' => '✏️ Змінити план', 'callback_data' => CallbackQueryData::EditGeneratedPlan->value],
+                ['text' => $this->translator->trans('commands.view_saved.details.edit'), 'callback_data' => CallbackQueryData::EditGeneratedPlan->value],
                 ['text' => $this->translator->trans('trip.context.finished.keyboard.add_stop'), 'callback_data' => CallbackQueryData::AddStop->value],
             ],
             [
-                ['text' => '🔄 Почати заново', 'callback_data' => CallbackQueryData::StartNew->value],
+                ['text' => $this->translator->trans('trip.plan_generated.start_over'), 'callback_data' => CallbackQueryData::StartNew->value],
                 ['text' => $this->translator->trans('trip.context.finished.keyboard.exchanger'), 'callback_data' => CallbackQueryData::Exchanger->value],
             ]
         ];

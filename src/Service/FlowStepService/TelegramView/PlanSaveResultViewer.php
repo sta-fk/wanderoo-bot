@@ -29,13 +29,13 @@ final readonly class PlanSaveResultViewer implements TelegramViewerInterface
         if (null !== $data->tripTitle) {
             return new AnswerCallbackQueryContext(
                 callbackQueryId: $data->callbackQueryId,
-                text: $this->translator->trans('trip.save.success', ['{title}' => $data->tripTitle]),
+                text: $this->translator->trans('trip.saved.success', ['{title}' => $data->tripTitle]),
             );
         }
 
         return new AnswerCallbackQueryContext(
             callbackQueryId: $data->callbackQueryId,
-            text: $this->translator->trans('trip.save.failed'),
+            text: $this->translator->trans('trip.saved.failed'),
         );
     }
 }

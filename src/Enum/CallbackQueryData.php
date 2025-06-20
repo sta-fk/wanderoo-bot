@@ -24,6 +24,7 @@ enum CallbackQueryData: string
     case ViewSavedPlansList = 'view_saved_plans_list';
     case Settings = 'settings';
     case Exchanger = 'exchanger';
+    case DefaultCurrency = 'default_currency';
     case Language = 'language';
     case AddStop = 'add_stop';
     case SaveGeneratedPlan = 'save_generated_plan';

@@ -1,4 +1,7 @@
 trip:
+  default_keyboard:
+    yes: "✅ Так"
+    no: "❌ Ні"
   list:
     empty: "У вас поки немає збережених планів 🕸️"
     select: "Оберіть план для перегляду 👇"
@@ -6,41 +9,63 @@ trip:
       not_found: "План не знайдено"
   deleted:
     success: "План успішно видалено 🗑️"
-  save:
+  plan_generated:
+    message: "Що бажаєте зробити з цим маршрутом?"
+    save: "✅ Зберегти план"
+    edit: "✏️ Змінити план"
+    start_over: "🔄 Почати заново"
+    back: "🔙 Назад"
+  saved:
     failed: "😔 Немає згенерованого плану для збереження."
     success: "✅ План {title} збережено!"
-  menu:
-    message: "Привіт! Я ✈️ Wanderoo — бот, що допоможе спланувати твою мандрівку. \n\nЯ поставлю кілька простих запитань і згенерую персональний тревел-план: що подивитись, куди сходити, що скуштувати 🍜 \n\n Обери, з чого хочеш почати 👇"
-    keyboard:
-      start_new: "🗺️ Новий маршрут"
-      view_saved_plans_list: "📚 Мої плани"
-      settings:
-        input: "⚙️ Налаштування"
-        exchange: "💱 Валюта"
-  context:
-    exchange:
-      message: "Оберіть валюту для перерахунку бюджету:"
+  default_currency:
+    choice:
       keyboard:
-        USD: "🇺🇸 USD долар"
-        EUR: "🇪🇺 EUR євро"
-        from_country: "🌍 Вибрати валюту за країною"
-      country:
-        input: "Введіть назву країни (або частину назви), <b>валюта</b> якої потрібна:"
-        not_found: "Не знайдено такої країни. Спробуйте ще раз."
-        choice: "Оберіть країну, валюту якої буде встановлено для планування:"
-      result: "🔁 Бюджет було перераховано у <b>{toCurrency}</b>\n\n💰 <b>{fromAmount} {fromCurrency} → {toAmount} {toCurrency}</b>"
-    start_new:
-      message: "Розпочнімо нову подорож! 🌍"
-    country:
-      input: "Спершу введіть назву країни (або частину назви):"
-      not_found: "Не знайдено такої країни. Спробуйте ще раз."
-      message: "Країни за вашим запитом:"
-      picked: "✅ {chosenCountryName}"
+        auto: "🌍 Авто за країною"
+        usd: "🇺🇸 USD долар"
+        eur: "🇪🇺 EUR євро"
+        back: "🔙 Назад"
+  context:
+    add_stop:
+      message: "Остання країна в цій подорожі: {lastOneCountryName}. Бажаєте відвідати іншу?"
+      keyboard:
+        yes: "✅ Хочу ще в іншу країну"
+        no: "❌ Ні, продовжу подорож в {lastOneCountryName}"
+    budget:
+      message: "💰 Тепер оберіть орієнтовний бюджет на подорож:"
+      processed: "✅ Дякую! Орієнтовний бюджет: {budget} {currency}."
+    start_date:
+      message: "📅 Тепер оберіть дату виїзду:"
     city:
-      input: "Введіть назву міста (або частину назви):"
       not_found: "Не знайдено такого міста. Спробуйте ще раз."
       message: "Міста за вашим запитом:"
+      input: "Введіть назву міста (або частину назви):"
       picked: "✅ Місто {chosenCityName}"
+    country:
+      not_found: "Не знайдено такої країни. Спробуйте ще раз."
+      message: "Країни за вашим запитом:"
+      input: "Спершу введіть назву країни (або частину назви):"
+      picked: "✅ {chosenCountryName}"
+    currency:
+      choice:
+        message: "Валюта в цій країні відрізняється від інших обраних країн, де ви перебуватиме. \n\nОберіть найбільш зручну валюту для генерації плану:"
+        keyboard:
+          auto: "🌍 Авто за країною"
+          usd: "🇺🇸 USD долар"
+          eur: "🇪🇺 EUR євро"
+      picked: "Валюта плану встановлена: {currency}"
+      country:
+        input: "Введіть назву країни (або частину назви), <b>валюта</b> якої потрібна:"
+        choice:
+          message: "Оберіть країну, валюту якої буде встановлено для планування:"
+    custom_budget:
+      input: "✍️ Введіть бажаний бюджет у {currency} (наприклад: <b>{potentialAmount})</b>"
+      validation_failed: "Не вдалося перетворити на цифру. Повторіть спробу."
+    custom_duration:
+      input: "Введіть кількість днів (наприклад, 4):"
+      validation_failed: "Будь ласка, введіть число від 1 до 30."
+    date_picked:
+      message: "✅ Подорож з {startDate} по {endDate}"
     duration:
       message: "Чудово! Тепер оберіть тривалість перебування у місті (днів):"
       keyboard:
@@ -50,53 +75,46 @@ trip:
         7_day: "7 днів"
         custom: "🔢 Інший варіант"
       processed: "Чудово! Подорож на {currentStopDuration} днів."
-    custom_duration:
-      input: "Введіть кількість днів (наприклад, 4):"
-      validation_failed: "Будь ласка, введіть число від 1 до 30."
-    start_date:
-      message: "📅 Тепер оберіть дату виїзду:"
-    date_picked:
-      message: "✅ Подорож з <b>{startDate}</b> по <b>{endDate}</b>"
-    trip_style:
-      message: "Який стиль подорожі ви бажаєте? 🧳"
-      picked: "Стиль цієї подорожі: <b>{tripStyle}</b>.\n\nНаступний крок..."
-      reuse_or_new: "Стиль минулої подорожі {lastOneTripStyle}. Бажаєте зберегти для цієї?"
-      reuse: "Стиль подорожі в {cityName}: <b>{tripStyle}</b>.\n\nНаступний крок..."
+    exchange:
+      choice:
+        message: "Оберіть валюту для перерахунку бюджету:"
+        keyboard:
+          usd: "🇺🇸 USD долар"
+          eur: "🇪🇺 EUR євро"
+          auto: "🌍 Авто за країною"
+      country:
+        input: "Введіть назву країни (або частину назви), <b>валюта</b> якої потрібна:"
+        choice:
+          message: "Оберіть країну, валюту якої буде встановлено для планування:"
+      result: "🔁 Бюджет було перераховано у <b>{toCurrency}</b>\n\n💰 <b>{fromAmount} {fromCurrency} → {toAmount} {toCurrency}</b>"
     interests:
+      done: "Чудово! Ви обрали інтереси: {interests}"
       message: "Ви їдете в {cityName}. Що вас цікавить? \n<b>Оберіть кілька варіантів:</b>"
       continue: "✨ Оновлено. Щось ще?"
-      done: "Чудово! Ви обрали інтереси: {interests}"
       reuse_or_new: "✨ Використати попередні інтереси для цієї зупинки?"
-    budget:
-      message: "💰 Тепер оберіть орієнтовний бюджет на подорож:"
-      processed: "✅ Дякую! Орієнтовний бюджет: {budget} {currency}."
-    custom_budget:
-      input: "✍️ Введіть бажаний бюджет у {currency} (наприклад: <b>{potentialAmount})</b>"
-      validation_failed: "Не вдалося перетворити на цифру. Повторіть спробу."
+    trip_style:
+      reuse_or_new: "Стиль минулої подорожі {lastOneTripStyle}. Бажаєте зберегти для цієї?"
+      picked: "Стиль цієї подорожі: <b>{tripStyle}</b>.\n\nНаступний крок..."
+      message: "Який стиль подорожі ви бажаєте? 🧳"
+      reuse: "Стиль подорожі в {cityName}: <b>{tripStyle}</b>.\n\nНаступний крок..."
+    start_new:
+      message: "Розпочнімо нову подорож! 🌍"
     finished:
       message: "Тепер підтвердьте план подорожі або продовжіть подорож і вирушайте до іншого міста чи країни... ✈️"
       keyboard:
         add_stop: '➕ Продовжую подорож'
         generate_plan: '✅ Завершити планування'
         exchange: "💱 Валюта"
-    to_plan:
-      message: "Що бажаєте зробити з цим маршрутом?"
-    add_stop:
-      message: "Остання країна в цій подорожі: {lastOneCountryName}. Бажаєте відвідати іншу?"
-      keyboard:
-        yes: "✅ Хочу ще в іншу країну"
-        no: "❌ Ні, продовжу подорож в {lastOneCountryName}"
-    currency:
-      picked: "Валюта плану встановлена: {currency}"
-      choice:
-        message: "Валюта в цій країні відрізняється від інших обраних країн, де ви перебуватиме. \n\nОберіть найбільш зручну валюту для генерації плану:"
-        keyboard:
-          from_country: "🌍 Вибрати валюту за країною"
-          USD: "🇺🇸 USD долар"
-          EUR: "🇪🇺 EUR євро"
-      country:
-        input: "Введіть назву країни (або частину назви), <b>валюта</b> якої потрібна:"
-        choice: "Оберіть країну, валюту якої буде встановлено для планування:"
+
+menu:
+  message: "Привіт! Я ✈️ Wanderoo — бот, що допоможе спланувати твою мандрівку. \n\nЯ поставлю кілька простих запитань і згенерую персональний тревел-план: що подивитись, куди сходити, що скуштувати 🍜 \n\n Обери, з чого хочеш почати 👇"
+  keyboard:
+    start_new: "🗺️ Новий маршрут"
+    view_saved_plans_list: "📚 Мої плани"
+    settings:
+      input: "⚙️ Налаштування"
+      default_currency: "💱 Валюта"
+      language: "🌐 Мова"
 
 trip_plan:
   header: "<b>🌍 {title}</b>\n<b>🗓️</b> {startDate} — {endDate}\n<b>💰 Загальний бюджет:</b> <b>{totalBudget} {currency}</b>\n<b>⏰ Тривалість:</b> <b>{totalDuration} днів</b>"
@@ -115,3 +133,9 @@ commands:
   view_saved_plans_list: "Мої плани"
   settings: "Налаштування"
   view_current_draft_plan: "Прогрес поточного плану"
+  view_saved:
+    details:
+      message: "Що бажаєте зробити з цим маршрутом?"
+      edit: "✏️ Змінити"
+      delete: "🗑️ Видалити"
+      back: "⬅️ Назад"
