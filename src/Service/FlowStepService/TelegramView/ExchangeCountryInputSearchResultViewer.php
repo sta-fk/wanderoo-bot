@@ -30,7 +30,7 @@ final readonly class ExchangeCountryInputSearchResultViewer implements TelegramV
         if (empty($data->countries)) {
             return new SendMessageContext(
                 chatId: $data->chatId,
-                text: $this->translator->trans('trip.context.exchange.country.not_found'),
+                text: $this->translator->trans('trip.context.country.not_found'),
             );
         }
 
@@ -44,7 +44,7 @@ final readonly class ExchangeCountryInputSearchResultViewer implements TelegramV
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.exchange.country.choice'),
+            text: $this->translator->trans('trip.context.exchange.country.choice.message'),
             replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }

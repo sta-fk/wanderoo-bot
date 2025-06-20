@@ -29,8 +29,8 @@ final readonly class ReuseOrNewInterestsViewer implements TelegramViewerInterfac
 
         $keyboard = [
             [
-                ['text' => '✅ Так', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
-                ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::New->value],
+                ['text' => $this->translator->trans('trip.default_keyboard.yes'), 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
+                ['text' => $this->translator->trans('trip.default_keyboard.no'), 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::New->value],
             ]
         ];
 
