@@ -46,7 +46,12 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
         $callbackData = $update->callbackQuery->data;
 
         if (CallbackQueryData::InterestsDone->value === $callbackData && $context->isAddingStopFlow) {
-            $processedViewData = new InterestsViewData($chatId, $context->currentStopDraft->getInterestsLabels(), true);
+            $processedViewData = new InterestsViewData(
+                chatId: $chatId,
+                messageId: $update->callbackQuery->message->messageId,
+                selectedInterests: $context->currentStopDraft->getInterestsLabels(),
+                interestsDone: true
+            );
 
             [$nextViewData, $nextState] =
                 $context->currentStopDraft->currency !== $context->currency
@@ -64,7 +69,7 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
         }
 
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
-            $processedViewData = new InterestsViewData($chatId, $context->currentStopDraft->getInterestsLabels(), true);
+            $processedViewData = new InterestsViewData(chatId: $chatId, messageId: $update->callbackQuery->message->messageId, selectedInterests: $context->currentStopDraft->getInterestsLabels(), interestsDone: true);
             $nextViewData = new BudgetViewData($chatId, $context->currency); // $context->currency - Основна валюта для першого кроку, надалі буде CustomBudget
 
             $viewDataCollection = new ViewDataCollection();
@@ -79,13 +84,17 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
         $this->processSelectedInterests($update, $context);
 
         return ViewDataCollection::createWithSingleViewData(
-            new InterestsViewData($chatId, $context->currentStopDraft->interests, false)
+            new InterestsViewData(
+                chatId: $chatId,
+                messageId: $update->callbackQuery->message->messageId,
+                selectedInterests: $context->currentStopDraft->interests,
+            )
         );
     }
 
     private function buildCustomBudgetInputViewData(int $chatId, string $globalCurrency): array
     {
-        $potentialAmount = round($this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $globalCurrency), -1);
+        $potentialAmount = $this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $globalCurrency);
 
         return [
             new CustomBudgetInputViewData($chatId, $globalCurrency, $potentialAmount),

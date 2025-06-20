@@ -30,7 +30,6 @@ final readonly class StartDateViewer implements TelegramViewerInterface
         assert($data instanceof StartDateViewData);
 
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-
         $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
 
         return new SendMessageContext(

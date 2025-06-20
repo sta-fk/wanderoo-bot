@@ -5,10 +5,10 @@ namespace App\Enum;
 enum TelegramCommands: string
 {
     case Start = '/start';
-    case NewTrip = '/new_trip';
-    case AddStop = '/add_stop';
-    case ViewTrip = '/view_trip';
+    case StartNew = '/start_new';
+    case ViewSavedPlansList = '/view_saved_plans_list';
+    case Settings = '/settings';
+    case ViewCurrentDraftPlan = '/view_current_draft_plan';
     case Exchanger = '/currency';
-    case ViewGeneratedPlan = '/view_generated_plan';
-    case ViewAllPlans = '/view_all_plans';
+    case AddStop = '/add_stop';
 }

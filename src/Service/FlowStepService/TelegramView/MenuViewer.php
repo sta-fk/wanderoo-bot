@@ -41,10 +41,10 @@ final readonly class MenuViewer implements TelegramViewerInterface
                             'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::ViewSavedPlansList->value),
                             'callback_data' => CallbackQueryData::ViewSavedPlansList->value
                         ],
-            //                        [
-            //                            'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::Settings->value. '.input'),
-            //                            'callback_data' => CallbackQueryData::Settings->value
-            //                        ],
+                        [
+                            'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::Settings->value . '.input'),
+                            'callback_data' => CallbackQueryData::Settings->value
+                        ],
                     ],
                 ]
             ],

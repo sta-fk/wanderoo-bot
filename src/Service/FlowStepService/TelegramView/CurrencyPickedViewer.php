@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityPickedViewData;
 use App\DTO\Internal\CurrencyPickedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
@@ -28,8 +27,8 @@ final readonly class CurrencyPickedViewer implements TelegramViewerInterface
         assert($data instanceof CurrencyPickedViewData);
 
         return new AnswerCallbackQueryContext(
-            $data->callbackQueryId,
-            $this->translator->trans('trip.context.currency.picked', [
+            callbackQueryId: $data->callbackQueryId,
+            text: $this->translator->trans('trip.context.currency.picked', [
                 '{currency}' => $data->currency,
             ])
         );

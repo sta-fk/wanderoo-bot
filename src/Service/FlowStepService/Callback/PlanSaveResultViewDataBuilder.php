@@ -38,12 +38,13 @@ readonly class PlanSaveResultViewDataBuilder implements ViewDataBuilderInterface
         }
 
         $tripPlan = $this->planBuilderService->buildPlan($context);
+        $title = $tripPlan->stops[0]->countryName. ', '.$tripPlan->stops[0]->cityName;
 
         $user = $this->userRepository->findOrCreateFromTelegramUpdate($update);
 
         $trip = $this->tripPersister->persistFromPlan($tripPlan, $user);
         $this->stateStorage->clearContext($chatId);
 
-        return ViewDataCollection::createWithSingleViewData(new PlanSaveResultViewData($update->callbackQuery->id, $trip->getTitle()));
+        return ViewDataCollection::createWithSingleViewData(new PlanSaveResultViewData($update->callbackQuery->id, $trip->getTitle() ?? $title));
     }
 }

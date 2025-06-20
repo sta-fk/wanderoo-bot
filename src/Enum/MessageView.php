@@ -41,12 +41,14 @@ enum MessageView: string
     case ViewSavedPlansList = 'view_saved_plans_list';
     case SavedPlanNotFound = 'saved_plan_not_found';
     case PlanDetailsShown = 'saved_plan_regenerated';
-
     case DeletePlan = 'delete_plan';
     case Settings = 'settings';
+    case ViewCurrentDraftPlan = 'view_current_draft_plan';
 
     case ExchangeChoice = 'exchange_choice';
     case ExchangeCountryInput = 'exchange_country_input';
     case ExchangeCountryInputSearchResult = 'exchange_country_input_search';
     case ExchangePicked = 'exchange_picked';
+
+    case UniversalDeletePreviousMessage = 'universal_delete_previous_message';
 }

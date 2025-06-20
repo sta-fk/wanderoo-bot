@@ -5,7 +5,7 @@ namespace App\Service\FlowStepService\TelegramView;
 use App\DTO\Internal\ExchangePickedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
-use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
+use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\MessageView;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,15 +26,16 @@ final readonly class ExchangePickedViewer implements TelegramViewerInterface
     {
         assert($data instanceof ExchangePickedViewData);
 
-        return new AnswerCallbackQueryContext(
-            $data->callbackQueryId,
-            $this->translator->trans('trip.context.exchange.result', [
-                '{to_currency}' => $data->toCurrency,
-                '{to_amount}' => $data->toAmount,
-                '{from_currency}' => $data->fromCurrency,
-                '{from_amount}' => $data->fromAmount,
-            ]),
-            true
+        $messageText = $this->translator->trans('trip.context.exchange.result', [
+            '{toCurrency}' => $data->toCurrency,
+            '{toAmount}' => $data->toAmount,
+            '{fromCurrency}' => $data->fromCurrency,
+            '{fromAmount}' => $data->fromAmount,
+        ]);
+
+        return new SendMessageContext(
+            chatId: $data->chatId,
+            text: $messageText,
         );
     }
 }

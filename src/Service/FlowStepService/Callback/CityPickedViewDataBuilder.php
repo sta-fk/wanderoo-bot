@@ -46,7 +46,7 @@ readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInt
 
         $this->userStateStorage->saveContext($chatId, $context);
 
-        $processedViewData = new CityPickedViewData($chatId, $update->callbackQuery->id, $context->isAddingStopFlow);
+        $processedViewData = new CityPickedViewData($update->callbackQuery->id, $cityDetails->name);
 
         [$nextViewData, $nextState] =
             $context->isAddingStopFlow

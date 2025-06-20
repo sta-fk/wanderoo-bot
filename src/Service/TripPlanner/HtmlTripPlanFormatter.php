@@ -66,11 +66,11 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
 
         return $this->t('trip_plan.header', [
             'title' => null !== $plan->name ? htmlspecialchars($plan->name) : $this->translator->trans('trip_plan.absent_title'),
-            'start_date' => $start,
-            'end_date' => $end,
-            'total_budget' => $plan->totalBudget,
+            'startDate' => $start,
+            'endDate' => $end,
+            'totalBudget' => $plan->totalBudget,
             'currency' => $plan->currency,
-            'total_duration' => $plan->totalDuration,
+            'totalDuration' => $plan->totalDuration,
         ]);
     }
 
@@ -83,8 +83,8 @@ readonly class HtmlTripPlanFormatter implements TripPlanFormatterInterface
             'index' => $index + 1,
             'city' => htmlspecialchars($stop->cityName),
             'country' => htmlspecialchars($stop->countryName),
-            'start_date' => $start,
-            'end_date' => $end,
+            'startDate' => $start,
+            'endDate' => $end,
         ]);
     }
 

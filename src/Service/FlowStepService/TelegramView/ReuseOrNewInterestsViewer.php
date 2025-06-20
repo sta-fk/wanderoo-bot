@@ -4,7 +4,6 @@ namespace App\Service\FlowStepService\TelegramView;
 
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ReuseOrNewInterestsViewData;
-use App\DTO\Internal\ReuseOrNewTripStyleViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
@@ -29,10 +28,10 @@ final readonly class ReuseOrNewInterestsViewer implements TelegramViewerInterfac
         assert($data instanceof ReuseOrNewInterestsViewData);
 
         $keyboard = [
-            'inline_keyboard' => [[
+            [
                 ['text' => '✅ Так', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::Reuse->value],
                 ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::Interest->value . CallbackQueryData::New->value],
-            ]]
+            ]
         ];
 
         $text = $this->translator->trans('trip.context.interests.reuse_or_new');
@@ -41,9 +40,9 @@ final readonly class ReuseOrNewInterestsViewer implements TelegramViewerInterfac
         }
 
         return new SendMessageContext(
-            $data->chatId,
-            $text,
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $text,
+            replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }
 }

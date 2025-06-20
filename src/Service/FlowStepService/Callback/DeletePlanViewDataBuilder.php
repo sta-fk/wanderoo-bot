@@ -3,7 +3,9 @@
 namespace App\Service\FlowStepService\Callback;
 
 use App\DTO\Internal\DeletePlanViewData;
+use App\DTO\Internal\UniversalDeletePreviousMessageViewData;
 use App\DTO\Internal\ViewDataCollection;
+use App\DTO\Internal\ViewSavedPlansListViewData;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;
 use App\Repository\TripRepository;
@@ -34,8 +36,11 @@ readonly class DeletePlanViewDataBuilder implements ViewDataBuilderInterface
             $this->entityManager->flush();
         }
 
-        return ViewDataCollection::createWithSingleViewData(
-            new DeletePlanViewData($update->callbackQuery->id)
-        );
+        $viewDataCollection = new ViewDataCollection();
+//        $viewDataCollection->add(new UniversalDeletePreviousMessageViewData($update->callbackQuery->message->chat->id, $update->callbackQuery->message->messageId));
+        $viewDataCollection->add(new DeletePlanViewData($update->callbackQuery->id));
+        $viewDataCollection->add(new ViewSavedPlansListViewData($update->callbackQuery->message->chat->id));
+
+        return $viewDataCollection;
     }
 }

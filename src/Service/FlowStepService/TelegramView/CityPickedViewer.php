@@ -8,9 +8,15 @@ use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\MessageView;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final readonly class CityPickedViewer implements TelegramViewerInterface
 {
+    public function __construct(
+        private TranslatorInterface $translator,
+    ) {
+    }
+
     public function supports(MessageViewIdentifier $identifier): bool
     {
         return MessageView::CityPicked->value === $identifier->value;
@@ -20,6 +26,9 @@ final readonly class CityPickedViewer implements TelegramViewerInterface
     {
         assert($data instanceof CityPickedViewData);
 
-        return new AnswerCallbackQueryContext($data->callbackQueryId);
+        return new AnswerCallbackQueryContext(
+            callbackQueryId: $data->callbackQueryId,
+            text: $this->translator->trans("trip.context.city.picked", ['{chosenCityName}' => $data->chosenCityName]),
+        );
     }
 }

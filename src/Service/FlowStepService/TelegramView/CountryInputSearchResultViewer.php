@@ -29,8 +29,8 @@ final readonly class CountryInputSearchResultViewer implements TelegramViewerInt
 
         if (empty($data->countries)) {
             return new SendMessageContext(
-                $data->chatId,
-                $this->translator->trans('trip.context.country.not_found'),
+                chatId: $data->chatId,
+                text: $this->translator->trans('trip.context.country.not_found'),
             );
         }
 
@@ -43,9 +43,9 @@ final readonly class CountryInputSearchResultViewer implements TelegramViewerInt
         }
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.country.message'),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.country.message'),
+            replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
 use App\DTO\Internal\CountryInputViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
@@ -28,8 +27,8 @@ final readonly class CountryInputViewer implements TelegramViewerInterface
         assert($data instanceof CountryInputViewData);
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.country.input'),
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.country.input'),
         );
     }
 }

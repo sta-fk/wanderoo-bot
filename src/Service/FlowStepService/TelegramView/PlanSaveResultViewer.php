@@ -2,12 +2,10 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\PlanSaveResultViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
-use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\MessageView;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -30,16 +28,14 @@ final readonly class PlanSaveResultViewer implements TelegramViewerInterface
 
         if (null !== $data->tripTitle) {
             return new AnswerCallbackQueryContext(
-                $data->callbackQueryId,
-                $this->translator->trans('trip.context.save.success', ['{title}' => $data->tripTitle]),
-                true
+                callbackQueryId: $data->callbackQueryId,
+                text: $this->translator->trans('trip.save.success', ['{title}' => $data->tripTitle]),
             );
         }
 
         return new AnswerCallbackQueryContext(
-            $data->callbackQueryId,
-            $this->translator->trans('trip.context.save.failed'),
-            true
+            callbackQueryId: $data->callbackQueryId,
+            text: $this->translator->trans('trip.save.failed'),
         );
     }
 }

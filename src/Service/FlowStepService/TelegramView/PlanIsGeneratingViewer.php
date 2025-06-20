@@ -2,16 +2,12 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
-use App\DTO\Internal\CustomDurationInputViewData;
-use App\DTO\Internal\DurationProcessedViewData;
 use App\DTO\Internal\PlanIsGeneratingViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\MessageView;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 final readonly class PlanIsGeneratingViewer implements TelegramViewerInterface
 {
@@ -25,8 +21,8 @@ final readonly class PlanIsGeneratingViewer implements TelegramViewerInterface
         assert($data instanceof PlanIsGeneratingViewData);
 
         return new SendMessageContext(
-            $data->chatId,
-            $data->tripPlanSplitMessage,
+            chatId: $data->chatId,
+            text: $data->tripPlanSplitMessage,
         );
     }
 }

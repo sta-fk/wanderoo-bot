@@ -8,9 +8,15 @@ use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\MessageView;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final readonly class CountryPickedViewer implements TelegramViewerInterface
 {
+    public function __construct(
+        private TranslatorInterface $translator,
+    ) {
+    }
+
     public function supports(MessageViewIdentifier $identifier): bool
     {
         return MessageView::CountryPicked->value === $identifier->value;
@@ -20,6 +26,8 @@ final readonly class CountryPickedViewer implements TelegramViewerInterface
     {
         assert($data instanceof CountryPickedViewData);
 
-        return new AnswerCallbackQueryContext($data->callbackQueryId);
+        $messageText = $this->translator->trans('trip.context.country.picked', ['{chosenCountryName}' => $data->chosenCountryName]);
+
+        return new AnswerCallbackQueryContext(callbackQueryId: $data->callbackQueryId, text: $messageText);
     }
 }

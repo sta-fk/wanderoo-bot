@@ -4,7 +4,7 @@ namespace App\DTO\Internal;
 
 use App\Enum\MessageView;
 
-class SavedPlanNotFoundViewData implements ViewDataInterface
+readonly class SavedPlanNotFoundViewData implements ViewDataInterface
 {
     public function __construct(
         public int $callbackQueryId,

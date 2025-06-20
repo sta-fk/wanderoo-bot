@@ -4,7 +4,7 @@ namespace App\DTO\Internal;
 
 use App\Enum\MessageView;
 
-class CalendarViewData implements ViewDataInterface
+readonly class CalendarViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,

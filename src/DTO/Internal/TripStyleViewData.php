@@ -4,7 +4,7 @@ namespace App\DTO\Internal;
 
 use App\Enum\MessageView;
 
-class TripStyleViewData implements ViewDataInterface
+readonly class TripStyleViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,

@@ -2,11 +2,7 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
-use App\DTO\Internal\CustomDurationInputViewData;
-use App\DTO\Internal\DurationProcessedViewData;
 use App\DTO\Internal\PlanGenerationFinishedViewData;
-use App\DTO\Internal\PlanIsGeneratingViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
@@ -32,18 +28,16 @@ final readonly class PlanGenerationFinishedViewer implements TelegramViewerInter
         assert($data instanceof PlanGenerationFinishedViewData);
 
         $keyboard = [
-            'inline_keyboard' => [
-                [['text' => '✅ Зберегти план', 'callback_data' => CallbackQueryData::SaveGeneratedPlan->value]],
-                [['text' => '✏️ Змінити план', 'callback_data' => CallbackQueryData::EditGeneratedPlan->value]],
-                [['text' => '🔄 Почати заново', 'callback_data' => CallbackQueryData::StartNew->value]],
-                [['text' => '🔙 Назад', 'callback_data' => CallbackQueryData::BackToMenu->value]],
-            ]
+            [['text' => '✅ Зберегти план', 'callback_data' => CallbackQueryData::SaveGeneratedPlan->value]],
+            [['text' => '✏️ Змінити план', 'callback_data' => CallbackQueryData::EditGeneratedPlan->value]],
+            [['text' => '🔄 Почати заново', 'callback_data' => CallbackQueryData::StartNew->value]],
+            [['text' => '🔙 Назад', 'callback_data' => CallbackQueryData::BackToMenu->value]],
         ];
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.to_plan.message'),
-            $keyboard
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.to_plan.message'),
+            replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
 }

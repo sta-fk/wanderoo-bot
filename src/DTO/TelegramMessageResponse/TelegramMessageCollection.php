@@ -9,6 +9,11 @@ final class TelegramMessageCollection
 {
     private ArrayCollection $messagesCollection;
 
+    public function __construct()
+    {
+        $this->messagesCollection = new ArrayCollection();
+    }
+
     public function add(TelegramMessageInterface $message): void
     {
         $this->messagesCollection->add($message);

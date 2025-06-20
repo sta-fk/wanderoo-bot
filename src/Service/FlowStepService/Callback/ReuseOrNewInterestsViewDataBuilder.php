@@ -46,7 +46,13 @@ readonly class ReuseOrNewInterestsViewDataBuilder implements StateAwareViewDataB
             $currentStopDraft->interests = $lastOneStop->interests;
             $this->userStateStorage->saveContext($chatId, $context);
 
-            $processedViewData = new InterestsViewData($chatId, $context->currentStopDraft->getInterestsLabels(), true);
+            $processedViewData = new InterestsViewData(
+                chatId: $chatId,
+                messageId: $update->callbackQuery->message->messageId,
+                selectedInterests: $context->currentStopDraft->getInterestsLabels(),
+                interestsDone: true
+            );
+
             [$nextViewData, $nextState] =
                 $context->currentStopDraft->currency !== $context->currency
                 && false === $context->isSetDefaultCurrency
@@ -64,14 +70,14 @@ readonly class ReuseOrNewInterestsViewDataBuilder implements StateAwareViewDataB
         }
 
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new InterestsViewData($chatId, [], false, $context->currentStopDraft->cityName),
+            new InterestsViewData(chatId: $chatId, cityName: $context->currentStopDraft->cityName),
             States::WaitingForInterests
         );
     }
 
     private function buildCustomBudgetInputViewData(int $chatId, string $globalCurrency): array
     {
-        $potentialAmount = round($this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $globalCurrency), -1);
+        $potentialAmount = $this->currencyExchangerService->convert(100, CallbackQueryData::Usd->value, $globalCurrency);
 
         return [
             new CustomBudgetInputViewData($chatId, $globalCurrency, $potentialAmount),

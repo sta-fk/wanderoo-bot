@@ -5,6 +5,8 @@ namespace App\Service\FlowStepService\TelegramView;
 use App\DTO\Internal\InterestsViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
+use App\DTO\TelegramMessageResponse\DeleteMessageContext;
+use App\DTO\TelegramMessageResponse\EditMessageTextContext;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\CallbackQueryData;
@@ -37,8 +39,16 @@ final readonly class InterestsViewer implements TelegramViewerInterface
         assert($data instanceof InterestsViewData);
 
         if ($data->interestsDone) {
-            return new SendMessageContext(
+           if (empty($data->selectedInterests)) {
+               return new DeleteMessageContext(
+                   chatId: $data->chatId,
+                   messageId: $data->messageId,
+               );
+           }
+
+            return new EditMessageTextContext(
                 chatId: $data->chatId,
+                messageId: $data->messageId,
                 text: $this->translator->trans('trip.context.interests.done', ['{interests}' => implode(', ', $data->selectedInterests)]),
             );
         }
@@ -60,11 +70,20 @@ final readonly class InterestsViewer implements TelegramViewerInterface
         ];
 
         $text = $data->cityName
-            ? $this->translator->trans('trip.context.interests.message', ['{city_name}' => $data->cityName])
+            ? $this->translator->trans('trip.context.interests.message', ['{cityName}' => $data->cityName])
             : $this->translator->trans('trip.context.interests.continue');
 
-        return new SendMessageContext(
+        if (null === $data->messageId) {
+            return new SendMessageContext(
+                chatId: $data->chatId,
+                text: $text,
+                replyMarkup: ['inline_keyboard' => $buttons],
+            );
+        }
+
+        return new EditMessageTextContext(
             chatId: $data->chatId,
+            messageId: $data->messageId,
             text: $text,
             replyMarkup: ['inline_keyboard' => $buttons],
         );

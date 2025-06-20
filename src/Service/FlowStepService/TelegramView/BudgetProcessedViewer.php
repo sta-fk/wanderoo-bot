@@ -26,12 +26,8 @@ final readonly class BudgetProcessedViewer implements TelegramViewerInterface
     {
         assert($data instanceof BudgetProcessedViewData);
 
-        return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans(
-                'trip.context.budget.processed',
-                ['{budget}' => $data->budget, '{currency}' => $data->currency],
-            ),
-        );
+        $messageText = $this->translator->trans('trip.context.budget.processed', ['{budget}' => $data->budget, '{currency}' => $data->currency]);
+
+        return new SendMessageContext(chatId: $data->chatId, text: $messageText);
     }
 }

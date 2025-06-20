@@ -3,7 +3,6 @@
 namespace App\DTO\Internal;
 
 use App\Enum\States;
-use App\Enum\MessageView;
 
 final readonly class MessageViewIdentifier
 {

@@ -20,7 +20,7 @@ readonly class BackToMenuViewDataBuilder implements ViewDataBuilderInterface
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
         return ViewDataCollection::createWithSingleViewData(
-            new MenuViewData($update->message->chat->id)
+            new MenuViewData($update->callbackQuery->message->chat->id)
         );
     }
 }

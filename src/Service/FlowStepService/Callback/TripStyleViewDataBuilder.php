@@ -76,7 +76,7 @@ readonly class TripStyleViewDataBuilder implements StateAwareViewDataBuilderInte
 
     private function buildInterestsViewData(int $chatId, PlanContext $context): array
     {
-        $nextViewData = new InterestsViewData($chatId, [], false, $context->currentStopDraft->cityName);
+        $nextViewData = new InterestsViewData(chatId: $chatId, cityName: $context->currentStopDraft->cityName);
 
         return [$nextViewData, States::WaitingForInterests];
     }

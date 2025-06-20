@@ -27,8 +27,8 @@ final readonly class CityInputViewer implements TelegramViewerInterface
         assert($data instanceof CityInputViewData);
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.city.input'),
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.city.input'),
         );
     }
 }

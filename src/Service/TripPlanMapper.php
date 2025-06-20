@@ -6,10 +6,17 @@ use App\DTO\TripPlan\DayPlan;
 use App\DTO\TripPlan\StopPlan;
 use App\DTO\TripPlan\TripPlan;
 use App\Entity\Trip;
+use App\Entity\TripStop;
+use App\Service\Integrations\CurrencyExchangerService;
 
 readonly class TripPlanMapper
 {
-    public static function fromEntity(Trip $trip): TripPlan
+    public function __construct(
+        private CurrencyExchangerService $currencyExchangerService,
+    ) {
+    }
+
+    public function fromEntity(Trip $trip): TripPlan
     {
         $dto = new TripPlan();
         $dto->name = $trip->getTitle();
@@ -17,7 +24,7 @@ readonly class TripPlanMapper
         $dto->startDate = $trip->getStartDate();
         $dto->endDate = $trip->getEndDate();
         $dto->totalDuration = $trip->getTotalDuration();
-        $dto->totalBudget = $trip->getTotalBudget();
+        $dto->totalBudget = $this->getTotalBudget($trip);
 
         foreach ($trip->getStops() as $stop) {
             $stopDto = new StopPlan();
@@ -46,5 +53,18 @@ readonly class TripPlanMapper
         }
 
         return $dto;
+    }
+
+    private function getTotalBudget(Trip $trip): float
+    {
+        $totalBudget = 0.0;
+        $targetCurrency = $trip->getCurrency();
+        $stops = $trip->getStops()->toArray();
+
+        foreach ($stops as $stop) {
+            $totalBudget += $this->currencyExchangerService->convert($stop->getBudget(), $stop->getCurrency(), $targetCurrency);
+        }
+
+        return $totalBudget;
     }
 }

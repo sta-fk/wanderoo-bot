@@ -4,12 +4,9 @@ namespace App\Service\FlowStepService\TelegramView;
 
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\TripStylePickedViewData;
-use App\DTO\Internal\TripStyleViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
-use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
-use App\Enum\CallbackQueryData;
 use App\Enum\MessageView;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -31,8 +28,7 @@ final readonly class TripStylePickedViewer implements TelegramViewerInterface
 
         return new AnswerCallbackQueryContext(
             callbackQueryId: $data->callbackQueryId,
-            text: $this->translator->trans('trip.context.trip_style.picked', ['{trip_style}' => $data->tripStyleLabel]),
-            showAlert: true,
+            text: $this->translator->trans('trip.context.trip_style.picked', ['{tripStyle}' => $data->tripStyleLabel]),
         );
     }
 }

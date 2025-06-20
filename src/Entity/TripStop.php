@@ -55,7 +55,7 @@ class TripStop
     /**
      * @var Collection<int, TripDay>
      */
-    #[ORM\OneToMany(targetEntity: TripDay::class, mappedBy: 'stop')]
+    #[ORM\OneToMany(targetEntity: TripDay::class, mappedBy: 'stop', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $days;
 
     public function __construct()

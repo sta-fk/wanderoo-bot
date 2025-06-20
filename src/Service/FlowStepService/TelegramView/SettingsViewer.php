@@ -32,9 +32,9 @@ final readonly class SettingsViewer implements TelegramViewerInterface
         ];
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::Settings->value . '.input'),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::Settings->value . '.input'),
+            replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }
 }

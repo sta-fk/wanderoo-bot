@@ -57,7 +57,7 @@ readonly class ExchangeCountryPickedViewDataBuilder implements StateAwareViewDat
 
         return ViewDataCollection::createWithSingleViewData(
             new ExchangePickedViewData(
-                $update->callbackQuery->id,
+                $chatId,
                 $context->totalBudget,
                 $context->currency,
                 $fromTotalBudget,

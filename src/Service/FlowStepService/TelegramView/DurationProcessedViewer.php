@@ -2,8 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
-use App\DTO\Internal\CustomDurationInputViewData;
 use App\DTO\Internal\DurationProcessedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
@@ -28,12 +26,11 @@ final readonly class DurationProcessedViewer implements TelegramViewerInterface
     {
         assert($data instanceof DurationProcessedViewData);
 
+        $messageText = $this->translator->trans('trip.context.duration.processed', ['{currentStopDuration}' => $data->duration]);
+
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans(
-                'trip.context.duration.processed',
-                ['{current_stop_duration}' => $data->duration]
-            ),
+            chatId: $data->chatId,
+            text: $messageText,
         );
     }
 }

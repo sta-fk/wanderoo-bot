@@ -2,8 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputSearchResultViewData;
-use App\DTO\Internal\CountryInputSearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\TripStopCreationFinishedViewData;
 use App\DTO\Internal\ViewDataInterface;
@@ -30,17 +28,24 @@ final readonly class TripStopCreationFinishedViewer implements TelegramViewerInt
         assert($data instanceof TripStopCreationFinishedViewData);
 
         $keyboard = [
-            [
-                ['text' => $this->translator->trans('trip.context.finished.keyboard.add_stop'), 'callback_data' => CallbackQueryData::AddStop->value],
-                ['text' => $this->translator->trans('trip.context.finished.keyboard.generate_plan'), 'callback_data' => CallbackQueryData::GeneratingTripPlan->value],
-                ['text' => $this->translator->trans('trip.context.finished.keyboard.exchanger'), 'callback_data' => CallbackQueryData::Exchanger->value],
-            ],
+            [[
+                'text' => $this->translator->trans('trip.context.finished.keyboard.add_stop'),
+                'callback_data' => CallbackQueryData::AddStop->value
+            ]],
+            [[
+                'text' => $this->translator->trans('trip.context.finished.keyboard.generate_plan'),
+                'callback_data' => CallbackQueryData::GeneratingTripPlan->value
+            ]],
+            [[
+                'text' => $this->translator->trans('trip.context.finished.keyboard.exchange'),
+                'callback_data' => CallbackQueryData::Exchanger->value
+            ]],
         ];
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.finished.message'),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.finished.message'),
+            replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }
 }

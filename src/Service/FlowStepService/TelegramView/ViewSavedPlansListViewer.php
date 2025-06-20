@@ -2,8 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputSearchResultViewData;
-use App\DTO\Internal\CountryInputSearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\Internal\ViewSavedPlansListViewData;
@@ -32,8 +30,8 @@ final readonly class ViewSavedPlansListViewer implements TelegramViewerInterface
 
         if (empty($data->trips)) {
             return new SendMessageContext(
-                $data->chatId,
-                $this->translator->trans('trip.list.empty'),
+                chatId: $data->chatId,
+                text: $this->translator->trans('trip.list.empty'),
             );
         }
 
@@ -45,9 +43,9 @@ final readonly class ViewSavedPlansListViewer implements TelegramViewerInterface
         }, $data->trips);
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.list.select'),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.list.select'),
+            replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }
 }

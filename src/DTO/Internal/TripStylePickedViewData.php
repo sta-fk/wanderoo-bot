@@ -3,9 +3,8 @@
 namespace App\DTO\Internal;
 
 use App\Enum\MessageView;
-use App\Enum\States;
 
-class TripStylePickedViewData implements ViewDataInterface
+readonly class TripStylePickedViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,

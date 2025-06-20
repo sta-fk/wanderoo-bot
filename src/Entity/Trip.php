@@ -40,7 +40,7 @@ class Trip
     /**
      * @var Collection<int, TripStop>
      */
-    #[ORM\OneToMany(targetEntity: TripStop::class, mappedBy: 'trip')]
+    #[ORM\OneToMany(targetEntity: TripStop::class, mappedBy: 'trip', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $stops;
 
     public function __construct()
@@ -60,6 +60,10 @@ class Trip
 
     public function getTitle(): ?string
     {
+        if (null === $this->title && !isset($this->stops->toArray()[0])) {
+            return null;
+        }
+
         return $this->title ?? $this->stops->toArray()[0]->getCountryName() . ', ' . $this->stops->toArray()[0]->getCityName();
     }
 
@@ -90,15 +94,6 @@ class Trip
             $this->stops->toArray(),
             static fn(int $carry, TripStop $stop) => $carry + $stop->getDuration(),
             0
-        );
-    }
-
-    public function getTotalBudget(): float
-    {
-        return array_reduce(
-            $this->stops->toArray(),
-            static fn(int $carry, TripStop $stop) => $carry + $stop->getBudget(),
-            0.0
         );
     }
 

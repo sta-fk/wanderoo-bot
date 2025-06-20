@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityPickedViewData;
 use App\DTO\Internal\DatePickedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
@@ -28,10 +27,10 @@ final readonly class DatePickedViewer implements TelegramViewerInterface
         assert($data instanceof DatePickedViewData);
 
         return new AnswerCallbackQueryContext(
-            $data->callbackQueryId,
-            $this->translator->trans('trip.context.date_picked.message', [
-                '{start_date}' => $data->startDate->format('Y-m-d'),
-                '{end_date}' => $data->endDate->format('Y-m-d'),
+            callbackQueryId: $data->callbackQueryId,
+            text: $this->translator->trans('trip.context.date_picked.message', [
+                '{startDate}' => $data->startDate->format('Y-m-d'),
+                '{endDate}' => $data->endDate->format('Y-m-d'),
             ])
         );
     }

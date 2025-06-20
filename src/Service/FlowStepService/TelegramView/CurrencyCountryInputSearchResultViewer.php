@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CountryInputSearchResultViewData;
 use App\DTO\Internal\CurrencyCountryInputSearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
@@ -30,8 +29,8 @@ final readonly class CurrencyCountryInputSearchResultViewer implements TelegramV
 
         if (empty($data->countries)) {
             return new SendMessageContext(
-                $data->chatId,
-                $this->translator->trans('trip.context.country.not_found'),
+                chatId: $data->chatId,
+                text: $this->translator->trans('trip.context.country.not_found'),
             );
         }
 
@@ -44,9 +43,9 @@ final readonly class CurrencyCountryInputSearchResultViewer implements TelegramV
         }
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.currency.country.choice'),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.currency.country.choice'),
+            replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
 }

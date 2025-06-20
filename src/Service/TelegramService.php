@@ -43,15 +43,15 @@ final class TelegramService
         }
 
         $viewDataCollection = $viewDataBuilder->buildNextViewDataCollection($update);
-
         $messages = $this->messageFactory->create($viewDataCollection);
-
-        foreach ($messages as $message) {
+        foreach ($messages->toArray() as $message) {
             $this->sendMessage($message);
             usleep(3000);
         }
 
-        $this->stateStorage->updateState($chatId, $viewDataCollection->getNextState());
+        if (null !== $viewDataCollection->getNextState()) {
+            $this->stateStorage->updateState($chatId, $viewDataCollection->getNextState());
+        }
     }
 
     public function sendMessage(TelegramMessageInterface $message): void

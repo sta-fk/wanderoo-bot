@@ -19,6 +19,7 @@ readonly class ViewPlanDetailsViewDataBuilder implements ViewDataBuilderInterfac
     public function __construct(
         private TripRepository $tripRepository,
         private TripPlanFormatterInterface $formatter,
+        private TripPlanMapper $tripPlanMapper,
     ) {
     }
 
@@ -39,7 +40,7 @@ readonly class ViewPlanDetailsViewDataBuilder implements ViewDataBuilderInterfac
             return ViewDataCollection::createWithSingleViewData(new SavedPlanNotFoundViewData($update->callbackQuery->id));
         }
 
-        $tripPlan = TripPlanMapper::fromEntity($trip);
+        $tripPlan = $this->tripPlanMapper->fromEntity($trip);
         $texts = $this->formatter->splitFormattedPlan($tripPlan);
         $viewDataCollection = new ViewDataCollection();
 

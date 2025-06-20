@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\AddStopViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
@@ -29,15 +28,24 @@ final readonly class ExchangeChoiceViewer implements TelegramViewerInterface
         assert($data instanceof ExchangeChoiceViewData);
 
         $keyboard = [
-            [['text' => $this->translator->trans("trip.context.exchange.keyboard.".CallbackQueryData::Usd->value), 'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Usd->value]],
-            [['text' => $this->translator->trans("trip.context.exchange.keyboard.".CallbackQueryData::Eur->value), 'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Eur->value]],
-            [['text' => $this->translator->trans("trip.context.exchange.keyboard.".CallbackQueryData::FromCountry->value), 'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::FromCountry->value]],
+            [[
+                'text' => $this->translator->trans("trip.context.exchange.keyboard." . CallbackQueryData::Usd->value),
+                'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Usd->value
+            ]],
+            [[
+                'text' => $this->translator->trans("trip.context.exchange.keyboard." . CallbackQueryData::Eur->value),
+                'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Eur->value
+            ]],
+            [[
+                'text' => $this->translator->trans("trip.context.exchange.keyboard." . CallbackQueryData::FromCountry->value),
+                'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::FromCountry->value
+            ]],
         ];
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans("trip.context.exchange.message"),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans("trip.context.exchange.message"),
+            replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
 }

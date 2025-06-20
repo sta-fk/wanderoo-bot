@@ -3,7 +3,6 @@
 namespace App\Service\FlowStepService\TelegramView;
 
 use App\DTO\Internal\CityInputSearchResultViewData;
-use App\DTO\Internal\CountryInputSearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
@@ -30,23 +29,20 @@ final readonly class CityInputSearchResultViewer implements TelegramViewerInterf
 
         if (empty($data->cities)) {
             return new SendMessageContext(
-                $data->chatId,
-                $this->translator->trans('trip.context.city.not_found'),
+                chatId: $data->chatId,
+                text: $this->translator->trans('trip.context.city.not_found')
             );
         }
 
         $keyboard = [];
         foreach ($data->cities as $city) {
-            $keyboard[] = [[
-                'text' => $city->name,
-                'callback_data' => CallbackQueryData::City->value . $city->placeId,
-            ]];
+            $keyboard[] = [['text' => $city->name, 'callback_data' => CallbackQueryData::City->value . $city->placeId]];
         }
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.city.message'),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.city.message'),
+            replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
 }

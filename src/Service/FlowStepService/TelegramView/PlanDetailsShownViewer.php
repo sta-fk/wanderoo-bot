@@ -2,11 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
-use App\DTO\Internal\CustomDurationInputViewData;
-use App\DTO\Internal\DurationProcessedViewData;
-use App\DTO\Internal\PlanGenerationFinishedViewData;
-use App\DTO\Internal\PlanIsGeneratingViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\PlanDetailsShownViewData;
 use App\DTO\Internal\ViewDataInterface;
@@ -33,22 +28,19 @@ final readonly class PlanDetailsShownViewer implements TelegramViewerInterface
         assert($data instanceof PlanDetailsShownViewData);
 
         $keyboard = [
-            'inline_keyboard' => [
-                [
-                    ['text' => '✏️ Змінити', 'callback_data' => CallbackQueryData::EditPlan->value . $data->requiredPlanId],
-                    ['text' => '🗑️ Видалити', 'callback_data' => CallbackQueryData::DeletePlan->value . $data->requiredPlanId],
-                ],
-                [
-                    ['text' => '⬅️ Назад', 'callback_data' => CallbackQueryData::ViewSavedPlansList->value],
-                ]
+            [
+                ['text' => '✏️ Змінити', 'callback_data' => CallbackQueryData::EditPlan->value . $data->requiredPlanId],
+                ['text' => '🗑️ Видалити', 'callback_data' => CallbackQueryData::DeletePlan->value . $data->requiredPlanId],
+            ],
+            [
+                ['text' => '⬅️ Назад', 'callback_data' => CallbackQueryData::ViewSavedPlansList->value],
             ]
         ];
-        ;
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.to_plan.message'),
-            $keyboard
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.to_plan.message'),
+            replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }
 }

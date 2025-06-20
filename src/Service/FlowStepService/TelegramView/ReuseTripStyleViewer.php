@@ -26,10 +26,14 @@ final readonly class ReuseTripStyleViewer implements TelegramViewerInterface
     {
         assert($data instanceof ReuseTripStyleViewData);
 
+        $messageText = $this->translator->trans(
+            'trip.context.trip_style.reuse',
+            ['{cityName}' => $data->cityName, '{tripStyle}' => $data->tripStyle]
+        );
+
         return new AnswerCallbackQueryContext(
-            $data->callbackQueryId,
-            $this->translator->trans('trip.context.trip_style.reuse', ['{city_name}' => $data->cityName, '{trip_style}' => $data->tripStyle]),
-            true
+            callbackQueryId: $data->callbackQueryId,
+            text: $messageText,
         );
     }
 }

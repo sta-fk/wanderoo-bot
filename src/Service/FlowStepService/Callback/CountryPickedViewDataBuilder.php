@@ -56,7 +56,7 @@ readonly class CountryPickedViewDataBuilder implements StateAwareViewDataBuilder
         $this->userStateStorage->saveContext($chatId, $context);
 
         $viewDataCollection = new ViewDataCollection();
-        $viewDataCollection->add(new CountryPickedViewData($chatId, $update->callbackQuery->id));
+        $viewDataCollection->add(new CountryPickedViewData($update->callbackQuery->id, $countryDetails->name));
         $viewDataCollection->add(new CityInputViewData($chatId));
         $viewDataCollection->setNextState(States::WaitingForCityInput);
 

@@ -28,16 +28,16 @@ final readonly class ReuseOrNewTripStyleViewer implements TelegramViewerInterfac
         assert($data instanceof ReuseOrNewTripStyleViewData);
 
         $keyboard = [
-            'inline_keyboard' => [[
+            [
                 ['text' => '✅ Так', 'callback_data' => CallbackQueryData::TripStyle->value . CallbackQueryData::Reuse->value],
                 ['text' => '❌ Ні', 'callback_data' => CallbackQueryData::TripStyle->value . CallbackQueryData::New->value],
-            ]]
+            ]
         ];
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.trip_style.reuse_or_new', ['{last_one_trip_style}' => $data->lastOneTripStyle]),
-            ['inline_keyboard' => $keyboard]
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.trip_style.reuse_or_new', ['{lastOneTripStyle}' => $data->lastOneTripStyle]),
+            replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
 }

@@ -2,9 +2,7 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
 use App\DTO\Internal\CustomBudgetInputViewData;
-use App\DTO\Internal\CustomDurationInputViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
@@ -35,9 +33,14 @@ final readonly class CustomBudgetInputViewer implements TelegramViewerInterface
             );
         }
 
+        $messageText = $this->translator->trans(
+            'trip.context.custom_budget.input',
+            ['{currency}' => $data->currency, '{potentialAmount}' => $data->potentialAmount]
+        );
+
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.custom_budget.input', ['{currency}' => $data->currency, '{potential_amount}' => $data->potentialAmount]),
+            chatId: $data->chatId,
+            text: $messageText,
         );
     }
 }

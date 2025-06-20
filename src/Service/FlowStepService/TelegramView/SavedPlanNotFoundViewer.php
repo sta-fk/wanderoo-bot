@@ -2,14 +2,11 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\AddStopViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\SavedPlanNotFoundViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
-use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
-use App\Enum\CallbackQueryData;
 use App\Enum\MessageView;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -30,8 +27,8 @@ final readonly class SavedPlanNotFoundViewer implements TelegramViewerInterface
         assert($data instanceof SavedPlanNotFoundViewData);
 
         return new AnswerCallbackQueryContext(
-            $data->callbackQueryId,
-            $this->translator->trans("trip.list.item.not_found"),
+            callbackQueryId: $data->callbackQueryId,
+            text: $this->translator->trans("trip.list.item.not_found"),
         );
     }
 }

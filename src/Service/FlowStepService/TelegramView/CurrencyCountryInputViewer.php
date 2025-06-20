@@ -27,8 +27,8 @@ final readonly class CurrencyCountryInputViewer implements TelegramViewerInterfa
         assert($data instanceof CurrencyCountryInputViewData);
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.currency.country.input'),
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.currency.country.input'),
         );
     }
 }

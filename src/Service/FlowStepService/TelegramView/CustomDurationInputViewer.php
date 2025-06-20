@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\TelegramView;
 
-use App\DTO\Internal\CityInputViewData;
 use App\DTO\Internal\CustomDurationInputViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
@@ -29,14 +28,14 @@ final readonly class CustomDurationInputViewer implements TelegramViewerInterfac
 
         if (!$data->validationPassed) {
             return new SendMessageContext(
-                $data->chatId,
-                $this->translator->trans('trip.context.custom_duration.validation_failed'),
+                chatId: $data->chatId,
+                text: $this->translator->trans('trip.context.custom_duration.validation_failed'),
             );
         }
 
         return new SendMessageContext(
-            $data->chatId,
-            $this->translator->trans('trip.context.custom_duration.input'),
+            chatId: $data->chatId,
+            text: $this->translator->trans('trip.context.custom_duration.input'),
         );
     }
 }
