@@ -2,8 +2,8 @@
 
 namespace App\Service\TripPlanner;
 
-use App\DTO\PlanContext;
-use App\DTO\TripPlan;
+use App\DTO\Context\PlanContext;
+use App\DTO\TripPlan\TripPlan;
 use App\Service\Integrations\PoiProviderInterface;
 
 readonly class PlanBuilderService

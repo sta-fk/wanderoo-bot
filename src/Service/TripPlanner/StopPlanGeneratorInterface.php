@@ -2,8 +2,8 @@
 
 namespace App\Service\TripPlanner;
 
-use App\DTO\StopContext;
-use App\DTO\StopPlan;
+use App\DTO\Context\StopContext;
+use App\DTO\TripPlan\StopPlan;
 
 interface StopPlanGeneratorInterface
 {

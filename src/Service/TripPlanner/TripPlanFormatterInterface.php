@@ -2,7 +2,7 @@
 
 namespace App\Service\TripPlanner;
 
-use App\DTO\TripPlan;
+use App\DTO\TripPlan\TripPlan;
 
 interface TripPlanFormatterInterface
 {

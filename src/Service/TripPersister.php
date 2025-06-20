@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\DTO\TripPlan;
+use App\DTO\TripPlan\TripPlan;
 use App\Entity\Trip;
 use App\Entity\TripDay;
 use App\Entity\TripStop;

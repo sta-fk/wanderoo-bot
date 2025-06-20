@@ -2,7 +2,7 @@
 
 namespace App\Service\TripPlanner;
 
-use App\DTO\StopPlan;
+use App\DTO\TripPlan\StopPlan;
 
 interface DailyScheduleFormatterInterface
 {

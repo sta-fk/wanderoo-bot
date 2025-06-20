@@ -60,7 +60,7 @@ class Trip
 
     public function getTitle(): ?string
     {
-        return $this->title ?? $this->stops->toArray()[0]->getCountryName(). ', ' . $this->stops->toArray()[0]->getCityName();
+        return $this->title ?? $this->stops->toArray()[0]->getCountryName() . ', ' . $this->stops->toArray()[0]->getCityName();
     }
 
     public function getStartDate(): \DateTimeImmutable
