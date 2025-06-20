@@ -29,22 +29,22 @@ final readonly class ExchangeChoiceViewer implements TelegramViewerInterface
 
         $keyboard = [
             [[
-                'text' => $this->translator->trans("trip.context.exchange.keyboard." . CallbackQueryData::Usd->value),
+                'text' => $this->translator->trans("trip.context.exchange.choice.keyboard.usd"),
                 'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Usd->value
             ]],
             [[
-                'text' => $this->translator->trans("trip.context.exchange.keyboard." . CallbackQueryData::Eur->value),
+                'text' => $this->translator->trans("trip.context.exchange.choice.keyboard.eur"),
                 'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Eur->value
             ]],
             [[
-                'text' => $this->translator->trans("trip.context.exchange.keyboard." . CallbackQueryData::FromCountry->value),
-                'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::FromCountry->value
+                'text' => $this->translator->trans("trip.context.exchange.choice.keyboard.auto"),
+                'callback_data' => CallbackQueryData::ExchangeChoice->value . CallbackQueryData::Auto->value
             ]],
         ];
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans("trip.context.exchange.message"),
+            text: $this->translator->trans("trip.context.exchange.choice.message"),
             replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }

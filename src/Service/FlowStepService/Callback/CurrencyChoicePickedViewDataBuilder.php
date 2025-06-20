@@ -41,7 +41,7 @@ readonly class CurrencyChoicePickedViewDataBuilder implements StateAwareViewData
 
         $choice = substr($update->callbackQuery->data, strlen(CallbackQueryData::CurrencyChoice->value));
 
-        if ($choice === CallbackQueryData::FromCountry->value) {
+        if ($choice === CallbackQueryData::Auto->value) {
             return ViewDataCollection::createStateAwareWithSingleViewData(
                 new CurrencyCountryInputViewData($chatId),
                 States::WaitingForCurrencyCountryInput

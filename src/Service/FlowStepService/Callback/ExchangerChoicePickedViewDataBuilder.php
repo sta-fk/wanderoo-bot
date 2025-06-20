@@ -43,7 +43,7 @@ readonly class ExchangerChoicePickedViewDataBuilder implements StateAwareViewDat
 
         $choice = substr($update->callbackQuery->data, strlen(CallbackQueryData::ExchangeChoice->value));
 
-        if ($choice === CallbackQueryData::FromCountry->value) {
+        if ($choice === CallbackQueryData::Auto->value) {
             return ViewDataCollection::createStateAwareWithSingleViewData(
                 new ExchangeCountryInputViewData($chatId),
                 States::WaitingForExchangeCountryInput

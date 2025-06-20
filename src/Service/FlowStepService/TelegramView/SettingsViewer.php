@@ -28,12 +28,13 @@ final readonly class SettingsViewer implements TelegramViewerInterface
         assert($data instanceof AddStopViewData);
 
         $keyboard = [
-            [['text' => $this->translator->trans('trip.menu.keyboard.settings.' . CallbackQueryData::Exchanger->value), 'callback_data' => CallbackQueryData::Exchanger->value]],
+            [['text' => $this->translator->trans('menu.keyboard.settings.default_currency'), 'callback_data' => CallbackQueryData::DefaultCurrency->value]],
+            [['text' => $this->translator->trans('menu.keyboard.settings.language'), 'callback_data' => CallbackQueryData::Language->value]],
         ];
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::Settings->value . '.input'),
+            text: $this->translator->trans('menu.keyboard.settings.input'),
             replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }

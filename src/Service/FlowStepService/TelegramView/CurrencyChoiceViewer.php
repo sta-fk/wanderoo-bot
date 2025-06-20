@@ -29,16 +29,16 @@ final readonly class CurrencyChoiceViewer implements TelegramViewerInterface
 
         $keyboard =  [
                 [[
-                    'text' => $this->translator->trans("trip.context.currency.choice.keyboard." . CallbackQueryData::Usd->value),
+                    'text' => $this->translator->trans("trip.context.currency.choice.keyboard.usd"),
                     'callback_data' => CallbackQueryData::CurrencyChoice->value . CallbackQueryData::Usd->value
                 ]],
                 [[
-                    'text' => $this->translator->trans("trip.context.currency.choice.keyboard." . CallbackQueryData::Eur->value),
+                    'text' => $this->translator->trans("trip.context.currency.choice.keyboard.eur"),
                     'callback_data' => CallbackQueryData::CurrencyChoice->value . CallbackQueryData::Eur->value
                 ]],
                 [[
-                    'text' => $this->translator->trans("trip.context.currency.choice.keyboard." . CallbackQueryData::FromCountry->value),
-                    'callback_data' => CallbackQueryData::CurrencyChoice->value . CallbackQueryData::FromCountry->value
+                    'text' => $this->translator->trans("trip.context.currency.choice.keyboard.auto"),
+                    'callback_data' => CallbackQueryData::CurrencyChoice->value . CallbackQueryData::Auto->value
                 ]],
         ];
 

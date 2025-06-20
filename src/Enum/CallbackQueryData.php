@@ -24,6 +24,9 @@ enum CallbackQueryData: string
     case ViewSavedPlansList = 'view_saved_plans_list';
     case Settings = 'settings';
     case Exchanger = 'exchanger';
+    case DefaultCurrency = 'default_currency';
+    case DefaultCurrencyChoice = 'default_currency_choice_';
+    case DefaultCurrencyCountryPick = 'default_currency_country_pick_';
     case Language = 'language';
     case AddStop = 'add_stop';
     case SaveGeneratedPlan = 'save_generated_plan';
@@ -46,5 +49,5 @@ enum CallbackQueryData: string
     case Custom = 'custom';
     case Usd = 'USD';
     case Eur = 'EUR';
-    case FromCountry = 'from_country';
+    case Auto = 'from_country';
 }
