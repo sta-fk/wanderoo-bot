@@ -29,17 +29,17 @@ final readonly class PlanDetailsShownViewer implements TelegramViewerInterface
 
         $keyboard = [
             [
-                ['text' => '✏️ Змінити', 'callback_data' => CallbackQueryData::EditPlan->value . $data->requiredPlanId],
-                ['text' => '🗑️ Видалити', 'callback_data' => CallbackQueryData::DeletePlan->value . $data->requiredPlanId],
+                ['text' => $this->translator->trans('commands.view_saved.details.edit'), 'callback_data' => CallbackQueryData::EditPlan->value . $data->requiredPlanId],
+                ['text' => $this->translator->trans('commands.view_saved.details.delete'), 'callback_data' => CallbackQueryData::DeletePlan->value . $data->requiredPlanId],
             ],
             [
-                ['text' => '⬅️ Назад', 'callback_data' => CallbackQueryData::ViewSavedPlansList->value],
+                ['text' => $this->translator->trans('commands.view_saved.details.back'), 'callback_data' => CallbackQueryData::ViewSavedPlansList->value],
             ]
         ];
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.to_plan.message'),
+            text: $this->translator->trans('commands.view_saved.details.message'),
             replyMarkup: ['inline_keyboard' => $keyboard],
         );
     }

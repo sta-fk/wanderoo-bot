@@ -24,6 +24,9 @@ class User
     #[ORM\Column(length: 3)]
     private string $language = SupportedLanguages::English->value;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $currency = null;
+
     #[ORM\Column]
     private int $chatId;
 
@@ -57,9 +60,19 @@ class User
         return $this->trips;
     }
 
+    public function getDefaultCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
     public function setLanguage(string $language): void
     {
         $this->language = $language;
+    }
+
+    public function setDefaultCurrency(?string $currency): void
+    {
+        $this->currency = $currency;
     }
 
     public function setChatId(int $chatId): void

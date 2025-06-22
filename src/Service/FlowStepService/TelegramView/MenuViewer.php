@@ -29,20 +29,20 @@ final readonly class MenuViewer implements TelegramViewerInterface
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.menu.message'),
+            text: $this->translator->trans('menu.message'),
             replyMarkup: [
                 'inline_keyboard' => [
                     [[
-                        'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::StartNew->value),
+                        'text' => $this->translator->trans('menu.keyboard.' . CallbackQueryData::StartNew->value),
                         'callback_data' => CallbackQueryData::StartNew->value
                     ]],
                     [
                         [
-                            'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::ViewSavedPlansList->value),
+                            'text' => $this->translator->trans('menu.keyboard.' . CallbackQueryData::ViewSavedPlansList->value),
                             'callback_data' => CallbackQueryData::ViewSavedPlansList->value
                         ],
                         [
-                            'text' => $this->translator->trans('trip.menu.keyboard.' . CallbackQueryData::Settings->value . '.input'),
+                            'text' => $this->translator->trans('menu.keyboard.' . CallbackQueryData::Settings->value . '.input'),
                             'callback_data' => CallbackQueryData::Settings->value
                         ],
                     ],

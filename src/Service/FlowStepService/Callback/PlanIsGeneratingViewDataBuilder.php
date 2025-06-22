@@ -9,12 +9,11 @@ use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareViewDataBuilderInterface;
-use App\Service\FlowStepService\ViewDataBuilderInterface;
 use App\Service\TripPlanner\PlanBuilderService;
 use App\Service\TripPlanner\TripPlanFormatterInterface;
 use App\Service\UserStateStorage;
 
-class PlanIsGeneratingViewDataBuilder implements StateAwareViewDataBuilderInterface
+readonly class PlanIsGeneratingViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,

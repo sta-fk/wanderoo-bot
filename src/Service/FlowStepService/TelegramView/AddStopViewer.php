@@ -29,7 +29,10 @@ final readonly class AddStopViewer implements TelegramViewerInterface
 
         $keyboard = [
             [['text' => $this->translator->trans('trip.context.add_stop.keyboard.yes'), 'callback_data' => CallbackQueryData::StopCountryAnother->value]],
-            [['text' => $this->translator->trans('trip.context.add_stop.keyboard.no', ['{lastOneCountryName}' => $data->lastOneCountryName]), 'callback_data' => CallbackQueryData::StopCountrySame->value]],
+            [[
+                'text' => $this->translator->trans('trip.context.add_stop.keyboard.no', ['{lastOneCountryName}' => $data->lastOneCountryName]),
+                'callback_data' => CallbackQueryData::StopCountrySame->value
+            ]],
         ];
 
         $messageText = $this->translator->trans("trip.context.add_stop.message", ['{lastOneCountryName}' => $data->lastOneCountryName]);

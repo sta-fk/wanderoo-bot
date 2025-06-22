@@ -28,15 +28,15 @@ final readonly class PlanGenerationFinishedViewer implements TelegramViewerInter
         assert($data instanceof PlanGenerationFinishedViewData);
 
         $keyboard = [
-            [['text' => '✅ Зберегти план', 'callback_data' => CallbackQueryData::SaveGeneratedPlan->value]],
-            [['text' => '✏️ Змінити план', 'callback_data' => CallbackQueryData::EditGeneratedPlan->value]],
-            [['text' => '🔄 Почати заново', 'callback_data' => CallbackQueryData::StartNew->value]],
-            [['text' => '🔙 Назад', 'callback_data' => CallbackQueryData::BackToMenu->value]],
+            [['text' => $this->translator->trans('trip.plan_generated.save'), 'callback_data' => CallbackQueryData::SaveGeneratedPlan->value]],
+            [['text' => $this->translator->trans('trip.plan_generated.edit'), 'callback_data' => CallbackQueryData::EditGeneratedPlan->value]],
+            [['text' => $this->translator->trans('trip.plan_generated.start_over'), 'callback_data' => CallbackQueryData::StartNew->value]],
+            [['text' => $this->translator->trans('trip.plan_generated.back'), 'callback_data' => CallbackQueryData::BackToMenu->value]],
         ];
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.to_plan.message'),
+            text: $this->translator->trans('trip.plan_generated.message'),
             replyMarkup: ['inline_keyboard' => $keyboard]
         );
     }
