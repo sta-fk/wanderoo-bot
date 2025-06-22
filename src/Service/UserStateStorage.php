@@ -64,6 +64,11 @@ readonly class UserStateStorage
         return $this->cache->get(self::getContextKey($chatId), fn () => new PlanContext());
     }
 
+    public function resetState(int $chatId): void
+    {
+        $this->cache->delete(self::getStateKey($chatId));
+    }
+
     public function clearContext(int $chatId): void
     {
         $this->cache->delete(self::getContextKey($chatId));

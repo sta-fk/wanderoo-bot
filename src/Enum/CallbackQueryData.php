@@ -23,7 +23,7 @@ enum CallbackQueryData: string
     case StartNew = 'start_new';
     case ViewSavedPlansList = 'view_saved_plans_list';
     case Settings = 'settings';
-    case Exchanger = 'exchanger';
+    case DraftPlanCurrency = 'exchanger';
     case DefaultCurrency = 'default_currency';
     case DefaultCurrencyChoice = 'default_currency_choice_';
     case DefaultCurrencyCountryPick = 'default_currency_country_pick_';
@@ -34,8 +34,8 @@ enum CallbackQueryData: string
     case BackToMenu = 'back_to_main_menu';
 
     // Currency exchanger command
-    case ExchangeChoice = 'exchange_choice_';
-    case ExchangeCountryPick = 'exchange_country_pick_';
+    case DraftPlanCurrencyChoice = 'exchange_choice_';
+    case DraftPlanCurrencyCountryPick = 'exchange_country_pick_';
 
     // For Adding stop flow
     case StopCountrySame = 'stop_country_same';

@@ -85,4 +85,3 @@ services:
             $inner: '@App\Service\Integrations\GoogleTransitTransportProvider'
             $cache: '@app.cache.google'
             $googleTransitTransportTtl: '%env(GOOGLE_PLACES_POI_TTL)%'
-

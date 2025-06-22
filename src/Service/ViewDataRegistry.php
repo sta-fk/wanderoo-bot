@@ -3,8 +3,8 @@
 namespace App\Service;
 
 use App\DTO\Request\TelegramUpdate;
-use App\Service\FlowStepService\StateAwareViewDataBuilderInterface;
-use App\Service\FlowStepService\ViewDataBuilderInterface;
+use App\Service\FlowViewer\StateAwareViewDataBuilderInterface;
+use App\Service\FlowViewer\ViewDataBuilderInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class ViewDataRegistry

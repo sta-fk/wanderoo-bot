@@ -4,7 +4,7 @@ namespace App\Enum;
 
 enum MessageView: string
 {
-    case Menu = 'start';
+    case Menu = 'menu';
     case StartNew = 'start_new';
     case CountryInput = 'country_input';
     case CountryInputSearchResult = 'country_search';

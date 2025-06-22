@@ -13,7 +13,6 @@ enum States: string
     case WaitingForDurationPicked = 'waiting_for_duration';
     case WaitingForCustomDurationInput = 'waiting_for_custom_duration_input';
     case WaitingForStartDate = 'waiting_for_start_date';
-    case WaitingForDatePicked = 'waiting_for_date_picked';
     case WaitingForTripStyle = 'waiting_for_trip_style';
     case WaitingForInterests = 'waiting_for_interests';
     case WaitingForBudget = 'waiting_for_budget';
@@ -30,7 +29,12 @@ enum States: string
     case WaitingForCurrencyPicked = 'waiting_for_currency_picked';
 
     // Exchange
-    case WaitingForExchangeChoicePicked = 'waiting_for_exchange_choice_picked';
-    case WaitingForExchangeCountryInput = 'waiting_for_exchange_country_input';
-    case WaitingForExchangePicked = 'waiting_for_exchange_picked';
+    case WaitingForDraftPlanCurrencyChoicePicked = 'waiting_for_exchange_choice_picked';
+    case WaitingForDraftPlanCurrencyCountryInput = 'waiting_for_exchange_country_input';
+    case WaitingForDraftPlanCurrencyPicked = 'waiting_for_exchange_picked';
+
+    // Default Currency
+    case WaitingForDefaultCurrencyMenuContinue = 'waiting_for_default_currency_menu_continue';
+    case WaitingForDefaultCurrencyCountryInput = 'waiting_for_default_currency_country_input';
+    case WaitingForDefaultCurrencyPicked = 'waiting_for_default_currency_picked';
 }
