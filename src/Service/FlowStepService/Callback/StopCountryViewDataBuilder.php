@@ -2,7 +2,6 @@
 
 namespace App\Service\FlowStepService\Callback;
 
-use App\DTO\Internal\AddStopViewData;
 use App\DTO\Internal\CityInputViewData;
 use App\DTO\Internal\CountryInputViewData;
 use App\DTO\Internal\ViewDataCollection;
@@ -11,7 +10,6 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\CurrencyResolverService;
 use App\Service\FlowStepService\StateAwareViewDataBuilderInterface;
-use App\Service\FlowStepService\ViewDataBuilderInterface;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
 
@@ -26,9 +24,8 @@ readonly class StopCountryViewDataBuilder implements StateAwareViewDataBuilderIn
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && (CallbackQueryData::StopCountryAnother->value === $update->callbackQuery->data
-                || CallbackQueryData::StopCountrySame->value === $update->callbackQuery->data);
+        return $update->supportsCallbackQuery(CallbackQueryData::StopCountryAnother)
+            || $update->supportsCallbackQuery(CallbackQueryData::StopCountrySame);
     }
 
     public function supportsStates(): array
@@ -48,17 +45,17 @@ readonly class StopCountryViewDataBuilder implements StateAwareViewDataBuilderIn
     private function buildWithAnotherCountry(TelegramUpdate $update): ViewDataCollection
     {
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new CountryInputViewData($update->callbackQuery->message->chat->id),
+            new CountryInputViewData($update->getChatId()),
             States::WaitingForCountryInput
         );
     }
 
     private function buildWithSameCountry(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryPlaceId = ($context->stops[count($context->stops) - 1])->countryPlaceId;
+        $countryPlaceId = $context->getLastSavedStop()->countryPlaceId;
 
         $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
 
@@ -70,8 +67,7 @@ readonly class StopCountryViewDataBuilder implements StateAwareViewDataBuilderIn
         $this->userStateStorage->saveContext($chatId, $context);
 
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new CityInputViewData($update->callbackQuery->message->chat->id),
-            States::WaitingForCityInput
+            new CityInputViewData($chatId), States::WaitingForCityInput
         );
     }
 }

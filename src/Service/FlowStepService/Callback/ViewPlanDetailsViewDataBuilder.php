@@ -25,19 +25,20 @@ readonly class ViewPlanDetailsViewDataBuilder implements ViewDataBuilderInterfac
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::ViewPlanDetails->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::ViewPlanDetails);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-        $tripId = substr($update->callbackQuery->data, strlen(CallbackQueryData::ViewPlanDetails->value));
+        $chatId = $update->getChatId();
+        $tripId = $update->supportsCallbackQuery(CallbackQueryData::ViewPlanDetails);
         /** @var Trip $trip */
         $trip = $this->tripRepository->findOneBy(['id' => $tripId]);
 
         if (!$trip) {
-            return ViewDataCollection::createWithSingleViewData(new SavedPlanNotFoundViewData($update->callbackQuery->id));
+            return ViewDataCollection::createWithSingleViewData(
+                new SavedPlanNotFoundViewData($update->callbackQuery->id)
+            );
         }
 
         $tripPlan = $this->tripPlanMapper->fromEntity($trip);

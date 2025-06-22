@@ -25,15 +25,14 @@ readonly class DefaultCurrencyCountryPickedViewDataBuilder implements ViewDataBu
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::DefaultCurrencyCountryPick->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::DefaultCurrencyCountryPick);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-        $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::DefaultCurrencyCountryPick->value));
-        $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
+        $countryDetails = $this->placeService->getPlaceDetails(
+            $update->getCustomCallbackQueryData(CallbackQueryData::DefaultCurrencyCountryPick)
+        );
 
         $currencyCode = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
 
@@ -45,7 +44,7 @@ readonly class DefaultCurrencyCountryPickedViewDataBuilder implements ViewDataBu
 
         $viewDataCollection = new ViewDataCollection();
         $viewDataCollection->add(new DefaultCurrencyPickedViewData($update->callbackQuery->id, $currencyCode));
-        $viewDataCollection->add(new MenuViewData($chatId));
+        $viewDataCollection->add(new MenuViewData($update->getChatId()));
 
         return $viewDataCollection;
     }

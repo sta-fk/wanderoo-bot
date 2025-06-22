@@ -23,8 +23,7 @@ readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInt
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::City->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::City);
     }
 
     public function supportsStates(): array
@@ -34,11 +33,10 @@ readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInt
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $cityPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::City->value));
-
+        $cityPlaceId = $update->getCustomCallbackQueryData(CallbackQueryData::City);
         $cityDetails = $this->placeService->getPlaceDetails($cityPlaceId);
 
         $context->currentStopDraft->cityName = $cityDetails->name;
@@ -57,8 +55,7 @@ readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInt
         $viewDataCollection
             ->add($processedViewData)
             ->add($nextViewData)
-            ->setNextState($nextState)
-            ;
+            ->setNextState($nextState);
 
         return $viewDataCollection;
     }

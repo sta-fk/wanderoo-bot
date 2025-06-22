@@ -36,7 +36,7 @@ readonly class CustomBudgetInputViewDataBuilder implements StateAwareViewDataBui
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->message;
+        return $update->isMessageUpdate();
     }
 
     public function supportsStates(): array
@@ -46,7 +46,7 @@ readonly class CustomBudgetInputViewDataBuilder implements StateAwareViewDataBui
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         $userInput = preg_replace('/[^\d]/', '', $update->message->text);
@@ -65,7 +65,7 @@ readonly class CustomBudgetInputViewDataBuilder implements StateAwareViewDataBui
         $this->userStateStorage->saveContext($chatId, $context);
 
         $viewDataCollection = new ViewDataCollection();
-        $viewDataCollection->add(new BudgetProcessedViewData($chatId, ($context->stops[count($context->stops) - 1])->budgetInPlanCurrency, $context->currency));
+        $viewDataCollection->add(new BudgetProcessedViewData($chatId, $context->getLastSavedStop()->budgetInPlanCurrency, $context->currency));
         $viewDataCollection->add(new TripStopCreationFinishedViewData($chatId));
         $viewDataCollection->setNextState(States::TripStopCreationFinished);
 

@@ -19,14 +19,14 @@ readonly class MenuViewDataBuilder implements ViewDataBuilderInterface
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return TelegramCommands::Start->value === $update->message?->text;
+        return $update->supportsMessageUpdate(TelegramCommands::Start);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
         $this->commandMenuService->setDefaultMenuButton();
-        $this->commandMenuService->setCommandsForLanguage(SupportedLanguages::fromExternalLocale($update->message->from->languageCode));
+        $this->commandMenuService->setCommandsForLanguage(SupportedLanguages::fromExternalLocale($update->getLanguageCode()));
 
-        return ViewDataCollection::createWithSingleViewData(new MenuViewData($update->message->chat->id));
+        return ViewDataCollection::createWithSingleViewData(new MenuViewData($update->getChatId()));
     }
 }

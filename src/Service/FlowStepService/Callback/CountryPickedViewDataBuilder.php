@@ -24,8 +24,7 @@ readonly class CountryPickedViewDataBuilder implements StateAwareViewDataBuilder
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Country->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::Country);
     }
 
     public function supportsStates(): array
@@ -35,10 +34,10 @@ readonly class CountryPickedViewDataBuilder implements StateAwareViewDataBuilder
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::Country->value));
+        $countryPlaceId = $update->getCustomCallbackQueryData(CallbackQueryData::Country);
 
         $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
         $countryCurrency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);

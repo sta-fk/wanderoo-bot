@@ -25,8 +25,7 @@ readonly class CurrencyChoicePickedViewDataBuilder implements StateAwareViewData
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyChoice->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::CurrencyChoice);
     }
 
     public function supportsStates(): array
@@ -36,10 +35,10 @@ readonly class CurrencyChoicePickedViewDataBuilder implements StateAwareViewData
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $choice = substr($update->callbackQuery->data, strlen(CallbackQueryData::CurrencyChoice->value));
+        $choice = $update->getCustomCallbackQueryData(CallbackQueryData::CurrencyChoice);
 
         if ($choice === CallbackQueryData::Auto->value) {
             return ViewDataCollection::createStateAwareWithSingleViewData(

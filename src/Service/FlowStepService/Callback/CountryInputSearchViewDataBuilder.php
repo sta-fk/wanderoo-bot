@@ -18,7 +18,7 @@ readonly class CountryInputSearchViewDataBuilder implements StateAwareViewDataBu
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->message;
+        return $update->isMessageUpdate();
     }
 
     public function supportsStates(): array
@@ -28,11 +28,10 @@ readonly class CountryInputSearchViewDataBuilder implements StateAwareViewDataBu
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
         $countries = $this->placeService->searchCountries($update->message->text);
 
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new CountryInputSearchResultViewData($chatId, $countries),
+            new CountryInputSearchResultViewData($update->getChatId(), $countries),
             States::WaitingForCountryPicked
         );
     }

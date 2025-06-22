@@ -28,8 +28,7 @@ readonly class CurrencyCountryPickedViewDataBuilder implements StateAwareViewDat
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::CurrencyCountryPick->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::CurrencyCountryPick);
     }
 
     public function supportsStates(): array
@@ -39,11 +38,12 @@ readonly class CurrencyCountryPickedViewDataBuilder implements StateAwareViewDat
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $countryPlaceId = substr($update->callbackQuery->data, strlen(CallbackQueryData::CurrencyCountryPick->value));
-        $countryDetails = $this->placeService->getPlaceDetails($countryPlaceId);
+        $countryDetails = $this->placeService->getPlaceDetails(
+            $update->getCustomCallbackQueryData(CallbackQueryData::CurrencyCountryPick)
+        );
 
         $currency = $this->currencyResolverService->resolveCurrencyCode($countryDetails->countryCode);
 

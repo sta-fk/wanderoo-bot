@@ -12,14 +12,13 @@ class DefaultCurrencyMenuViewDataBuilder implements ViewDataBuilderInterface
 {
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::DefaultCurrency->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::DefaultCurrency);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-
-        return ViewDataCollection::createWithSingleViewData(new DefaultCurrencyMenuViewData($chatId));
+        return ViewDataCollection::createWithSingleViewData(
+            new DefaultCurrencyMenuViewData($update->getChatId())
+        );
     }
 }

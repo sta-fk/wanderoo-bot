@@ -3,7 +3,6 @@
 namespace App\Service\FlowStepService\Callback;
 
 use App\DTO\Internal\DeletePlanViewData;
-use App\DTO\Internal\UniversalDeletePreviousMessageViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Internal\ViewSavedPlansListViewData;
 use App\DTO\Request\TelegramUpdate;
@@ -22,14 +21,14 @@ readonly class DeletePlanViewDataBuilder implements ViewDataBuilderInterface
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::DeletePlan->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::DeletePlan);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $tripId = substr($update->callbackQuery->data, strlen(CallbackQueryData::DeletePlan->value));
-        $trip = $this->tripRepository->findOneBy(['id' => $tripId]);
+        $trip = $this->tripRepository->findOneBy([
+            'id' => $update->getCustomCallbackQueryData(CallbackQueryData::DeletePlan)
+        ]);
 
         if ($trip) {
             $this->entityManager->remove($trip);
@@ -39,7 +38,7 @@ readonly class DeletePlanViewDataBuilder implements ViewDataBuilderInterface
         $viewDataCollection = new ViewDataCollection();
 //        $viewDataCollection->add(new UniversalDeletePreviousMessageViewData($update->callbackQuery->message->chat->id, $update->callbackQuery->message->messageId));
         $viewDataCollection->add(new DeletePlanViewData($update->callbackQuery->id));
-        $viewDataCollection->add(new ViewSavedPlansListViewData($update->callbackQuery->message->chat->id));
+        $viewDataCollection->add(new ViewSavedPlansListViewData($update->getChatId()));
 
         return $viewDataCollection;
     }

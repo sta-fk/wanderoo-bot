@@ -13,14 +13,11 @@ readonly class BackToMenuViewDataBuilder implements ViewDataBuilderInterface
 {
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::BackToMenu->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::BackToMenu);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        return ViewDataCollection::createWithSingleViewData(
-            new MenuViewData($update->callbackQuery->message->chat->id)
-        );
+        return ViewDataCollection::createWithSingleViewData(new MenuViewData($update->getChatId()));
     }
 }

@@ -13,14 +13,13 @@ readonly class ExchangerViewDataBuilder implements ViewDataBuilderInterface
 {
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::Exchanger->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::Exchanger);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new ExchangeChoiceViewData($update->callbackQuery->message->chat->id),
+            new ExchangeChoiceViewData($update->getChatId()),
             States::WaitingForExchangeChoicePicked
         );
     }

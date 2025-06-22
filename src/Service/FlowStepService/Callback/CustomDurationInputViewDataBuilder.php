@@ -2,22 +2,15 @@
 
 namespace App\Service\FlowStepService\Callback;
 
-use App\DTO\Internal\CityInputSearchResultViewData;
-use App\DTO\Internal\CountryInputSearchResultViewData;
 use App\DTO\Internal\CustomDurationInputViewData;
 use App\DTO\Internal\DurationProcessedViewData;
-use App\DTO\Internal\CustomDurationValidationFailedViewData;
 use App\DTO\Internal\ReuseOrNewTripStyleViewData;
 use App\DTO\Internal\StartDateViewData;
-use App\DTO\Internal\StartNewViewData;
 use App\DTO\Internal\ViewDataCollection;
-use App\DTO\Internal\ViewDataInterface;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareViewDataBuilderInterface;
-use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
-use Doctrine\DBAL\Schema\View;
 
 readonly class CustomDurationInputViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
@@ -28,7 +21,7 @@ readonly class CustomDurationInputViewDataBuilder implements StateAwareViewDataB
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->message;
+        return $update->isMessageUpdate();
     }
 
     public function supportsStates(): array
@@ -38,7 +31,7 @@ readonly class CustomDurationInputViewDataBuilder implements StateAwareViewDataB
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         if (!is_numeric($update->message->text) || $update->message->text < 0 || $update->message->text >= 30) {
@@ -56,7 +49,7 @@ readonly class CustomDurationInputViewDataBuilder implements StateAwareViewDataB
         [$nextViewData, $nextState] =
             $context->isAddingStopFlow
                 ? [
-                    new ReuseOrNewTripStyleViewData($chatId, ($context->stops[count($context->stops) - 1])->getTripStyleLabel()),
+                    new ReuseOrNewTripStyleViewData($chatId, $context->getLastSavedStop()->getTripStyleLabel()),
                     States::WaitingForReuseOrNewTripStyle
                 ]
                 : [new StartDateViewData($chatId), States::WaitingForStartDate];

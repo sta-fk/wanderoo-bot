@@ -20,8 +20,7 @@ readonly class DatePickedViewDataBuilder implements StateAwareViewDataBuilderInt
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::DatePicked->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::DatePicked);
     }
 
     public function supportsStates(): array
@@ -31,8 +30,8 @@ readonly class DatePickedViewDataBuilder implements StateAwareViewDataBuilderInt
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $dateStr = substr($update->callbackQuery->data, strlen(CallbackQueryData::DatePicked->value)); // YYYY-MM-DD
-        $chatId = $update->callbackQuery->message->chat->id;
+        $dateStr = $update->getCustomCallbackQueryData(CallbackQueryData::DatePicked); // YYYY-MM-DD
+        $chatId = $update->getChatId();
 
         $context = $this->userStateStorage->getContext($chatId);
         if (null === $context->currentStopDraft->duration) {

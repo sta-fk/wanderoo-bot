@@ -22,8 +22,7 @@ readonly class TripStyleViewDataBuilder implements StateAwareViewDataBuilderInte
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::TripStyle);
     }
 
     public function supportsStates(): array
@@ -33,11 +32,12 @@ readonly class TripStyleViewDataBuilder implements StateAwareViewDataBuilderInte
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $tripStyle = substr($update->callbackQuery->data, strlen(CallbackQueryData::TripStyle->value));
-        $context->currentStopDraft->tripStyle = $tripStyle;
+        $context->currentStopDraft->tripStyle = $update->getCustomCallbackQueryData(
+            CallbackQueryData::TripStyle
+        );
 
         $this->userStateStorage->saveContext($chatId, $context);
 
@@ -65,8 +65,8 @@ readonly class TripStyleViewDataBuilder implements StateAwareViewDataBuilderInte
 
     private function buildReuseOrNewInterestsViewData(int $chatId, PlanContext $context): array
     {
-        $previousInterests = null !== $context->stops[count($context->stops) - 1]
-            ? $context->stops[count($context->stops) - 1]->getInterestsLabels()
+        $previousInterests = null !== $context->getLastSavedStop()
+            ? $context->getLastSavedStop()->getInterestsLabels()
             : [];
 
         $nextViewData = new ReuseOrNewInterestsViewData($chatId, $previousInterests);

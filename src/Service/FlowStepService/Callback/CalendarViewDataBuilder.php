@@ -12,18 +12,17 @@ readonly class CalendarViewDataBuilder implements ViewDataBuilderInterface
 {
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Calendar->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::Calendar);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        [$year, $month] = explode('_', substr($update->callbackQuery->data, strlen(CallbackQueryData::Calendar->value)));
+        [$year, $month] = explode('_', $update->getCustomCallbackQueryData(CallbackQueryData::Calendar));
 
         return ViewDataCollection::createWithSingleViewData(
             new CalendarViewData(
-                $update->callbackQuery->message->chat->id,
-                $update->callbackQuery->message->messageId,
+                $update->callbackQuery->id,
+                $update->getCallbackMessageId(),
                 $year,
                 $month
             )

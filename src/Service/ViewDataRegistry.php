@@ -18,7 +18,7 @@ final readonly class ViewDataRegistry
 
     public function findMatchingBuilder(TelegramUpdate $update): ?ViewDataBuilderInterface
     {
-        $chatId = $update->callbackQuery->message->chat->id ?? $update->message->chat->id ?? null;
+        $chatId = $update->getChatId();
         $currentState = $chatId ? $this->userStateStorage->getState($chatId) : null;
 
         /** @var ViewDataBuilderInterface $viewDataBuilder */

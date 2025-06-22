@@ -21,12 +21,12 @@ readonly class StartNewViewDataBuilder implements ViewDataBuilderInterface
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return TelegramCommands::StartNew->value === $update->message?->text;
+        return $update->supportsMessageUpdate(TelegramCommands::StartNew);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
+        $chatId = $update->getChatId();
 
         $this->userStateStorage->clearContext($chatId);
         $this->userStateStorage->saveContext($chatId, new PlanContext());

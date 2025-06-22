@@ -25,6 +25,11 @@ class PlanContext
         $this->currentStopDraft = new StopContext();
     }
 
+    public function getLastSavedStop(): StopContext
+    {
+        return $this->stops[count($this->stops) - 1] ?? throw new \RuntimeException('Unable to find the last stop context');
+    }
+
     public function enableAddingStopFlow(): self
     {
         $this->isAddingStopFlow = true;
