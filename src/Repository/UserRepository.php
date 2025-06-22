@@ -21,8 +21,8 @@ class UserRepository extends ServiceEntityRepository
 
     public function findOrCreateFromTelegramUpdate(TelegramUpdate $telegramUpdate): User
     {
-        $chatId = $telegramUpdate->callbackQuery?->message?->chat->id ?? $telegramUpdate->message->chat->id;
-        $languageCode = $telegramUpdate->callbackQuery?->from->languageCode ?? $telegramUpdate->message->from->languageCode;
+        $chatId = $telegramUpdate->getChatId();
+        $languageCode = $telegramUpdate->getLanguageCode();
 
         $user = $this->findOneBy(['chatId' => $chatId]);
         if ($user) {

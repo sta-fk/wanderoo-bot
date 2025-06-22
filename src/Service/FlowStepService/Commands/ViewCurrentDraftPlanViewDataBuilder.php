@@ -18,12 +18,12 @@ readonly class ViewCurrentDraftPlanViewDataBuilder implements ViewDataBuilderInt
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return TelegramCommands::ViewCurrentDraftPlan->value === $update->message?->text;
+        return $update->supportsMessageUpdate(TelegramCommands::ViewCurrentDraftPlan);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         return ViewDataCollection::createWithSingleViewData(new ViewCurrentDraftPlanViewData($chatId, $context));

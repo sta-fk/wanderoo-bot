@@ -20,13 +20,12 @@ readonly class ViewSavedPlansListViewDataBuilder implements ViewDataBuilderInter
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::ViewSavedPlansList->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::ViewSavedPlansList);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $user = $this->userRepository->findOneBy(['chatId' => $chatId]);
         $trips = $this->tripRepository->findBy(['user' => $user]);
 

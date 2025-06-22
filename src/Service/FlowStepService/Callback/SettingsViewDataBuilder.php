@@ -15,16 +15,13 @@ readonly class SettingsViewDataBuilder implements ViewDataBuilderInterface
 {
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::Settings->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::Settings);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-
         return ViewDataCollection::createWithSingleViewData(
-            new SettingsViewData($chatId),
+            new SettingsViewData($update->getChatId()),
         );
     }
 }

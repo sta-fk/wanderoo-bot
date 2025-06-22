@@ -2,23 +2,15 @@
 
 namespace App\Service\FlowStepService\Callback;
 
-use App\DTO\Internal\CityInputSearchResultViewData;
-use App\DTO\Internal\CountryInputSearchResultViewData;
 use App\DTO\Internal\CustomDurationInputViewData;
 use App\DTO\Internal\DurationProcessedViewData;
-use App\DTO\Internal\CustomDurationValidationFailedViewData;
-use App\DTO\Internal\ReuseOrNewTripStyleViewData;
 use App\DTO\Internal\StartDateViewData;
-use App\DTO\Internal\StartNewViewData;
 use App\DTO\Internal\ViewDataCollection;
-use App\DTO\Internal\ViewDataInterface;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\FlowStepService\StateAwareViewDataBuilderInterface;
-use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
-use Doctrine\DBAL\Schema\View;
 
 readonly class DurationViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
@@ -29,8 +21,7 @@ readonly class DurationViewDataBuilder implements StateAwareViewDataBuilderInter
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Duration->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::Duration);
     }
 
     public function supportsStates(): array
@@ -40,8 +31,8 @@ readonly class DurationViewDataBuilder implements StateAwareViewDataBuilderInter
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $durationValue = substr($update->callbackQuery->data, strlen(CallbackQueryData::Duration->value));
-        $chatId = $update->callbackQuery->message->chat->id;
+        $durationValue = $update->getCustomCallbackQueryData(CallbackQueryData::Duration);
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         if (CallbackQueryData::Custom->value === $durationValue) {

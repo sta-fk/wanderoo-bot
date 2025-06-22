@@ -22,14 +22,13 @@ readonly class DefaultCurrencyMenuPickedViewDataBuilder implements ViewDataBuild
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::DefaultCurrencyChoice->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::DefaultCurrencyChoice);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-        $choice = substr($update->callbackQuery->data, strlen(CallbackQueryData::DefaultCurrencyChoice->value));
+        $chatId = $update->getChatId();
+        $choice = $update->getCustomCallbackQueryData(CallbackQueryData::DefaultCurrencyChoice);
 
         if ($choice === CallbackQueryData::Auto->value) {
             return ViewDataCollection::createWithSingleViewData(new DefaultCurrencyCountryInputViewData($chatId));

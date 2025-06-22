@@ -24,8 +24,7 @@ readonly class PlanIsGeneratingViewDataBuilder implements StateAwareViewDataBuil
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::GeneratingTripPlan->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::GeneratingTripPlan);
     }
 
     public function supportsStates(): array
@@ -35,7 +34,7 @@ readonly class PlanIsGeneratingViewDataBuilder implements StateAwareViewDataBuil
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         $this->userStateStorage->saveContext($chatId, $context);

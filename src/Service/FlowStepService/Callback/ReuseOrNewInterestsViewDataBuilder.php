@@ -23,8 +23,7 @@ readonly class ReuseOrNewInterestsViewDataBuilder implements StateAwareViewDataB
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::Interest);
     }
 
     public function supportsStates(): array
@@ -34,21 +33,20 @@ readonly class ReuseOrNewInterestsViewDataBuilder implements StateAwareViewDataB
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $action = substr($update->callbackQuery->data, strlen(CallbackQueryData::Interest->value));
+        $action = $update->getCustomCallbackQueryData(CallbackQueryData::Interest);
 
         if ($action === CallbackQueryData::Reuse->value) {
-            $lastOneStop = ($context->stops[count($context->stops) - 1]);
             $currentStopDraft = $context->currentStopDraft;
 
-            $currentStopDraft->interests = $lastOneStop->interests;
+            $currentStopDraft->interests = $context->getLastSavedStop()->interests;
             $this->userStateStorage->saveContext($chatId, $context);
 
             $processedViewData = new InterestsViewData(
                 chatId: $chatId,
-                messageId: $update->callbackQuery->message->messageId,
+                messageId: $update->getCallbackMessageId(),
                 selectedInterests: $context->currentStopDraft->getInterestsLabels(),
                 interestsDone: true
             );

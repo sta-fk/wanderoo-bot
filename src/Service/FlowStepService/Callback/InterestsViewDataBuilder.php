@@ -7,8 +7,6 @@ use App\DTO\Internal\BudgetViewData;
 use App\DTO\Internal\CurrencyChoiceViewData;
 use App\DTO\Internal\CustomBudgetInputViewData;
 use App\DTO\Internal\InterestsViewData;
-use App\DTO\Internal\ReuseOrNewInterestsViewData;
-use App\DTO\Internal\TripStylePickedViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;
@@ -16,7 +14,6 @@ use App\Enum\States;
 use App\Service\FlowStepService\StateAwareViewDataBuilderInterface;
 use App\Service\Integrations\CurrencyExchangerService;
 use App\Service\UserStateStorage;
-use Doctrine\DBAL\Schema\View;
 
 readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
@@ -28,9 +25,8 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && (str_starts_with($update->callbackQuery->data, CallbackQueryData::Interest->value)
-                || $update->callbackQuery->data === CallbackQueryData::InterestsDone->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::Interest)
+            || $update->supportsCallbackQuery(CallbackQueryData::InterestsDone);
     }
 
     public function supportsStates(): array
@@ -40,7 +36,7 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         $callbackData = $update->callbackQuery->data;
@@ -48,7 +44,7 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
         if (CallbackQueryData::InterestsDone->value === $callbackData && $context->isAddingStopFlow) {
             $processedViewData = new InterestsViewData(
                 chatId: $chatId,
-                messageId: $update->callbackQuery->message->messageId,
+                messageId: $update->getCallbackMessageId(),
                 selectedInterests: $context->currentStopDraft->getInterestsLabels(),
                 interestsDone: true
             );
@@ -69,8 +65,15 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
         }
 
         if (CallbackQueryData::InterestsDone->value === $callbackData) {
-            $processedViewData = new InterestsViewData(chatId: $chatId, messageId: $update->callbackQuery->message->messageId, selectedInterests: $context->currentStopDraft->getInterestsLabels(), interestsDone: true);
-            $nextViewData = new BudgetViewData($chatId, $context->currency); // $context->currency - Основна валюта для першого кроку, надалі буде CustomBudget
+            $processedViewData = new InterestsViewData(
+                chatId: $chatId,
+                messageId: $update->getCallbackMessageId(),
+                selectedInterests: $context->currentStopDraft->getInterestsLabels(),
+                interestsDone: true
+            );
+
+            // $context->currency - Основна валюта для першого кроку, надалі буде CustomBudget
+            $nextViewData = new BudgetViewData($chatId, $context->currency);
 
             $viewDataCollection = new ViewDataCollection();
             $viewDataCollection
@@ -86,7 +89,7 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
         return ViewDataCollection::createWithSingleViewData(
             new InterestsViewData(
                 chatId: $chatId,
-                messageId: $update->callbackQuery->message->messageId,
+                messageId: $update->getCallbackMessageId(),
                 selectedInterests: $context->currentStopDraft->interests,
             )
         );
@@ -104,9 +107,7 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
 
     private function processSelectedInterests(TelegramUpdate $update, PlanContext $context): void
     {
-        $callbackData = $update->callbackQuery->data;
-
-        $selectedInterest = substr($callbackData, strlen(CallbackQueryData::Interest->value));
+        $selectedInterest = $update->getCustomCallbackQueryData(CallbackQueryData::Interest);
         if (!in_array($selectedInterest, $context->currentStopDraft->interests ?? [], true)) {
             $context->currentStopDraft->interests[] = $selectedInterest;
         } else {
@@ -116,6 +117,6 @@ readonly class InterestsViewDataBuilder implements StateAwareViewDataBuilderInte
             );
         }
 
-        $this->userStateStorage->saveContext($update->callbackQuery->message->chat->id, $context);
+        $this->userStateStorage->saveContext($update->getChatId(), $context);
     }
 }

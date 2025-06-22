@@ -20,7 +20,7 @@ readonly class ExchangeCountryInputSearchViewDataBuilder implements StateAwareVi
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->message;
+        return $update->isMessageUpdate();
     }
 
     public function supportsStates(): array
@@ -30,11 +30,10 @@ readonly class ExchangeCountryInputSearchViewDataBuilder implements StateAwareVi
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
         $countries = $this->placeService->searchCountries($update->message->text);
 
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new ExchangeCountryInputSearchResultViewData($chatId, $countries),
+            new ExchangeCountryInputSearchResultViewData($update->getChatId(), $countries),
             States::WaitingForExchangePicked
         );
     }

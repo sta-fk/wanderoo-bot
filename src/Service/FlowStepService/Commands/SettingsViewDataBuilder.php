@@ -12,13 +12,13 @@ readonly class SettingsViewDataBuilder implements ViewDataBuilderInterface
 {
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return TelegramCommands::Settings->value === $update->message?->text;
+        return $update->supportsMessageUpdate(TelegramCommands::Settings);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
         return ViewDataCollection::createWithSingleViewData(
-            new SettingsViewData($update->message->chat->id),
+            new SettingsViewData($update->getChatId()),
         );
     }
 }

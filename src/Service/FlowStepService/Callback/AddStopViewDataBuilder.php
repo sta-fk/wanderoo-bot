@@ -19,19 +19,18 @@ readonly class AddStopViewDataBuilder implements ViewDataBuilderInterface
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::AddStop->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::AddStop);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
         $viewDataCollection = ViewDataCollection::createStateAwareWithSingleViewData(
             new AddStopViewData(
                 $chatId,
-                ($context->stops[count($context->stops) - 1])->countryName
+                $context->getLastSavedStop()->countryName
             ),
             States::WaitingForStopCountry
         );

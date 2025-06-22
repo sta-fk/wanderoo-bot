@@ -32,7 +32,7 @@ final class TelegramService
 
     public function handleUpdate(TelegramUpdate $update): void
     {
-        $chatId = $update->callbackQuery?->message->chat->id ?? $update->message?->chat->id ?? null;
+        $chatId = $update->getChatId();
         if (!$chatId) {
             return;
         }

@@ -25,8 +25,7 @@ readonly class BudgetViewDataBuilder implements StateAwareViewDataBuilderInterfa
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::Budget->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::Budget);
     }
 
     public function supportsStates(): array
@@ -36,13 +35,14 @@ readonly class BudgetViewDataBuilder implements StateAwareViewDataBuilderInterfa
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $budgetKey = substr($update->callbackQuery->data, strlen(CallbackQueryData::Budget->value));
+        $budgetKey = $update->getCustomCallbackQueryData(CallbackQueryData::Budget);
 
         if (CallbackQueryData::Custom->value === $budgetKey) {
             $potentialAmount = $this->currencyExchangerService->convert(500, CallbackQueryData::Usd->value, $context->currency);
+
             return ViewDataCollection::createStateAwareWithSingleViewData(
                 new CustomBudgetInputViewData($chatId, $context->currency, $potentialAmount),
                 States::WaitingForCustomBudgetInput
@@ -64,7 +64,7 @@ readonly class BudgetViewDataBuilder implements StateAwareViewDataBuilderInterfa
         $this->userStateStorage->saveContext($chatId, $context);
 
         $viewDataCollection = new ViewDataCollection();
-        $viewDataCollection->add(new BudgetProcessedViewData($chatId, ($context->stops[count($context->stops) - 1])->budgetInPlanCurrency, $context->currency));
+        $viewDataCollection->add(new BudgetProcessedViewData($chatId, $context->getLastSavedStop()->budgetInPlanCurrency, $context->currency));
         $viewDataCollection->add(new TripStopCreationFinishedViewData($chatId));
         $viewDataCollection->setNextState(States::TripStopCreationFinished);
 

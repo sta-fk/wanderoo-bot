@@ -22,7 +22,7 @@ readonly class CityInputSearchViewDataBuilder implements StateAwareViewDataBuild
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->message;
+        return $update->isMessageUpdate();
     }
 
     public function supportsStates(): array
@@ -32,7 +32,7 @@ readonly class CityInputSearchViewDataBuilder implements StateAwareViewDataBuild
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
         $countryCode = $context->currentStopDraft?->countryCode ?? null;
         $cities = $this->placeService->searchCities($update->message->text, $countryCode);

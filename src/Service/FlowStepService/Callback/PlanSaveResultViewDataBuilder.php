@@ -24,15 +24,14 @@ readonly class PlanSaveResultViewDataBuilder implements ViewDataBuilderInterface
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && CallbackQueryData::SaveGeneratedPlan->value === $update->callbackQuery->data;
+        return $update->supportsCallbackQuery(CallbackQueryData::SaveGeneratedPlan);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
-
+        $chatId = $update->getChatId();
         $context = $this->stateStorage->getContext($chatId);
+
         if (empty($context->stops)) {
             return ViewDataCollection::createWithSingleViewData(new PlanSaveResultViewData($update->callbackQuery->id));
         }

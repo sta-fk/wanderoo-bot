@@ -23,8 +23,7 @@ readonly class ReuseOrNewTripStyleViewDataBuilder implements StateAwareViewDataB
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return null !== $update->callbackQuery
-            && str_starts_with($update->callbackQuery->data, CallbackQueryData::TripStyle->value);
+        return $update->supportsCallbackQuery(CallbackQueryData::TripStyle);
     }
 
     public function supportsStates(): array
@@ -34,16 +33,15 @@ readonly class ReuseOrNewTripStyleViewDataBuilder implements StateAwareViewDataB
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->callbackQuery->message->chat->id;
+        $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
-        $action = substr($update->callbackQuery->data, strlen(CallbackQueryData::TripStyle->value));
+        $action = $update->getCustomCallbackQueryData(CallbackQueryData::TripStyle);
 
         if ($action === CallbackQueryData::Reuse->value) {
-            $lastOneStop = ($context->stops[count($context->stops) - 1]);
             $currentStopDraft = $context->currentStopDraft;
 
-            $currentStopDraft->tripStyle = $lastOneStop->tripStyle;
+            $currentStopDraft->tripStyle = $context->getLastSavedStop()->tripStyle;
             $this->userStateStorage->saveContext($chatId, $context);
 
             $viewDataCollection = new ViewDataCollection();
@@ -71,8 +69,8 @@ readonly class ReuseOrNewTripStyleViewDataBuilder implements StateAwareViewDataB
 
     private function buildReuseOrNewInterestsViewData(int $chatId, PlanContext $context): ReuseOrNewInterestsViewData
     {
-        $previousInterests = null !== $context->stops[count($context->stops) - 1]
-            ? $context->stops[count($context->stops) - 1]->getInterestsLabels()
+        $previousInterests = null !== $context->getLastSavedStop()
+            ? $context->getLastSavedStop()->getInterestsLabels()
             : [];
 
         return new ReuseOrNewInterestsViewData($chatId, $previousInterests);
