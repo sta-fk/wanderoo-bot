@@ -2,6 +2,8 @@
 
 namespace App\Enum;
 
+use App\DTO\CallbackQueryDataAction;
+
 enum CallbackQueryData: string
 {
     case Country = 'country_';
@@ -17,6 +19,8 @@ enum CallbackQueryData: string
 
     case ViewPlanDetails = 'view_plan_';
     case DeletePlan = 'delete_trip_';
+    case ViewedPlanExchanger = 'exchanger_of_plan_';
+    case SetViewedPlanCurrency = 'set_viewed_plan_exchange_currency_';
     case EditPlan = 'edit_trip_';
 
     // Commands as callback
@@ -50,4 +54,9 @@ enum CallbackQueryData: string
     case Usd = 'USD';
     case Eur = 'EUR';
     case Auto = 'from_country';
+
+    public function withValue(string ...$values): string
+    {
+        return implode(':', array_merge([$this->value], $values));
+    }
 }

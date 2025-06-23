@@ -3,7 +3,7 @@
 namespace App\Service\FlowViewer\Commands;
 
 use App\DTO\Internal\ViewDataCollection;
-use App\DTO\Internal\ViewSavedPlansListViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewSavedPlansListViewData;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\TelegramCommands;
 use App\Repository\TripRepository;

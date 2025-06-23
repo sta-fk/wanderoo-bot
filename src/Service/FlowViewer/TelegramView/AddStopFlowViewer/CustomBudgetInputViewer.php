@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\AddStopFlowViewer;
 
-use App\DTO\Internal\CustomBudgetInputViewData;
+use App\DTO\Internal\AddStopFlowViewData\CustomBudgetInputViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;

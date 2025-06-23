@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
-use App\DTO\Internal\CountryInputSearchResultViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CountryInputSearchResultViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\States;

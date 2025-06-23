@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\TripStopGenerationFinishedViewer;
 
-use App\DTO\Internal\DraftPlanCurrencyPickedViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\DraftPlanCurrencyPickedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;

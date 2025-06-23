@@ -2,8 +2,8 @@
 
 namespace App\Service\FlowViewer\Callback\TripStopCreationFinished;
 
-use App\DTO\Internal\DraftPlanCurrencyCountryInputViewData;
-use App\DTO\Internal\DraftPlanCurrencyPickedViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\DraftPlanCurrencyCountryInputViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\DraftPlanCurrencyPickedViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

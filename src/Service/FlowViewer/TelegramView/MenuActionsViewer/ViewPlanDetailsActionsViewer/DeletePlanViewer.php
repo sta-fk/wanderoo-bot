@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\MenuActionsViewer\ViewPlanDetailsActionsViewer;
 
-use App\DTO\Internal\DeletePlanViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewPlanDetailsActionsViewData\DeletePlanViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;

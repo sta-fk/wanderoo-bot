@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\MenuActionsViewer\SettingsActionsViewer;
 
-use App\DTO\Internal\DefaultCurrencyCountryInputSearchResultViewData;
+use App\DTO\Internal\MenuActionsViewData\SettingsActionsViewData\DefaultCurrencyCountryInputSearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;

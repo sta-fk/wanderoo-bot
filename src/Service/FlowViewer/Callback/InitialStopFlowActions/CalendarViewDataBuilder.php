@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
-use App\DTO\Internal\CalendarViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CalendarViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

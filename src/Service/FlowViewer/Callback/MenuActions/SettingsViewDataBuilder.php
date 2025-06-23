@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\MenuActions;
 
-use App\DTO\Internal\SettingsViewData;
+use App\DTO\Internal\MenuActionsViewData\SettingsViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

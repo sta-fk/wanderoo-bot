@@ -2,8 +2,8 @@
 
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
-use App\DTO\Internal\CityInputViewData;
-use App\DTO\Internal\CountryPickedViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CityInputViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CountryPickedViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

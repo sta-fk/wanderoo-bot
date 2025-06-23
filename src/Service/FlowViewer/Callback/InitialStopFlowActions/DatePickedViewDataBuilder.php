@@ -2,8 +2,8 @@
 
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
-use App\DTO\Internal\DatePickedViewData;
-use App\DTO\Internal\TripStyleViewData;
+use App\DTO\Internal\InitialStopFlowViewData\DatePickedViewData;
+use App\DTO\Internal\InitialStopFlowViewData\TripStyleViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

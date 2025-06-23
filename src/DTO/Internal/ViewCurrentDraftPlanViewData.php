@@ -5,7 +5,7 @@ namespace App\DTO\Internal;
 use App\DTO\Context\PlanContext;
 use App\Enum\MessageView;
 
-class ViewCurrentDraftPlanViewData implements ViewDataInterface
+readonly class ViewCurrentDraftPlanViewData implements ViewDataInterface
 {
     public function __construct(
         public string $chatId,

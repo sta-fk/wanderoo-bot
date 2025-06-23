@@ -2,9 +2,9 @@
 
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
-use App\DTO\Internal\CityPickedViewData;
-use App\DTO\Internal\CustomDurationInputViewData;
-use App\DTO\Internal\DurationViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CityPickedViewData;
+use App\DTO\Internal\AddStopFlowViewData\CustomDurationInputViewData;
+use App\DTO\Internal\InitialStopFlowViewData\DurationViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

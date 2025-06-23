@@ -2,9 +2,9 @@
 
 namespace App\Service\FlowViewer\Callback\MenuActions;
 
-use App\DTO\Internal\PlanIsGeneratingViewData;
-use App\DTO\Internal\SavedPlanNotFoundViewData;
-use App\DTO\Internal\PlanDetailsShownViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\PlanIsGeneratingViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewPlanDetailsActionsViewData\SavedPlanNotFoundViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewPlanDetailsActionsViewData\PlanDetailsShownViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Entity\Trip;

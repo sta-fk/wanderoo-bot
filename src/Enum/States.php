@@ -37,4 +37,7 @@ enum States: string
     case WaitingForDefaultCurrencyMenuContinue = 'waiting_for_default_currency_menu_continue';
     case WaitingForDefaultCurrencyCountryInput = 'waiting_for_default_currency_country_input';
     case WaitingForDefaultCurrencyPicked = 'waiting_for_default_currency_picked';
+
+    // Viewed Plan Exchange Currency
+    case WaitingForViewedPlanCurrencyChanged = 'waiting_for_viewed_plan_currency_changed';
 }

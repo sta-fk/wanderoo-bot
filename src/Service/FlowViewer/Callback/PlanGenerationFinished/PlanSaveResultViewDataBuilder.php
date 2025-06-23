@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\PlanGenerationFinished;
 
-use App\DTO\Internal\PlanSaveResultViewData;
+use App\DTO\Internal\PlanGenerationFinishedViewData\PlanSaveResultViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

@@ -2,9 +2,9 @@
 
 namespace App\Service\FlowViewer\Callback\AddStopFlowActions;
 
-use App\DTO\Internal\BudgetProcessedViewData;
-use App\DTO\Internal\CustomBudgetInputViewData;
-use App\DTO\Internal\TripStopCreationFinishedViewData;
+use App\DTO\Internal\InitialStopFlowViewData\BudgetProcessedViewData;
+use App\DTO\Internal\AddStopFlowViewData\CustomBudgetInputViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\TripStopCreationFinishedViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

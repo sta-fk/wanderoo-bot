@@ -57,4 +57,21 @@ readonly class CurrencyExchangerService
         $rate = $this->getExchangeRate($from, $to);
         return round($amount * $rate, 2);
     }
+
+    public function convertToMultiple(string $fromCurrency, array $toCurrencies, float $amount): array
+    {
+        $results = [];
+
+        foreach (array_unique($toCurrencies) as $targetCurrency) {
+            if (strtoupper($targetCurrency) === strtoupper($fromCurrency)) {
+                $results[$targetCurrency] = $amount;
+                continue;
+            }
+
+            $rate = $this->getExchangeRate($fromCurrency, $targetCurrency);
+            $results[$targetCurrency] = round($amount * $rate, 2);
+        }
+
+        return $results;
+    }
 }

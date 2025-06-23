@@ -41,6 +41,10 @@ enum MessageView: string
     case ViewSavedPlansList = 'view_saved_plans_list';
     case SavedPlanNotFound = 'saved_plan_not_found';
     case PlanDetailsShown = 'saved_plan_regenerated';
+    case ViewedPlanExchanger = 'viewed_plan_exchanger';
+    case ViewedPlanCurrencyCountryInput = 'viewed_plan_currency_country_input';
+    case ViewedPlanCurrencyCountryInputSearchResult = 'viewed_plan_currency_country_search';
+    case ViewedPlanCurrencyChanged = 'viewed_plan_exchange_currency_changed';
     case DeletePlan = 'delete_plan';
     case Settings = 'settings';
     case DefaultCurrency = 'default_currency';
