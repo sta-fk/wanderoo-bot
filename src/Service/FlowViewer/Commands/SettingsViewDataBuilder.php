@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Commands;
 
-use App\DTO\Internal\SettingsViewData;
+use App\DTO\Internal\MenuActionsViewData\SettingsViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\TelegramCommands;

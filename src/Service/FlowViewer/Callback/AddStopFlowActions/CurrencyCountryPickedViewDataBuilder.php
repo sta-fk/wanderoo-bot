@@ -2,8 +2,8 @@
 
 namespace App\Service\FlowViewer\Callback\AddStopFlowActions;
 
-use App\DTO\Internal\CurrencyPickedViewData;
-use App\DTO\Internal\CustomBudgetInputViewData;
+use App\DTO\Internal\AddStopFlowViewData\CurrencyPickedViewData;
+use App\DTO\Internal\AddStopFlowViewData\CustomBudgetInputViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

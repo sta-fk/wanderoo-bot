@@ -3,7 +3,7 @@
 namespace App\Service\FlowViewer\TelegramView\MenuActionsViewer;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\StartNewViewData;
+use App\DTO\Internal\MenuActionsViewData\StartNewViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;

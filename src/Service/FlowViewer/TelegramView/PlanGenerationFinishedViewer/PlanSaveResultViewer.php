@@ -3,7 +3,7 @@
 namespace App\Service\FlowViewer\TelegramView\PlanGenerationFinishedViewer;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\PlanSaveResultViewData;
+use App\DTO\Internal\PlanGenerationFinishedViewData\PlanSaveResultViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;

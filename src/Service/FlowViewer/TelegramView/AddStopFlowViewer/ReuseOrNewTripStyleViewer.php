@@ -3,7 +3,7 @@
 namespace App\Service\FlowViewer\TelegramView\AddStopFlowViewer;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\ReuseOrNewTripStyleViewData;
+use App\DTO\Internal\AddStopFlowViewData\ReuseOrNewTripStyleViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;

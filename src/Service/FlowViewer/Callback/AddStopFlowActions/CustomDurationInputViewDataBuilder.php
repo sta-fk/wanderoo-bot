@@ -2,10 +2,10 @@
 
 namespace App\Service\FlowViewer\Callback\AddStopFlowActions;
 
-use App\DTO\Internal\CustomDurationInputViewData;
-use App\DTO\Internal\DurationProcessedViewData;
-use App\DTO\Internal\ReuseOrNewTripStyleViewData;
-use App\DTO\Internal\StartDateViewData;
+use App\DTO\Internal\AddStopFlowViewData\CustomDurationInputViewData;
+use App\DTO\Internal\InitialStopFlowViewData\DurationProcessedViewData;
+use App\DTO\Internal\AddStopFlowViewData\ReuseOrNewTripStyleViewData;
+use App\DTO\Internal\InitialStopFlowViewData\StartDateViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\States;

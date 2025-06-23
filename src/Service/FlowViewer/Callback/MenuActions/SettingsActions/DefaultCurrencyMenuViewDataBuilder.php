@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\MenuActions\SettingsActions;
 
-use App\DTO\Internal\DefaultCurrencyMenuViewData;
+use App\DTO\Internal\MenuActionsViewData\SettingsActionsViewData\DefaultCurrencyMenuViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

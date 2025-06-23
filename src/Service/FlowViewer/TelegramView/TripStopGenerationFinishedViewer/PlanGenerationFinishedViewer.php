@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\TripStopGenerationFinishedViewer;
 
-use App\DTO\Internal\PlanGenerationFinishedViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\PlanGenerationFinishedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;

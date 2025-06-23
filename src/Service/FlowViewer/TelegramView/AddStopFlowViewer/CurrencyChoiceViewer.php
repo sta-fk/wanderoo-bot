@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\AddStopFlowViewer;
 
-use App\DTO\Internal\CurrencyChoiceViewData;
+use App\DTO\Internal\AddStopFlowViewData\CurrencyChoiceViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;

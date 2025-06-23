@@ -8,7 +8,7 @@ use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\CallbackQueryData;
 use App\Enum\MessageView;
-use App\DTO\Internal\DraftPlanCurrencyChoiceViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\DraftPlanCurrencyChoiceViewData;
 use App\Service\FlowViewer\TelegramView\TelegramViewerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 

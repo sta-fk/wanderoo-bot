@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\InitialStopFlowViewer;
 
-use App\DTO\Internal\DatePickedViewData;
+use App\DTO\Internal\InitialStopFlowViewData\DatePickedViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\AnswerCallbackQueryContext;

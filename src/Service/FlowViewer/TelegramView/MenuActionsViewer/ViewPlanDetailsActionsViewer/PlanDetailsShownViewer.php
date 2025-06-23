@@ -3,7 +3,7 @@
 namespace App\Service\FlowViewer\TelegramView\MenuActionsViewer\ViewPlanDetailsActionsViewer;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\PlanDetailsShownViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewPlanDetailsActionsViewData\PlanDetailsShownViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
@@ -32,6 +32,9 @@ final readonly class PlanDetailsShownViewer implements TelegramViewerInterface
             [
                 ['text' => $this->translator->trans('commands.view_saved.details.edit'), 'callback_data' => CallbackQueryData::EditPlan->value . $data->requiredPlanId],
                 ['text' => $this->translator->trans('commands.view_saved.details.delete'), 'callback_data' => CallbackQueryData::DeletePlan->value . $data->requiredPlanId],
+            ],
+            [
+                ['text' => $this->translator->trans('commands.view_saved.details.exchanger'), 'callback_data' => CallbackQueryData::ViewedPlanExchanger->value],
             ],
             [
                 ['text' => $this->translator->trans('commands.view_saved.details.back'), 'callback_data' => CallbackQueryData::ViewSavedPlansList->value],

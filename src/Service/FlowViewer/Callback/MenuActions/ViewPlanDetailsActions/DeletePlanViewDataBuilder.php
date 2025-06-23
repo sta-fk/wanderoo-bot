@@ -2,9 +2,9 @@
 
 namespace App\Service\FlowViewer\Callback\MenuActions\ViewPlanDetailsActions;
 
-use App\DTO\Internal\DeletePlanViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewPlanDetailsActionsViewData\DeletePlanViewData;
 use App\DTO\Internal\ViewDataCollection;
-use App\DTO\Internal\ViewSavedPlansListViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewSavedPlansListViewData;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;
 use App\Repository\TripRepository;

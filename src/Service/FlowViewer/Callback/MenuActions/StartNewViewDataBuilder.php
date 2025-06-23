@@ -2,8 +2,8 @@
 
 namespace App\Service\FlowViewer\Callback\MenuActions;
 
-use App\DTO\Internal\CountryInputViewData;
-use App\DTO\Internal\StartNewViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CountryInputViewData;
+use App\DTO\Internal\MenuActionsViewData\StartNewViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Context\PlanContext;
 use App\DTO\Request\TelegramUpdate;

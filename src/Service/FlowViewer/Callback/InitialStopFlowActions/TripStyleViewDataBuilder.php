@@ -3,9 +3,9 @@
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
 use App\DTO\Context\PlanContext;
-use App\DTO\Internal\InterestsViewData;
-use App\DTO\Internal\ReuseOrNewInterestsViewData;
-use App\DTO\Internal\TripStylePickedViewData;
+use App\DTO\Internal\InitialStopFlowViewData\InterestsViewData;
+use App\DTO\Internal\AddStopFlowViewData\ReuseOrNewInterestsViewData;
+use App\DTO\Internal\InitialStopFlowViewData\TripStylePickedViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

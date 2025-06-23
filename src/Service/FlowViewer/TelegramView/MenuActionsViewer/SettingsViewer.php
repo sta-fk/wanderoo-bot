@@ -2,9 +2,9 @@
 
 namespace App\Service\FlowViewer\TelegramView\MenuActionsViewer;
 
-use App\DTO\Internal\AddStopViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\AddStopViewData;
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\SettingsViewData;
+use App\DTO\Internal\MenuActionsViewData\SettingsViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;

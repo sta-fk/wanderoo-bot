@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\TelegramView\InitialStopFlowViewer;
 
-use App\DTO\Internal\CityInputSearchResultViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CityInputSearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;

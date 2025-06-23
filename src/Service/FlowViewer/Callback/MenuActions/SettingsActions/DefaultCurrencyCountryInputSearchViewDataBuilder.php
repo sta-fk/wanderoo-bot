@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\MenuActions\SettingsActions;
 
-use App\DTO\Internal\DefaultCurrencyCountryInputSearchResultViewData;
+use App\DTO\Internal\MenuActionsViewData\SettingsActionsViewData\DefaultCurrencyCountryInputSearchResultViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\States;

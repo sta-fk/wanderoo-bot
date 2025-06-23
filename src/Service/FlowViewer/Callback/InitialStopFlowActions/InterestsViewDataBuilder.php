@@ -3,10 +3,10 @@
 namespace App\Service\FlowViewer\Callback\InitialStopFlowActions;
 
 use App\DTO\Context\PlanContext;
-use App\DTO\Internal\BudgetViewData;
-use App\DTO\Internal\CurrencyChoiceViewData;
-use App\DTO\Internal\CustomBudgetInputViewData;
-use App\DTO\Internal\InterestsViewData;
+use App\DTO\Internal\InitialStopFlowViewData\BudgetViewData;
+use App\DTO\Internal\AddStopFlowViewData\CurrencyChoiceViewData;
+use App\DTO\Internal\AddStopFlowViewData\CustomBudgetInputViewData;
+use App\DTO\Internal\InitialStopFlowViewData\InterestsViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

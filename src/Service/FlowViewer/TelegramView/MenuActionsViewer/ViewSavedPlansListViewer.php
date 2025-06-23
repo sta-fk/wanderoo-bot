@@ -4,7 +4,7 @@ namespace App\Service\FlowViewer\TelegramView\MenuActionsViewer;
 
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
-use App\DTO\Internal\ViewSavedPlansListViewData;
+use App\DTO\Internal\MenuActionsViewData\ViewSavedPlansListViewData;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Entity\Trip;

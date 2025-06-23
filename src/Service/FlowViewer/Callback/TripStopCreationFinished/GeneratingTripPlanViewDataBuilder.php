@@ -2,8 +2,8 @@
 
 namespace App\Service\FlowViewer\Callback\TripStopCreationFinished;
 
-use App\DTO\Internal\PlanGenerationFinishedViewData;
-use App\DTO\Internal\PlanIsGeneratingViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\PlanGenerationFinishedViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\PlanIsGeneratingViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;

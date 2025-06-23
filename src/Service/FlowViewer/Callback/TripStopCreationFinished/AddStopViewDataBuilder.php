@@ -2,7 +2,7 @@
 
 namespace App\Service\FlowViewer\Callback\TripStopCreationFinished;
 
-use App\DTO\Internal\AddStopViewData;
+use App\DTO\Internal\TripStopGenerationFinishedViewData\AddStopViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\CallbackQueryData;
