@@ -34,7 +34,7 @@ final readonly class PlanDetailsShownViewer implements TelegramViewerInterface
                 ['text' => $this->translator->trans('commands.view_saved.details.delete'), 'callback_data' => CallbackQueryData::DeletePlan->value . $data->requiredPlanId],
             ],
             [
-                ['text' => $this->translator->trans('commands.view_saved.details.exchanger'), 'callback_data' => CallbackQueryData::ViewedPlanExchanger->value],
+                ['text' => $this->translator->trans('commands.view_saved.details.exchanger'), 'callback_data' => CallbackQueryData::ViewedPlanExchanger->value . $data->requiredPlanId],
             ],
             [
                 ['text' => $this->translator->trans('commands.view_saved.details.back'), 'callback_data' => CallbackQueryData::ViewSavedPlansList->value],

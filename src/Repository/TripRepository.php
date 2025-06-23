@@ -15,4 +15,20 @@ class TripRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Trip::class);
     }
+
+    public function findByShortUuid(string $short): ?Trip
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT * FROM trip WHERE HEX(id) LIKE :short ORDER BY created_at DESC LIMIT 1';
+
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery(['short' => strtoupper($short) . '%'])->fetchAssociative();
+
+        if (!$result) {
+            return null;
+        }
+
+        return $this->getEntityManager()->getRepository(Trip::class)->find($result['id']);
+    }
 }

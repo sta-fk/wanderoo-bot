@@ -55,8 +55,12 @@ enum CallbackQueryData: string
     case Eur = 'EUR';
     case Auto = 'from_country';
 
-    public function withValue(string ...$values): string
+    public function withValue(string $value): string
     {
-        return implode(':', array_merge([$this->value], $values));
+        if (str_ends_with($this->value, '_')) {
+            return $this->value . $value;
+        }
+
+        return $this->value;
     }
 }

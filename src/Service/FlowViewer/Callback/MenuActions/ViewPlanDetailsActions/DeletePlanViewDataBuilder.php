@@ -10,6 +10,7 @@ use App\Enum\CallbackQueryData;
 use App\Repository\TripRepository;
 use App\Service\FlowViewer\ViewDataBuilderInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 readonly class DeletePlanViewDataBuilder implements ViewDataBuilderInterface
 {
@@ -29,16 +30,18 @@ readonly class DeletePlanViewDataBuilder implements ViewDataBuilderInterface
         $trip = $this->tripRepository->findOneBy([
             'id' => $update->getCustomCallbackQueryData(CallbackQueryData::DeletePlan)
         ]);
-
-        if ($trip) {
-            $this->entityManager->remove($trip);
-            $this->entityManager->flush();
+        if (null === $trip) {
+            throw new NotFoundHttpException('Trip not found');
         }
+
+        $user = $trip->getUser();
+        $this->entityManager->remove($trip);
+        $this->entityManager->flush();
 
         $viewDataCollection = new ViewDataCollection();
 //        $viewDataCollection->add(new UniversalDeletePreviousMessageViewData($update->callbackQuery->message->chat->id, $update->callbackQuery->message->messageId));
         $viewDataCollection->add(new DeletePlanViewData($update->callbackQuery->id));
-        $viewDataCollection->add(new ViewSavedPlansListViewData($update->getChatId()));
+        $viewDataCollection->add(new ViewSavedPlansListViewData($update->getChatId(), $this->tripRepository->findBy(['user' => $user])));
 
         return $viewDataCollection;
     }

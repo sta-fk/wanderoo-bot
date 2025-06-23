@@ -30,23 +30,24 @@ final readonly class ViewedPlanExchangerViewer implements TelegramViewerInterfac
 
         $lines = [
             $this->translator->trans("commands.view_saved.details.exchange_currency.budget", ['{amount}' => $data->baseAmount, '{currency}' => $data->baseCurrency]),
-            "",
+            "\n",
             $this->translator->trans("commands.view_saved.details.exchange_currency.converted"),
         ];
 
         $keyboard = [];
+        $shortId = substr($data->tripId->toRfc4122(), 0, 8);
 
         foreach ($data->convertedAmounts as $currency => $amount) {
-            $lines[] = sprintf("• %.2f %s", $amount, $currency);
+            $lines[] = sprintf("• %s %s", round($amount, -1), $currency);
             $keyboard[] = [[
                 'text' => $this->translator->trans("commands.view_saved.details.exchange_currency.set_currency", ['{currency}' => $currency]),
-                'callback_data' => CallbackQueryData::SetViewedPlanCurrency->withValue($data->tripId . '_' . $currency),
+                'callback_data' => CallbackQueryData::SetViewedPlanCurrency->withValue($shortId . '_' . $currency),
             ]];
         }
 
 //        $keyboard[] = [[
 //            'text' => $this->translator->trans("commands.view_saved.details.exchange_currency.set_auto"),
-//            'callback_data' => CallbackQueryData::SetViewedPlanCurrency->withValue($data->tripId . '_' . CallbackQueryData::Auto->value),
+//            'callback_data' => CallbackQueryData::SetViewedPlanCurrency->withValue($shortId . '_' . CallbackQueryData::Auto->value),
 //        ]];
 
         $text = implode("\n", $lines);

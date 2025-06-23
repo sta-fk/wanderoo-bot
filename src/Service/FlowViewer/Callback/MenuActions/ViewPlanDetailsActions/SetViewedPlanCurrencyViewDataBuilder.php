@@ -31,7 +31,12 @@ readonly class SetViewedPlanCurrencyViewDataBuilder implements ViewDataBuilderIn
         $callbackQueryData = $update->getCustomCallbackQueryData(CallbackQueryData::SetViewedPlanCurrency);
         $values = explode('_', $callbackQueryData);
         [ $tripId, $currencyValue] = [ $values[0], $values[1] ];
-        $trip = $this->tripRepository->findOneBy(['id' => $tripId]);
+
+        if (!preg_match('/^[a-f0-9]{8}$/', $tripId)) {
+            throw new \InvalidArgumentException('Invalid short ID format');
+        }
+
+        $trip = $this->tripRepository->findByShortUuid($tripId);
         if (null === $trip) {
             throw new NotFoundHttpException();
         }
@@ -51,7 +56,7 @@ readonly class SetViewedPlanCurrencyViewDataBuilder implements ViewDataBuilderIn
         $viewDataCollection = new ViewDataCollection();
         $viewDataCollection
             ->add(new ViewedPlanCurrencyChangedViewData($update->callbackQuery->id, $currencyValue))
-            ->add(new ViewSavedPlansListViewData($update->getChatId()));
+            ->add(new ViewSavedPlansListViewData($update->getChatId(), $this->tripRepository->findBy(['user' => $trip->getUser()])));
 
         return $viewDataCollection;
     }

@@ -65,6 +65,6 @@ readonly class TripPlanMapper
             $totalBudget += $this->currencyExchangerService->convert($stop->getBudget(), $stop->getCurrency(), $targetCurrency);
         }
 
-        return $totalBudget;
+        return round($totalBudget, -1);
     }
 }

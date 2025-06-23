@@ -15,6 +15,7 @@ use App\Repository\UserRepository;
 use App\Service\FlowViewer\ViewDataBuilderInterface;
 use App\Service\Integrations\CurrencyExchangerService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Uid\Uuid;
 
 readonly class ViewedPlanExchangerViewDataBuilder implements ViewDataBuilderInterface
 {
@@ -59,7 +60,7 @@ readonly class ViewedPlanExchangerViewDataBuilder implements ViewDataBuilderInte
         return ViewDataCollection::createWithSingleViewData(
             new ViewedPlanExchangerViewData(
                 chatId: $update->getChatId(),
-                tripId: $trip->getId(),
+                tripId: Uuid::fromString($trip->getId()),
                 baseAmount: $baseAmount,
                 baseCurrency: $baseCurrency,
                 convertedAmounts: $converted,
@@ -78,6 +79,6 @@ readonly class ViewedPlanExchangerViewDataBuilder implements ViewDataBuilderInte
             $totalBudget += $this->currencyService->convert($stop->getBudget(), $stop->getCurrency(), $targetCurrency);
         }
 
-        return $totalBudget;
+        return round($totalBudget, -1);
     }
 }
