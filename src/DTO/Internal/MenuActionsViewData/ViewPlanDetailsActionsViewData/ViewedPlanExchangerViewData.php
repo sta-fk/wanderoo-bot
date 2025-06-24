@@ -15,7 +15,8 @@ class ViewedPlanExchangerViewData implements ViewDataInterface
         public string $baseCurrency,
         public array $convertedAmounts, // [ 'USD' => 1450.23, 'EUR' => 1320.10, ... ]
         public ?string $userDefaultCurrency,
-    ) {}
+    ) {
+    }
 
     public function getCurrentView(): MessageView
     {

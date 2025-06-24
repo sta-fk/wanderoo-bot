@@ -4,8 +4,8 @@ namespace App\DTO\Context;
 
 use App\Service\Draft\FlowStepService\StartFlowStepService\InterestsService;
 use App\Service\Draft\FlowStepService\StartFlowStepService\TripStyleService;
-use App\Service\FlowViewer\TelegramView\InitialStopFlowViewer\InterestsViewer;
-use App\Service\FlowViewer\TelegramView\InitialStopFlowViewer\TripStyleViewer;
+use App\Service\TelegramViewer\InitialStopFlowViewer\InterestsViewer;
+use App\Service\TelegramViewer\InitialStopFlowViewer\TripStyleViewer;
 
 class StopContext
 {

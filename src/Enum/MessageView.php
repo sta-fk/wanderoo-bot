@@ -27,6 +27,8 @@ enum MessageView: string
     case TripStopCreationFinished = 'stop_creation_finished';
     case PlanIsGenerating = 'plan_is_generating';
     case PlanGenerationFinished = 'plan_generation_finished';
+    case EditPlanContextEntry = 'edit_plan_context_entry';
+    case EditTripStop = 'edit_trip_stop';
 
     case AddStop = 'add_stop';
     case ReuseOrNewTripStyle = 'reuse_or_new_trip_style';
