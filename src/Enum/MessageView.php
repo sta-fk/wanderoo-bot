@@ -7,10 +7,10 @@ enum MessageView: string
     case Menu = 'menu';
     case StartNew = 'start_new';
     case CountryInput = 'country_input';
-    case CountryInputSearchResult = 'country_search';
+    case CountrySearchResult = 'country_search';
     case CountryPicked = 'country_picked';
     case CityInput = 'city_input';
-    case CityInputSearchResult = 'city_search';
+    case CitySearchResult = 'city_search';
     case CityPicked = 'city_picked';
     case Duration = 'duration';
     case CustomDurationInput = 'custom_duration_input';
@@ -27,6 +27,10 @@ enum MessageView: string
     case TripStopCreationFinished = 'stop_creation_finished';
     case PlanIsGenerating = 'plan_is_generating';
     case PlanGenerationFinished = 'plan_generation_finished';
+    case EditPlanContextEntry = 'edit_plan_context_entry';
+    case EditPlanStop = 'edit_stop';
+    case EditStopDurationRequest = 'edit_stop_duration_request';
+    case EditStopDurationConfirmation = 'edit_stop_duration_confirmation';
 
     case AddStop = 'add_stop';
     case ReuseOrNewTripStyle = 'reuse_or_new_trip_style';

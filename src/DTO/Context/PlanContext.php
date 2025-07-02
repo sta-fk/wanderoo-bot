@@ -8,6 +8,8 @@ class PlanContext
 {
     public bool $isAddingStopFlow = false;
     public bool $isSetDefaultCurrency = false;
+    public ?int $editingStopIndex = null;
+
     public ?string $planName = null;
 
     public ?\DateTimeImmutable $startDate = null;

@@ -2,8 +2,6 @@
 
 namespace App\Enum;
 
-use App\DTO\CallbackQueryDataAction;
-
 enum CallbackQueryData: string
 {
     case Country = 'country_';
@@ -21,7 +19,11 @@ enum CallbackQueryData: string
     case DeletePlan = 'delete_trip_';
     case ViewedPlanExchanger = 'exchanger_of_plan_';
     case SetViewedPlanCurrency = 'set_viewed_plan_exchange_currency_';
-    case EditPlan = 'edit_trip_';
+
+    // Editing
+    case EditPlan = 'edit_plan';
+    case EditPlanStop = 'edit_plan_stop_';
+    case EditStopDuration = 'edit_stop_duration_';
 
     // Commands as callback
     case StartNew = 'start_new';

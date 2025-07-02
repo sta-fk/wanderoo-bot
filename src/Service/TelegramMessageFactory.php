@@ -21,7 +21,7 @@ final readonly class TelegramMessageFactory implements MessageFactoryInterface
         $telegramMessageCollection = new TelegramMessageCollection();
 
         foreach ($collection->toArray() as $viewData) {
-            $identifier = $this->resolveMessageViewIdentifier($viewData->getCurrentView());
+            $identifier = MessageViewIdentifier::fromView($viewData->getCurrentView());
 
             foreach ($this->viewers as $viewer) {
                 if ($viewer->supports($identifier)) {
@@ -31,10 +31,5 @@ final readonly class TelegramMessageFactory implements MessageFactoryInterface
         }
 
         return $telegramMessageCollection;
-    }
-
-    public function resolveMessageViewIdentifier(MessageView $view): MessageViewIdentifier
-    {
-        return new MessageViewIdentifier($view->value);
     }
 }
