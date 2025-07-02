@@ -23,20 +23,18 @@ final readonly class CalendarViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::Calendar->value === $identifier->value;
+        return $identifier->equals(MessageView::Calendar);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
         assert($data instanceof CalendarViewData);
 
-        $keyboard = $this->buildCalendarKeyboard($data->year, $data->month);
-
         return new EditMessageTextContext(
             chatId: $data->chatId,
             messageId: $data->messageId,
             text: $this->translator->trans('trip.context.start_date.message'),
-            replyMarkup: $keyboard,
+            replyMarkup: $this->buildCalendarKeyboard($data->year, $data->month),
         );
     }
 }

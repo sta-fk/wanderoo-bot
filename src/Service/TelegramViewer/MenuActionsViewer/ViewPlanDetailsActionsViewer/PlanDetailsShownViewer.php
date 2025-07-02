@@ -21,7 +21,7 @@ final readonly class PlanDetailsShownViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::PlanDetailsShown->value === $identifier->value;
+        return $identifier->equals(MessageView::PlanDetailsShown);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

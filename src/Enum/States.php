@@ -20,7 +20,7 @@ enum States: string
     case TripStopCreationFinished = 'trip_stop_creation_finished';
     case PlanGenerationFinished = 'plan_generation_finished';
     case EditingPlanStop = 'editing_trip_stop';
-    case WaitingForEditingDurationInput = 'editing_trip_stop';
+    case WaitingForEditingDurationInput = 'waiting_for_editing_duration_input';
 
     // Adding Stop flow
     case WaitingForStopCountry = 'waiting_for_stop_country';

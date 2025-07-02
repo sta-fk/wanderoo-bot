@@ -20,7 +20,7 @@ final readonly class StartNewViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::StartNew->value === $identifier->value;
+        return $identifier->equals(MessageView::StartNew);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
@@ -29,7 +29,7 @@ final readonly class StartNewViewer implements TelegramViewerInterface
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.start_new.message'),
+            text: $this->translator->trans('trip.context.start_new.prompt'),
         );
     }
 }

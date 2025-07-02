@@ -11,11 +11,13 @@ use App\Enum\CallbackQueryData;
 use App\Enum\States;
 use App\Service\ViewDataBuilder\StateAwareViewDataBuilderInterface;
 use App\Service\UserStateStorage;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class DurationViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
+        private TranslatorInterface $translator,
     ) {
     }
 

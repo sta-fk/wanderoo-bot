@@ -20,15 +20,16 @@ final readonly class CountryPickedViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::CountryPicked->value === $identifier->value;
+        return $identifier->equals(MessageView::CountryPicked);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
         assert($data instanceof CountryPickedViewData);
 
-        $messageText = $this->translator->trans('trip.context.country.picked', ['{chosenCountryName}' => $data->chosenCountryName]);
-
-        return new AnswerCallbackQueryContext(callbackQueryId: $data->callbackQueryId, text: $messageText);
+        return new AnswerCallbackQueryContext(
+            callbackQueryId: $data->callbackQueryId,
+            text: $this->translator->trans('trip.context.country.picked', ['{chosenCountryName}' => $data->chosenCountryName])
+        );
     }
 }

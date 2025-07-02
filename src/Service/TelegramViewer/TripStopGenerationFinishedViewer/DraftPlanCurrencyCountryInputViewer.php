@@ -20,7 +20,7 @@ final readonly class DraftPlanCurrencyCountryInputViewer implements TelegramView
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ExchangeCountryInput->value === $identifier->value;
+        return $identifier->equals(MessageView::ExchangeCountryInput);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

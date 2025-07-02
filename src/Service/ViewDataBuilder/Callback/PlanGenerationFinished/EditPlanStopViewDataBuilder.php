@@ -30,9 +30,7 @@ readonly class EditPlanStopViewDataBuilder implements StateAwareViewDataBuilderI
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
         $chatId = $update->getChatId();
-        $callbackData = $update->callbackQuery?->data;
-
-        $stopIndex = (int) CallbackQueryData::EditPlanStop->parseValue($callbackData);
+        $stopIndex = (int) $update->getCustomCallbackQueryData(CallbackQueryData::EditPlanStop);
         $context = $this->userStateStorage->getContext($chatId);
         if (!isset($context->stops[$stopIndex])) {
             throw new \RuntimeException('Trip stop not found in PlanContext');

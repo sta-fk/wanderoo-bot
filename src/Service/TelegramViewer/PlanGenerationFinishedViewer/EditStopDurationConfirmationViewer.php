@@ -14,7 +14,7 @@ readonly class EditStopDurationConfirmationViewer implements TelegramViewerInter
 {
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::EditStopDurationConfirmation->value === $identifier->value;
+        return $identifier->equals(MessageView::EditStopDurationConfirmation);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

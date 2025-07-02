@@ -20,7 +20,7 @@ final readonly class CustomBudgetInputViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::CustomBudgetInput->value === $identifier->value;
+        return $identifier->equals(MessageView::CustomBudgetInput);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

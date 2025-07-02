@@ -20,7 +20,7 @@ final readonly class EditStopDurationRequestViewer implements TelegramViewerInte
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::EditStopDurationRequest->value === $identifier->value;
+        return $identifier->equals(MessageView::EditStopDurationRequest);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

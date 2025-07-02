@@ -2,7 +2,7 @@
 
 namespace App\Service\TelegramViewer\InitialStopFlowViewer;
 
-use App\DTO\Internal\InitialStopFlowViewData\CityInputSearchResultViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CitySearchResultViewData;
 use App\DTO\Internal\MessageViewIdentifier;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
@@ -12,7 +12,7 @@ use App\Enum\MessageView;
 use App\Service\TelegramViewer\TelegramViewerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final readonly class CityInputSearchResultViewer implements TelegramViewerInterface
+final readonly class CitySearchResultViewer implements TelegramViewerInterface
 {
     public function __construct(
         private TranslatorInterface $translator,
@@ -21,12 +21,12 @@ final readonly class CityInputSearchResultViewer implements TelegramViewerInterf
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::CityInputSearchResult->value === $identifier->value;
+        return $identifier->equals(MessageView::CitySearchResult);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
-        assert($data instanceof CityInputSearchResultViewData);
+        assert($data instanceof CitySearchResultViewData);
 
         if (empty($data->cities)) {
             return new SendMessageContext(
@@ -35,15 +35,23 @@ final readonly class CityInputSearchResultViewer implements TelegramViewerInterf
             );
         }
 
-        $keyboard = [];
-        foreach ($data->cities as $city) {
-            $keyboard[] = [['text' => $city->name, 'callback_data' => CallbackQueryData::City->value . $city->placeId]];
-        }
-
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.city.message'),
-            replyMarkup: ['inline_keyboard' => $keyboard]
+            text: $this->translator->trans('trip.context.city.search'),
+            replyMarkup: ['inline_keyboard' => $this->getKeyboard($data)],
         );
+    }
+
+    private function getKeyboard(CitySearchResultViewData $data): array
+    {
+        $keyboard = [];
+        foreach ($data->cities as $city) {
+            $keyboard[] = [[
+                'text' => $city->name,
+                'callback_data' => CallbackQueryData::City->withValue($city->placeId)
+            ]];
+        }
+
+        return $keyboard;
     }
 }

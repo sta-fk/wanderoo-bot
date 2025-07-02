@@ -20,7 +20,7 @@ final readonly class SavedPlanNotFoundViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::SavedPlanNotFound->value === $identifier->value;
+        return $identifier->equals(MessageView::SavedPlanNotFound);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

@@ -2,8 +2,6 @@
 
 namespace App\Enum;
 
-use App\DTO\CallbackQueryDataAction;
-
 enum CallbackQueryData: string
 {
     case Country = 'country_';
@@ -66,10 +64,5 @@ enum CallbackQueryData: string
         }
 
         return $this->value;
-    }
-
-    public function parseValue(string $data): string
-    {
-        return str_replace($this->value, '', $data);
     }
 }

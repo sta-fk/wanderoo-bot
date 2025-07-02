@@ -9,7 +9,7 @@ readonly class CustomDurationInputViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,
-        public bool $validationPassed = true,
+        public string $validationFailedMessage = '',
     ) {
     }
 

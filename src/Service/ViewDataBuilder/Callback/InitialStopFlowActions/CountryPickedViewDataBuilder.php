@@ -34,6 +34,20 @@ readonly class CountryPickedViewDataBuilder implements StateAwareViewDataBuilder
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
+        $this->processCountryPicked($update);
+
+        $context = $this->userStateStorage->getContext($update->getChatId());
+        $viewDataCollection = new ViewDataCollection();
+        $viewDataCollection
+            ->add(new CountryPickedViewData($update->callbackQuery->id, $context->currentStopDraft->countryName))
+            ->add(new CityInputViewData($update->getChatId()))
+            ->setNextState(States::WaitingForCityInput);
+
+        return $viewDataCollection;
+    }
+
+    private function processCountryPicked(TelegramUpdate $update): void
+    {
         $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
@@ -53,13 +67,5 @@ readonly class CountryPickedViewDataBuilder implements StateAwareViewDataBuilder
         }
 
         $this->userStateStorage->saveContext($chatId, $context);
-
-        $viewDataCollection = new ViewDataCollection();
-        $viewDataCollection
-            ->add(new CountryPickedViewData($update->callbackQuery->id, $countryDetails->name))
-            ->add(new CityInputViewData($chatId))
-            ->setNextState(States::WaitingForCityInput);
-
-        return $viewDataCollection;
     }
 }

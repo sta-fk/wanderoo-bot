@@ -21,7 +21,7 @@ final readonly class DefaultCurrencyMenuViewer implements TelegramViewerInterfac
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::DefaultCurrency->value === $identifier->value;
+        return $identifier->equals(MessageView::DefaultCurrency);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

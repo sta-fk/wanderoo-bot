@@ -23,7 +23,7 @@ final readonly class StartDateViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::StartDate->value === $identifier->value;
+        return $identifier->equals(MessageView::StartDate);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
@@ -31,12 +31,11 @@ final readonly class StartDateViewer implements TelegramViewerInterface
         assert($data instanceof StartDateViewData);
 
         $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $keyboard = $this->buildCalendarKeyboard($now->format('Y'), $now->format('m'));
 
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.start_date.message'),
-            replyMarkup: $keyboard,
+            text: $this->translator->trans('trip.context.start_date.prompt'),
+            replyMarkup: $this->buildCalendarKeyboard($now->format('Y'), $now->format('m')),
         );
     }
 }

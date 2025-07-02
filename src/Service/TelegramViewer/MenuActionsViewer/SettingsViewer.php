@@ -22,7 +22,7 @@ final readonly class SettingsViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::Settings->value === $identifier->value;
+        return $identifier->equals(MessageView::Settings);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

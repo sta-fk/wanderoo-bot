@@ -21,7 +21,7 @@ final readonly class TripStopCreationFinishedViewer implements TelegramViewerInt
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::TripStopCreationFinished->value === $identifier->value;
+        return $identifier->equals(MessageView::TripStopCreationFinished);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

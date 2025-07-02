@@ -20,7 +20,7 @@ final readonly class DefaultCurrencyCountryInputViewer implements TelegramViewer
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::DefaultCurrencyCountryInput->value === $identifier->value;
+        return $identifier->equals(MessageView::DefaultCurrencyCountryInput);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

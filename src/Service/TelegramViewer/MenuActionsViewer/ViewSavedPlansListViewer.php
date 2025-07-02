@@ -22,7 +22,7 @@ final readonly class ViewSavedPlansListViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ViewSavedPlansList->value === $identifier->value;
+        return $identifier->equals(MessageView::ViewSavedPlansList);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

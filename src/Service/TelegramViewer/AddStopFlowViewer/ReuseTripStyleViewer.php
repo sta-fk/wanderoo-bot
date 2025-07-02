@@ -20,7 +20,7 @@ final readonly class ReuseTripStyleViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ReuseTripStyle->value === $identifier->value;
+        return $identifier->equals(MessageView::ReuseTripStyle);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

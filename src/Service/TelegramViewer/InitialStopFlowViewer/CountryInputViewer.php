@@ -20,7 +20,7 @@ final readonly class CountryInputViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::CountryInput->value === $identifier->value;
+        return $identifier->equals(MessageView::CountryInput);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

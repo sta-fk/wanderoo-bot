@@ -20,18 +20,18 @@ final readonly class DurationProcessedViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::DurationProcessed->value === $identifier->value;
+        return $identifier->equals(MessageView::DurationProcessed);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
         assert($data instanceof DurationProcessedViewData);
 
-        $messageText = $this->translator->trans('trip.context.duration.processed', ['{currentStopDuration}' => $data->duration]);
-
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $messageText,
+            text: $this->translator->trans('trip.context.duration.processed', [
+                '{currentStopDuration}' => $data->currentStopDuration]
+            ),
         );
     }
 }

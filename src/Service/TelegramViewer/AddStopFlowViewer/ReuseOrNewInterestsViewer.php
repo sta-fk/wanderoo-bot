@@ -21,7 +21,7 @@ final readonly class ReuseOrNewInterestsViewer implements TelegramViewerInterfac
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ReuseOrNewInterests->value === $identifier->value;
+        return $identifier->equals(MessageView::ReuseOrNewInterests);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

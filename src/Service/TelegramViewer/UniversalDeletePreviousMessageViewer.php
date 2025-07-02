@@ -14,7 +14,7 @@ final readonly class UniversalDeletePreviousMessageViewer implements TelegramVie
 {
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::UniversalDeletePreviousMessage->value === $identifier->value;
+        return $identifier->equals(MessageView::UniversalDeletePreviousMessage);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

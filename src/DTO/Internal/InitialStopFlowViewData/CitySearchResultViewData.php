@@ -5,7 +5,7 @@ namespace App\DTO\Internal\InitialStopFlowViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\Enum\MessageView;
 
-readonly class CityInputSearchResultViewData implements ViewDataInterface
+readonly class CitySearchResultViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,
@@ -15,6 +15,6 @@ readonly class CityInputSearchResultViewData implements ViewDataInterface
 
     public function getCurrentView(): MessageView
     {
-        return MessageView::CityInputSearchResult;
+        return MessageView::CitySearchResult;
     }
 }

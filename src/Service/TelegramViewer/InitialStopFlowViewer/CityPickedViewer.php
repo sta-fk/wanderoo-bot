@@ -20,7 +20,7 @@ final readonly class CityPickedViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::CityPicked->value === $identifier->value;
+        return $identifier->equals(MessageView::CityPicked);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

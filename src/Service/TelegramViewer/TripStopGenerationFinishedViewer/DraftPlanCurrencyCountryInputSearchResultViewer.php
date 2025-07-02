@@ -21,7 +21,7 @@ final readonly class DraftPlanCurrencyCountryInputSearchResultViewer implements 
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ExchangeCountryInputSearchResult->value === $identifier->value;
+        return $identifier->equals(MessageView::ExchangeCountryInputSearchResult);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

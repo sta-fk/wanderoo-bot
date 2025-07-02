@@ -20,17 +20,17 @@ final readonly class CustomDurationInputViewer implements TelegramViewerInterfac
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::CustomDurationInput->value === $identifier->value;
+        return $identifier->equals(MessageView::CustomDurationInput);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
         assert($data instanceof CustomDurationInputViewData);
 
-        if (!$data->validationPassed) {
+        if (!empty($data->validationFailedMessage)) {
             return new SendMessageContext(
                 chatId: $data->chatId,
-                text: $this->translator->trans('trip.context.custom_duration.validation_failed'),
+                text: $data->validationFailedMessage,
             );
         }
 

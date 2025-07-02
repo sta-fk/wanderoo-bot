@@ -23,7 +23,7 @@ final readonly class EditPlanContextEntryPointViewer implements TelegramViewerIn
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::EditPlanContextEntry->value === $identifier->value;
+        return $identifier->equals(MessageView::EditPlanContextEntry);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

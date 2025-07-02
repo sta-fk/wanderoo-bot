@@ -32,9 +32,10 @@ readonly class StartNewViewDataBuilder implements ViewDataBuilderInterface
         $this->userStateStorage->saveContext($chatId, new PlanContext());
 
         $viewDataCollection = new ViewDataCollection();
-        $viewDataCollection->add(new StartNewViewData($chatId));
-        $viewDataCollection->add(new CountryInputViewData($chatId));
-        $viewDataCollection->setNextState(States::WaitingForCountryInput);
+        $viewDataCollection
+            ->add(new StartNewViewData($chatId))
+            ->add(new CountryInputViewData($chatId))
+            ->setNextState(States::WaitingForCountryInput);
 
         return $viewDataCollection;
     }

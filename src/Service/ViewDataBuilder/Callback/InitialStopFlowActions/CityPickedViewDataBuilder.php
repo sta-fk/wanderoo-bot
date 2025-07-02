@@ -12,12 +12,14 @@ use App\Enum\States;
 use App\Service\ViewDataBuilder\StateAwareViewDataBuilderInterface;
 use App\Service\Integrations\PlaceServiceInterface;
 use App\Service\UserStateStorage;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
     public function __construct(
         private UserStateStorage $userStateStorage,
         private PlaceServiceInterface $placeService,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -33,6 +35,31 @@ readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInt
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
+        $this->processCityPicked($update);
+
+        $chatId = $update->getChatId();
+        $context = $this->userStateStorage->getContext($chatId);
+
+        [$nextViewData, $nextState] = [new DurationViewData($chatId), States::WaitingForDurationPicked];
+
+        if ($context->isAddingStopFlow) {
+            [$nextViewData, $nextState] = [
+                new CustomDurationInputViewData($chatId),
+                States::WaitingForCustomDurationInput
+            ];
+        }
+
+        $viewDataCollection = new ViewDataCollection();
+        $viewDataCollection
+            ->add(new CityPickedViewData($update->callbackQuery->id, $context->currentStopDraft->cityName))
+            ->add($nextViewData)
+            ->setNextState($nextState);
+
+        return $viewDataCollection;
+    }
+
+    private function processCityPicked(TelegramUpdate $update): void
+    {
         $chatId = $update->getChatId();
         $context = $this->userStateStorage->getContext($chatId);
 
@@ -43,20 +70,5 @@ readonly class CityPickedViewDataBuilder implements StateAwareViewDataBuilderInt
         $context->currentStopDraft->cityPlaceId = $cityPlaceId;
 
         $this->userStateStorage->saveContext($chatId, $context);
-
-        $processedViewData = new CityPickedViewData($update->callbackQuery->id, $cityDetails->name);
-
-        [$nextViewData, $nextState] =
-            $context->isAddingStopFlow
-            ? [new CustomDurationInputViewData($chatId), States::WaitingForCustomDurationInput]
-            : [new DurationViewData($chatId), States::WaitingForDurationPicked];
-
-        $viewDataCollection = new ViewDataCollection();
-        $viewDataCollection
-            ->add($processedViewData)
-            ->add($nextViewData)
-            ->setNextState($nextState);
-
-        return $viewDataCollection;
     }
 }

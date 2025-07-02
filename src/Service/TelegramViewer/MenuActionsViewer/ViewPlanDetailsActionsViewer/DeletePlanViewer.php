@@ -20,7 +20,7 @@ final readonly class DeletePlanViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::DeletePlan->value === $identifier->value;
+        return $identifier->equals(MessageView::DeletePlan);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

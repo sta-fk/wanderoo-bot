@@ -23,7 +23,7 @@ final readonly class BudgetViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::Budget->value === $identifier->value;
+        return $identifier->equals(MessageView::Budget);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

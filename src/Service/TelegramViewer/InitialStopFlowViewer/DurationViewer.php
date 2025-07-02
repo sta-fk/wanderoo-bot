@@ -21,27 +21,30 @@ final readonly class DurationViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::Duration->value === $identifier->value;
+        return $identifier->equals(MessageView::Duration);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
         assert($data instanceof DurationViewData);
 
-        $keyboard = [
-            'inline_keyboard' => [
-                [['text' => $this->translator->trans('trip.context.duration.keyboard.1_day'), 'callback_data' => CallbackQueryData::Duration->value . '1']],
-                [['text' => $this->translator->trans('trip.context.duration.keyboard.3_day'), 'callback_data' => CallbackQueryData::Duration->value . '3']],
-                [['text' => $this->translator->trans('trip.context.duration.keyboard.5_day'), 'callback_data' => CallbackQueryData::Duration->value . '5']],
-                [['text' => $this->translator->trans('trip.context.duration.keyboard.7_day'), 'callback_data' => CallbackQueryData::Duration->value . '7']],
-                [['text' => $this->translator->trans('trip.context.duration.keyboard.custom'), 'callback_data' => CallbackQueryData::Duration->value . CallbackQueryData::Custom->value]],
-            ]
-        ];
-
         return new SendMessageContext(
             chatId: $data->chatId,
-            text: $this->translator->trans('trip.context.duration.message'),
-            replyMarkup: $keyboard,
+            text: $this->translator->trans('trip.context.duration.prompt'),
+            replyMarkup: $this->getKeyboard(),
         );
+    }
+
+    private function getKeyboard(): array
+    {
+        return [
+            'inline_keyboard' => [
+                [['text' => $this->translator->trans('trip.context.duration.keyboard.1_day'), 'callback_data' => CallbackQueryData::Duration->withValue('1')]],
+                [['text' => $this->translator->trans('trip.context.duration.keyboard.3_day'), 'callback_data' => CallbackQueryData::Duration->withValue('3')]],
+                [['text' => $this->translator->trans('trip.context.duration.keyboard.5_day'), 'callback_data' => CallbackQueryData::Duration->withValue('5')]],
+                [['text' => $this->translator->trans('trip.context.duration.keyboard.7_day'), 'callback_data' => CallbackQueryData::Duration->withValue('7')]],
+                [['text' => $this->translator->trans('trip.context.duration.keyboard.custom'), 'callback_data' => CallbackQueryData::Duration->withValue(CallbackQueryData::Custom->value)]],
+            ]
+        ];
     }
 }

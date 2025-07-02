@@ -21,7 +21,7 @@ final readonly class EditPlanStopViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::EditPlanStop->value === $identifier->value;
+        return $identifier->equals(MessageView::EditPlanStop);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

@@ -21,7 +21,7 @@ final readonly class ViewedPlanExchangerViewer implements TelegramViewerInterfac
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ViewedPlanExchanger->value === $identifier->value;
+        return $identifier->equals(MessageView::ViewedPlanExchanger);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

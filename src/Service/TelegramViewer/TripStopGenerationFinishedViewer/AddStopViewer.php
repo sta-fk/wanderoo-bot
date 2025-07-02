@@ -21,7 +21,7 @@ final readonly class AddStopViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::AddStop->value === $identifier->value;
+        return $identifier->equals(MessageView::AddStop);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

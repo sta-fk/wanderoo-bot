@@ -20,7 +20,7 @@ final readonly class DatePickedViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::DatePicked->value === $identifier->value;
+        return $identifier->equals(MessageView::DatePicked);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

@@ -9,7 +9,6 @@ use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
 use App\Enum\CallbackQueryData;
 use App\Enum\MessageView;
-use App\Service\TelegramViewer\TelegramViewerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final readonly class MenuViewer implements TelegramViewerInterface
@@ -21,7 +20,7 @@ final readonly class MenuViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::Menu->value === $identifier->value;
+        return $identifier->equals(MessageView::Menu);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

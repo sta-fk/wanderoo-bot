@@ -2,19 +2,17 @@
 
 namespace App\Service\ViewDataBuilder\Callback\InitialStopFlowActions;
 
-use App\DTO\Internal\InitialStopFlowViewData\CityInputSearchResultViewData;
+use App\DTO\Internal\InitialStopFlowViewData\CountrySearchResultViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
 use App\Enum\States;
 use App\Service\ViewDataBuilder\StateAwareViewDataBuilderInterface;
 use App\Service\Integrations\PlaceServiceInterface;
-use App\Service\UserStateStorage;
 
-readonly class CityInputSearchViewDataBuilder implements StateAwareViewDataBuilderInterface
+readonly class CountrySearchViewDataBuilder implements StateAwareViewDataBuilderInterface
 {
     public function __construct(
         private PlaceServiceInterface $placeService,
-        private UserStateStorage $userStateStorage,
     ) {
     }
 
@@ -25,19 +23,17 @@ readonly class CityInputSearchViewDataBuilder implements StateAwareViewDataBuild
 
     public function supportsStates(): array
     {
-        return [States::WaitingForCityInput];
+        return [States::WaitingForCountryInput];
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection
     {
-        $chatId = $update->getChatId();
-        $context = $this->userStateStorage->getContext($chatId);
-        $countryCode = $context->currentStopDraft?->countryCode ?? null;
-        $cities = $this->placeService->searchCities($update->message->text, $countryCode);
+        $countries = $this->placeService->searchCountries($update->message->text);
+        $nextState = empty($countries) ? States::WaitingForCountryInput : States::WaitingForCountryPicked;
 
         return ViewDataCollection::createStateAwareWithSingleViewData(
-            new CityInputSearchResultViewData($chatId, $cities),
-            States::WaitingForCityPicked,
+            new CountrySearchResultViewData($update->getChatId(), $countries),
+            $nextState
         );
     }
 }

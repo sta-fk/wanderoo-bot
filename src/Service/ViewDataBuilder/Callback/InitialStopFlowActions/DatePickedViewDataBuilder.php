@@ -39,8 +39,9 @@ readonly class DatePickedViewDataBuilder implements StateAwareViewDataBuilderInt
         }
 
         $context->startDate = (new \DateTimeImmutable($dateStr));
-        $endDate = (new \DateTimeImmutable($dateStr))->modify("+{$context->currentStopDraft->duration} days");
-        $context->endDate = $endDate;
+        $context->endDate =
+            (new \DateTimeImmutable($dateStr))
+            ->modify("+{$context->currentStopDraft->duration} days");
 
         $this->userStateStorage->saveContext($chatId, $context);
 

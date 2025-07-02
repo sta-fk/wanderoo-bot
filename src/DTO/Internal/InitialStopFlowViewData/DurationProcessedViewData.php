@@ -9,7 +9,7 @@ readonly class DurationProcessedViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,
-        public int $duration,
+        public int $currentStopDuration,
     ) {
     }
 

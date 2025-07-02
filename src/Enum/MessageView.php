@@ -7,10 +7,10 @@ enum MessageView: string
     case Menu = 'menu';
     case StartNew = 'start_new';
     case CountryInput = 'country_input';
-    case CountryInputSearchResult = 'country_search';
+    case CountrySearchResult = 'country_search';
     case CountryPicked = 'country_picked';
     case CityInput = 'city_input';
-    case CityInputSearchResult = 'city_search';
+    case CitySearchResult = 'city_search';
     case CityPicked = 'city_picked';
     case Duration = 'duration';
     case CustomDurationInput = 'custom_duration_input';

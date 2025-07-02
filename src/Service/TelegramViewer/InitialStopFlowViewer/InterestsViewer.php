@@ -32,7 +32,7 @@ final readonly class InterestsViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::Interests->value === $identifier->value;
+        return $identifier->equals(MessageView::Interests);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface

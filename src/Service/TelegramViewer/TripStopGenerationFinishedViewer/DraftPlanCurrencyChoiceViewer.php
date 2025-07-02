@@ -21,7 +21,7 @@ final readonly class DraftPlanCurrencyChoiceViewer implements TelegramViewerInte
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::ExchangeChoice->value === $identifier->value;
+        return $identifier->equals(MessageView::ExchangeChoice);
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
