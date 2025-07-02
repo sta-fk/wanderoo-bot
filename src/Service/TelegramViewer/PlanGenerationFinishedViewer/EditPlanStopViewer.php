@@ -3,15 +3,16 @@
 namespace App\Service\TelegramViewer\PlanGenerationFinishedViewer;
 
 use App\DTO\Internal\MessageViewIdentifier;
-use App\DTO\Internal\PlanGenerationFinishedViewData\EditTripStopViewData;
+use App\DTO\Internal\PlanGenerationFinishedViewData\EditPlanStopViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\DTO\TelegramMessageResponse\SendMessageContext;
 use App\DTO\TelegramMessageResponse\TelegramMessageInterface;
+use App\Enum\CallbackQueryData;
 use App\Enum\MessageView;
 use App\Service\TelegramViewer\TelegramViewerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final readonly class EditTripStopViewer implements TelegramViewerInterface
+final readonly class EditPlanStopViewer implements TelegramViewerInterface
 {
     public function __construct(
         private TranslatorInterface $translator,
@@ -20,12 +21,12 @@ final readonly class EditTripStopViewer implements TelegramViewerInterface
 
     public function supports(MessageViewIdentifier $identifier): bool
     {
-        return MessageView::EditPlanContextEntry->value === $identifier->value;
+        return MessageView::EditPlanStop->value === $identifier->value;
     }
 
     public function render(ViewDataInterface $data): TelegramMessageInterface
     {
-        assert($data instanceof EditTripStopViewData);
+        assert($data instanceof EditPlanStopViewData);
 
         $text = $this->translator->trans('trip.edit.stop.header', [
             '{city}' => $data->cityName,
@@ -44,7 +45,7 @@ final readonly class EditTripStopViewer implements TelegramViewerInterface
             ]],
             [[
                 'text' => $this->translator->trans('trip.edit.option.duration'),
-                'callback_data' => "edit_trip_stop_duration_{$stopIndex}",
+                'callback_data' => CallbackQueryData::EditStopDuration->withValue($stopIndex),
             ]],
             [[
                 'text' => $this->translator->trans('trip.edit.option.budget'),

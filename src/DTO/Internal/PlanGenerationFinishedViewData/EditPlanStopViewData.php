@@ -5,7 +5,7 @@ namespace App\DTO\Internal\PlanGenerationFinishedViewData;
 use App\DTO\Internal\ViewDataInterface;
 use App\Enum\MessageView;
 
-readonly class EditTripStopViewData implements ViewDataInterface
+readonly class EditPlanStopViewData implements ViewDataInterface
 {
     public function __construct(
         public int $chatId,
@@ -17,6 +17,6 @@ readonly class EditTripStopViewData implements ViewDataInterface
 
     public function getCurrentView(): MessageView
     {
-        return MessageView::EditTripStop;
+        return MessageView::EditPlanStop;
     }
 }

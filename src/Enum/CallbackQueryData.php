@@ -21,8 +21,11 @@ enum CallbackQueryData: string
     case DeletePlan = 'delete_trip_';
     case ViewedPlanExchanger = 'exchanger_of_plan_';
     case SetViewedPlanCurrency = 'set_viewed_plan_exchange_currency_';
+
+    // Editing
     case EditPlan = 'edit_plan';
     case EditPlanStop = 'edit_plan_stop_';
+    case EditStopDuration = 'edit_stop_duration_';
 
     // Commands as callback
     case StartNew = 'start_new';
@@ -65,7 +68,7 @@ enum CallbackQueryData: string
         return $this->value;
     }
 
-    public function parseQuery(string $data): string
+    public function parseValue(string $data): string
     {
         return str_replace($this->value, '', $data);
     }

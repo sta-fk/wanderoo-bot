@@ -29,7 +29,7 @@ readonly class EditPlanContextEntryPointViewDataBuilder implements ViewDataBuild
                 $update->getChatId(),
                 $this->userStateStorage->getContext($update->getChatId())->stops,
             ),
-            States::EditingTripStop
+            States::EditingPlanStop
         );
     }
 }
