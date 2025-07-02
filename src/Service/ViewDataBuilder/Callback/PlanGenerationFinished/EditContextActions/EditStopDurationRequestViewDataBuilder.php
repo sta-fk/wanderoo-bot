@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\ViewDataBuilder\Callback\PlanGenerationFinished;
+namespace App\Service\ViewDataBuilder\Callback\PlanGenerationFinished\EditContextActions;
 
 use App\DTO\Internal\PlanGenerationFinishedViewData\EditStopDurationRequestViewData;
 use App\DTO\Internal\ViewDataCollection;

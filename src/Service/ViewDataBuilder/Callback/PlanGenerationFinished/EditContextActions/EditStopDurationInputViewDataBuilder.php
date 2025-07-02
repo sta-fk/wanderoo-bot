@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Service\ViewDataBuilder\Callback\PlanGenerationFinished;
+namespace App\Service\ViewDataBuilder\Callback\PlanGenerationFinished\EditContextActions;
 
+use App\DTO\Internal\PlanGenerationFinishedViewData\EditPlanContextEntryPointViewData;
 use App\DTO\Internal\PlanGenerationFinishedViewData\EditStopDurationConfirmationViewData;
 use App\DTO\Internal\ViewDataCollection;
 use App\DTO\Request\TelegramUpdate;
@@ -47,12 +48,17 @@ readonly class EditStopDurationInputViewDataBuilder implements StateAwareViewDat
         $context->stops[$context->editingStopIndex]->duration = $duration;
         $this->stateStorage->saveContext($chatId, $context);
 
-        return ViewDataCollection::createStateAwareWithSingleViewData(
-            new EditStopDurationConfirmationViewData(
-                $chatId,
-                $this->translator->trans('trip.edit.confirm.duration_updated', ['%days%' => $duration])
-            ),
-            States::EditingPlanStop
+        $processedViewData = new EditStopDurationConfirmationViewData(
+            $chatId,
+            $this->translator->trans('trip.edit.confirm.duration_updated', ['{days}' => $duration])
         );
+
+        $viewDataCollection = new ViewDataCollection();
+        $viewDataCollection
+            ->add($processedViewData)
+            ->add(new EditPlanContextEntryPointViewData($chatId, $context->stops))
+            ->setNextState(States::EditingPlanStop);
+
+        return $viewDataCollection;
     }
 }

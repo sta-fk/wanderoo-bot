@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\ViewDataBuilder\Callback\TripStopCreationFinished;
+namespace App\Service\ViewDataBuilder\Callback\DraftStopFinishedActions;
 
 use App\DTO\Internal\TripStopGenerationFinishedViewData\PlanGenerationFinishedViewData;
 use App\DTO\Internal\TripStopGenerationFinishedViewData\PlanIsGeneratingViewData;

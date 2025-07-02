@@ -19,7 +19,7 @@ readonly class EditPlanContextEntryPointViewDataBuilder implements ViewDataBuild
 
     public function supportsUpdate(TelegramUpdate $update): bool
     {
-        return $update->supportsCallbackQuery(CallbackQueryData::EditPlan);
+        return $update->supportsCallbackQuery(CallbackQueryData::EditGeneratedPlan);
     }
 
     public function buildNextViewDataCollection(TelegramUpdate $update): ViewDataCollection

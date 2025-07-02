@@ -30,7 +30,7 @@ final readonly class PlanGenerationFinishedViewer implements TelegramViewerInter
 
         $keyboard = [
             [['text' => $this->translator->trans('trip.plan_generated.save'), 'callback_data' => CallbackQueryData::SaveGeneratedPlan->value]],
-            [['text' => $this->translator->trans('trip.plan_generated.edit'), 'callback_data' => CallbackQueryData::EditGeneratedPlan->value]],
+            [['text' => $this->translator->trans('trip.plan_generated.edit'), 'callback_data' => CallbackQueryData::EditPlan->value]],
             [['text' => $this->translator->trans('trip.plan_generated.start_over'), 'callback_data' => CallbackQueryData::StartNew->value]],
             [['text' => $this->translator->trans('trip.plan_generated.back'), 'callback_data' => CallbackQueryData::BackToMenu->value]],
         ];

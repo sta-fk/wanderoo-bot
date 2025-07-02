@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\ViewDataBuilder\Callback\TripStopCreationFinished;
+namespace App\Service\ViewDataBuilder\Callback\DraftStopFinishedActions;
 
 use App\DTO\Internal\TripStopGenerationFinishedViewData\DraftPlanCurrencyCountryInputSearchResultViewData;
 use App\DTO\Internal\ViewDataCollection;
